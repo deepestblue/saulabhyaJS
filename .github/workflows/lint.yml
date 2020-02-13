@@ -1,0 +1,11 @@
+name: Run JSHint
+
+on: [push]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run JSHint
+        run: jshint .
