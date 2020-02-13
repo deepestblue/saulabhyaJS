@@ -1,0 +1,22 @@
+{
+  "name": "saulabhya-js",
+  "version": "0.1.0",
+  "description": "SaulabhyaJS",
+  "main": "saulabhya.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deepestblue/SaulabhyaJS.git"
+  },
+  "author": "Ambarish Sridharanarayanan",
+  "license": "AGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/deepestblue/SaulabhyaJS/issues"
+  },
+  "homepage": "https://github.com/deepestblue/SaulabhyaJS#readme"
+}
