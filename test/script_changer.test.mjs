@@ -235,3 +235,27 @@ const numData = {
             numData.deva[i]);
     });
 });
+
+QUnit.module("Integration");
+const tamilTextWithPunctuationAndSpacing = {
+    taml : `பெரும்பாலும் மகரத்தில் முடியும் சொற்களுக்கு அத்துச்சாரியை வரும். மரத்தை நோக்கினேன். பழத்தினது சுவை. ஆயிரத்தில் ஒருவன். மகரத்தில் முடியும்.
+
+இலக்கணம் பயிலும்பொழுது எட்டு வேற்றுமையுருபுகள், அதாவது ஐ ஆல் ஓடு உடன் முதலியன, பயின்றேன். சில ஆண்டாக வடமொழி கற்கிறேன். வடமொழியிலும் வேற்றுமையுருபுகள் உள்ளன. மொழியை விளக்க இலக்கணம் எனில், வடமொழியில் பெயர்ச்சொற்களை விளக்க வேற்றுமையுருபுகள் இன்றியமையாதவை. உரையிலோ செய்யுளிலோ பெயர்ச்சொல்லது முடிவில் வரும் பிற்சேர்க்கைகள் எட்டே. அவ்வெட்டது மூலம் பெயர்ச்சொல் எல்லாமே எட்டாக வேறுபடும். இப்பிற்சேர்க்கைதான் வேறுபாட்டது உருபகளென கருதப்படுகின்றன.
+
+குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும். இராமநாதபுரத்தைச் சேர்ந்தவர் “இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்”. மகாராசபுரத்தில் பிறந்தவர் “மகாராசபுரத்து விசுவநாத அய்யர்”. கும்பகோணத்தில் வாழ்ந்தவர் “கும்பகோணத்து இராசமாணிக்கம் பிள்ளை”. மாம்பலத்தில் வசிக்கும் தாத்தா “மாம்பலத்துத் தாத்தா”. பல்லாவரத்தில் வாழும் மாமன் “பல்லாவரத்து மாமன்”.
+
+சந்தடியென்று மறந்தாயோ! இங்கில்லையோ! எதற்கு தயை வராதுடா? இராமச்சந்திரா!
+`,
+    latn : `perumpāḻum makarattiḻ muṭiyum coṯkaḷukku attuccāriyai varum. marattai nōkkiṉēṉ. paṛattiṉatu cuvai. āyirattiḻ oruvaṉ. makarattiḻ muṭiyum.
+
+iḻakkaṇam payiḻumpoṛutu eṭṭu vēṯṯumaiyurupukaḷ, atāvatu ai āḻ ōṭu uṭaṉ mutaḻiyaṉa, payiṉṯēṉ. ciḻa āṇṭāka vaṭamoṛi kaṯkiṯēṉ. vaṭamoṛiyiḻum vēṯṯumaiyurupukaḷ uḷḷaṉa. moṛiyai viḷakka iḻakkaṇam eṉiḻ, vaṭamoṛiyiḻ peyarccoṯkaḷai viḷakka vēṯṯumaiyurupukaḷ iṉṯiyamaiyātavai. uraiyiḻō ceyyuḷiḻō peyarccoḻḻatu muṭiviḻ varum piṯcērkkaikaḷ eṭṭē. avveṭṭatu mūḻam peyarccoḻ eḻḻāmē eṭṭāka vēṯupaṭum. ippiṯcērkkaitāṉ vēṯupāṭṭatu urupakaḷeṉa karutappaṭukiṉṯaṉa.
+
+kuṯippāka, ivvitimuṯai peyarkaḷukkum poruntum. irāmanātapurattaic cērntavar “irāmanātapurattuc cīṉivāca ayyaṅkār”. makārācapurattiḻ piṯantavar “makārācapurattu vicuvanāta ayyar”. kumpakōṇattiḻ vāṛntavar “kumpakōṇattu irācamāṇikkam piḷḷai”. māmpaḻattiḻ vacikkum tāttā “māmpaḻattut tāttā”. paḻḻāvarattiḻ vāṛum māmaṉ “paḻḻāvarattu māmaṉ”.
+
+cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātuṭā? irāmaccantirā!
+`,};
+QUnit.test("தமிழ் text with punctuation, spacing, etc.", function(assert) {
+    assert.deepEqual(
+        brahmiyaToLatn("taml", tamilTextWithPunctuationAndSpacing.taml, false),
+        tamilTextWithPunctuationAndSpacing.latn);
+    });
