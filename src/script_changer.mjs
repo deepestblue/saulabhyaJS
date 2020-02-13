@@ -197,34 +197,38 @@ function latnToBrahmiya(otherScript, sourceText, xlitNumbers) {
         return sourceText.replace(regex(`(${numbers})+`), function(match) {
             return latnToDravidianNumbers(parseInt(match, 10), data);
         });
-}
+    }
 
     const misc = Array.from(data.misc.keys()).join(disjunctor);
-    const modifiers = Array.from(data.modifiers.keys()).join(disjunctor);
-    const plosives = plosiveConsonants.join(disjunctor);
-    const consonants = Array.from(data.consonants.keys()).sort().reverse().join(disjunctor);
-
-    const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
-    const vowels1 = Array.from(data.vowels.keys()).filter(x => ! diphthongsAndConstituents.includes(x)).sort().reverse().join(disjunctor);
-    const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor);
-
+    // Many scripts have no misc. section. A empty regex always matches, which is undesirable.
     if (misc.length) {
         sourceText = sourceText.replace(regex(misc), function(match) {
             return data.misc.get(match);
         });
     }
 
+    // Handle modifiers separately first to get them out of the way.
+    const modifiers = Array.from(data.modifiers.keys()).join(disjunctor);
     sourceText = sourceText.replace(regex(modifiers), function(match) {
         return data.modifiers.get(match);
     });
 
+    // Handle separated consonants like 'b:h'
+    const plosives = plosiveConsonants.join(disjunctor);
     sourceText = sourceText.replace(regex(`(${plosives})${separator}`), function(match, p1) {
         return data.consonants.get(p1) + data.vowelMarks.get(suppressedVowel);
     });
+
+    // Handle separated vowels like 'a:i'
+    const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(regex(`${diphthongAntecedent}${separator}(${diphthongConsequents.join(disjunctor)})`), function(match, p1) {
         return implicitVowel + data.vowels.get(p1);
     });
 
+    // We need to first sweep through and xlit all diphthong non-consequents. Otherwise "aū" will be xlitted as a diphthong followed by a macron.
+    const vowels1 = Array.from(data.vowels.keys()).filter(x => ! diphthongsAndConstituents.includes(x)).sort().reverse().join(disjunctor);
+    // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn't xlitted separately.
+    const consonants = Array.from(data.consonants.keys()).sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(regex(`(${consonants})(${vowels1})`), function(match, p1, p2) {
         return data.consonants.get(p1) + data.vowelMarks.get(p2);
     });
@@ -232,6 +236,8 @@ function latnToBrahmiya(otherScript, sourceText, xlitNumbers) {
         return data.vowels.get(match);
     });
 
+    // Diphthongs and their constituents are in phase 2.
+    const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(regex(`(${consonants})(${vowels2})`), function(match, p1, p2) {
         return data.consonants.get(p1) + data.vowelMarks.get(p2);
     });
@@ -239,6 +245,7 @@ function latnToBrahmiya(otherScript, sourceText, xlitNumbers) {
         return data.vowels.get(match);
     });
 
+    // Remaining bare consonants.
     sourceText = sourceText.replace(regex(consonants), function(match) {
         return data.consonants.get(match) + data.vowelMarks.get(suppressedVowel);
     });
