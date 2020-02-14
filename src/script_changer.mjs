@@ -118,6 +118,8 @@ function brahmiyaToLatn(otherScript, sourceText, xlitNumbers) {
         }
 
         if (! (c in data.charMap)) {
+            transliteratedText += c;
+            return;
 //            throw new RangeError("Unknown character");
         }
 
