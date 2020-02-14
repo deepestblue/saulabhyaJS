@@ -66,18 +66,17 @@ function dravidianToLatinNumbers(sourceNumber, data) {
     return xlittedNumber;
 }
 
-function brahmiyaToLatn(otherScript, sourceText, xlitNumbers) {
+function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
-    if (xlitNumbers) {
-        const numbers = Array.from(data.numbers.keys()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
-        if (otherScript != "taml" && otherScript != "mlym") {
-            return sourceText.replace(regex(numbers), function(match) {
-                return data.numbers.get(match);
-            });
-        }
-
-        return sourceText.replace(regex(`(${numbers})+`), function(match) {
+    const numbers = Array.from(data.numbers.keys()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
+    // mlym, taml and gran don't use a strict place-value system
+    if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
+        sourceText = sourceText.replace(regex(numbers), function(match) {
+            return data.numbers.get(match);
+        });
+    } else {
+        sourceText = sourceText.replace(regex(`(${numbers})+`), function(match) {
             return dravidianToLatinNumbers(match, data);
         });
     }
@@ -193,8 +192,8 @@ function latnToBrahmiya(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
     const numbers = Array.from(Array(10).keys()).join(disjunctor);
-    // mlym and taml don't use a strict place-value system
-    if (otherScript != "taml" && otherScript != "mlym") {
+    // mlym, taml and gran don't use a strict place-value system
+    if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(regex(numbers), function(match) {
             return data.numbers.get(parseInt(match, 10));
         });

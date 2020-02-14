@@ -33,7 +33,7 @@ QUnit.module("தமிழ் → Latin");
 [...Array(tamlData.taml.length).keys()].forEach(function(i) {
     QUnit.test(tamlData.taml[i], function(assert) {
         assert.deepEqual(
-            brahmiyaToLatn("taml", tamlData.taml[i], false),
+            brahmiyaToLatn("taml", tamlData.taml[i]),
             tamlData.latn[i]);
     });
 });
@@ -66,7 +66,7 @@ QUnit.module("తెలుగు → Latin");
 [...Array(teluData.telu.length).keys()].forEach(function(i) {
     QUnit.test(teluData.telu[i], function(assert) {
         assert.deepEqual(
-            brahmiyaToLatn("telu", teluData.telu[i], false),
+            brahmiyaToLatn("telu", teluData.telu[i]),
             teluData.latn[i]);
     });
 });
@@ -206,7 +206,7 @@ const numData = {
 [...Array(numData.latn.length).keys()].forEach(function(i) {
     QUnit.test("தமிழ் " + numData.taml[i], function(assert) {
         assert.deepEqual(
-            brahmiyaToLatn("taml", numData.taml[i], true),
+            brahmiyaToLatn("taml", numData.taml[i]),
             numData.latn[i]);
         });
     QUnit.test(numData.latn[i] + " → தமிழ்", function(assert) {
@@ -216,7 +216,7 @@ const numData = {
         });
     QUnit.test("తెలుగు " + numData.telu[i], function(assert) {
         assert.deepEqual(
-            brahmiyaToLatn("telu", numData.telu[i], true),
+            brahmiyaToLatn("telu", numData.telu[i]),
             numData.latn[i]);
         });
     QUnit.test(numData.latn[i] + " → తెలుగు", function(assert) {
@@ -226,7 +226,7 @@ const numData = {
         });
     QUnit.test("देवनागरी " + numData.deva[i], function(assert) {
         assert.deepEqual(
-            brahmiyaToLatn("deva", numData.deva[i], true),
+            brahmiyaToLatn("deva", numData.deva[i]),
             numData.latn[i]);
         });
     QUnit.test(numData.latn[i] + " → देवनागरी", function(assert) {
@@ -256,12 +256,12 @@ cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātut
 `,};
 QUnit.test("To Latin: தமிழ் text with punctuation, spacing, etc.", function(assert) {
     assert.deepEqual(
-        brahmiyaToLatn("taml", tamilTextWithPunctuationAndSpacing.taml, false),
+        brahmiyaToLatn("taml", tamilTextWithPunctuationAndSpacing.taml),
             tamilTextWithPunctuationAndSpacing.latn);
     });
 QUnit.test("From Latin: தமிழ் text with punctuation, spacing, etc.", function(assert) {
     assert.deepEqual(
-        latnToBrahmiya("taml", tamilTextWithPunctuationAndSpacing.latn, false),
+        latnToBrahmiya("taml", tamilTextWithPunctuationAndSpacing.latn),
             tamilTextWithPunctuationAndSpacing.taml);
     });
 
@@ -281,7 +281,7 @@ const granthaTextWithPunctuationAndSpacing = {
 
 QUnit.test("To Latin: 𑌗𑍍𑌰𑌨𑍍𑌥 text with punctuation, spacing, etc.", function(assert) {
     assert.deepEqual(
-        brahmiyaToLatn("gran", granthaTextWithPunctuationAndSpacing.gran, false),
+        brahmiyaToLatn("gran", granthaTextWithPunctuationAndSpacing.gran),
             granthaTextWithPunctuationAndSpacing.latn);
     });
 QUnit.test("From Latin: 𑌗𑍍𑌰𑌨𑍍𑌥 text with punctuation, spacing, etc.", function(assert) {
