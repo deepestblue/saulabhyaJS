@@ -42,7 +42,7 @@ QUnit.module("Latin → தமிழ்");
 [...Array(tamlData.latn.length).keys()].forEach(function(i) {
     QUnit.test(tamlData.latn[i], function(assert) {
         assert.deepEqual(
-            latnToBrahmiya("taml", tamlData.latn[i], false),
+            latnToBrahmiya("taml", tamlData.latn[i]),
             tamlData.taml[i]);
     });
 });
@@ -75,7 +75,7 @@ QUnit.module("Latin → తెలుగు");
 [...Array(teluData.latn.length).keys()].forEach(function(i) {
     QUnit.test(teluData.latn[i], function(assert) {
         assert.deepEqual(
-            latnToBrahmiya("telu", teluData.latn[i], false),
+            latnToBrahmiya("telu", teluData.latn[i]),
             teluData.telu[i]);
     });
 });
@@ -126,7 +126,7 @@ QUnit.module("Latin → देवनागरी");
 [...Array(devaData.latn.length).keys()].forEach(function(i) {
     QUnit.test(devaData.latn[i], function(assert) {
         assert.deepEqual(
-            latnToBrahmiya("deva", devaData.latn[i], false),
+            latnToBrahmiya("deva", devaData.latn[i]),
             devaData.deva[i]);
     });
 });
@@ -211,7 +211,7 @@ const numData = {
         });
     QUnit.test(numData.latn[i] + " → தமிழ்", function(assert) {
             assert.deepEqual(
-            latnToBrahmiya("taml", numData.latn[i], true),
+            latnToBrahmiya("taml", numData.latn[i]),
             numData.taml[i]);
         });
     QUnit.test("తెలుగు " + numData.telu[i], function(assert) {
@@ -221,7 +221,7 @@ const numData = {
         });
     QUnit.test(numData.latn[i] + " → తెలుగు", function(assert) {
         assert.deepEqual(
-            latnToBrahmiya("telu", numData.latn[i], true),
+            latnToBrahmiya("telu", numData.latn[i]),
             numData.telu[i]);
         });
     QUnit.test("देवनागरी " + numData.deva[i], function(assert) {
@@ -231,7 +231,7 @@ const numData = {
         });
     QUnit.test(numData.latn[i] + " → देवनागरी", function(assert) {
         assert.deepEqual(
-            latnToBrahmiya("deva", numData.latn[i], true),
+            latnToBrahmiya("deva", numData.latn[i]),
             numData.deva[i]);
     });
 });
@@ -286,6 +286,6 @@ QUnit.test("To Latin: 𑌗𑍍𑌰𑌨𑍍𑌥 text with punctuation, spacing, e
     });
 QUnit.test("From Latin: 𑌗𑍍𑌰𑌨𑍍𑌥 text with punctuation, spacing, etc.", function(assert) {
     assert.deepEqual(
-        latnToBrahmiya("gran", granthaTextWithPunctuationAndSpacing.latn, false),
+        latnToBrahmiya("gran", granthaTextWithPunctuationAndSpacing.latn),
             granthaTextWithPunctuationAndSpacing.gran);
     });

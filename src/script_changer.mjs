@@ -186,20 +186,18 @@ function latnToDravidianNumbers(sourceNumber, data) {
     return xlittedText;
 }
 
-function latnToBrahmiya(otherScript, sourceText, xlitNumbers) {
+function latnToBrahmiya(otherScript, sourceText) {
 
     const data = scriptDataMap.get(otherScript);
 
-    if (xlitNumbers) {
-        const numbers = Array.from(Array(10).keys()).join(disjunctor);
-
-        if (otherScript != "taml" && otherScript != "mlym") {
-            return sourceText.replace(regex(numbers), function(match) {
-                return data.numbers.get(parseInt(match, 10));
-            });
-        }
-
-        return sourceText.replace(regex(`(${numbers})+`), function(match) {
+    const numbers = Array.from(Array(10).keys()).join(disjunctor);
+    // mlym and taml don't use a strict place-value system
+    if (otherScript != "taml" && otherScript != "mlym") {
+        sourceText = sourceText.replace(regex(numbers), function(match) {
+            return data.numbers.get(parseInt(match, 10));
+        });
+    } else {
+        sourceText = sourceText.replace(regex(`(${numbers})+`), function(match) {
             return latnToDravidianNumbers(parseInt(match, 10), data);
         });
     }
