@@ -97,18 +97,14 @@ function brahmiyaToLatn(otherScript, sourceText, xlitNumbers) {
         if (shouldEmitImplicitVowel) {
             transliteratedText += implicitVowel;
         }
-        if (c in data.charMap) {
-            if (isHalfPlosive && data.charMap[c] == aspirateConsonant) {
+        if (isHalfPlosive && data.charMap[c] == aspirateConsonant) {
+            transliteratedText += separator;
+        }
+
+        if (isVowelImplicitVowel || shouldEmitImplicitVowel) {
+            if (diphthongConsequents.indexOf(data.charMap[c]) >= 0) {
                 transliteratedText += separator;
             }
-
-            if (isVowelImplicitVowel || shouldEmitImplicitVowel) {
-                if (diphthongConsequents.indexOf(data.charMap[c]) >= 0) {
-                    transliteratedText += separator;
-                }
-            }
-        } else {
-//            throw "Should not come here once numbers are accounted for.";
         }
 
         isHalfPlosive = isPlosive && data.charMap[c] == suppressedVowel;
@@ -116,7 +112,16 @@ function brahmiyaToLatn(otherScript, sourceText, xlitNumbers) {
         isVowelImplicitVowel = data.charMap[c] == implicitVowel;
         isConsonant = consonants.includes(c);
 
-        transliteratedText += c in data.charMap ? data.charMap[c] : c;
+        if (/\s/u.test(c)) {
+            transliteratedText += c;
+            return;
+        }
+
+        if (! (c in data.charMap)) {
+//            throw new RangeError("Unknown character");
+        }
+
+        transliteratedText += data.charMap[c];
     });
 
     if (isConsonant) {
