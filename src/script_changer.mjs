@@ -26,7 +26,7 @@ function dravidianToLatinNumbers(sourceNumber, data) {
                 xlittedNumber += 100;
                 sourceNumber = sourceNumber.slice(1);
             } else {
-                xlittedNumber += 100 * data.numbers.get(sourceNumber[0]);
+                xlittedNumber += 100 * data.charMap[sourceNumber[0]];
                 sourceNumber = sourceNumber.slice(2);
             }
         }
@@ -36,19 +36,19 @@ function dravidianToLatinNumbers(sourceNumber, data) {
                 xlittedNumber += 10;
                 sourceNumber = sourceNumber.slice(1);
             } else {
-                xlittedNumber += 10 * data.numbers.get(sourceNumber[0]);
+                xlittedNumber += 10 * data.charMap[sourceNumber[0]];
                 sourceNumber = sourceNumber.slice(2);
             }
         }
 
         if (sourceNumber.length > 0) {
-            xlittedNumber += data.numbers.get(sourceNumber[0]);
+            xlittedNumber += data.charMap[sourceNumber[0]];
         }
         return xlittedNumber;
     };
 
     let xlittedNumber = 0;
-    const numbersExceptThousand = Array.from(data.numbers.keys()).filter(x => isNaN(parseInt(x, 10))).filter(x => x!=thousand).join(disjunctor);
+    const numbersExceptThousand = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).filter(x => x!=thousand).join(disjunctor);
     const groupRegex = regex(`(?:${numbersExceptThousand})*${thousand}*`);
     sourceNumber.match(groupRegex).reverse().forEach(g => {
         const thousands = g.match(regex(`${thousand}*$`))[0].length;
@@ -69,11 +69,11 @@ function dravidianToLatinNumbers(sourceNumber, data) {
 function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
-    const numbers = Array.from(data.numbers.keys()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
+    const numbers = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
     // mlym, taml and gran don't use a strict place-value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(regex(numbers), function(match) {
-            return data.numbers.get(match);
+            return data.charMap[match];
         });
     } else {
         sourceText = sourceText.replace(regex(`(${numbers})+`), function(match) {
@@ -116,10 +116,14 @@ function brahmiyaToLatn(otherScript, sourceText) {
             return;
         }
 
-        if (! (c in data.charMap)) {
+        // We've already taken care of numbers first.
+        if (data.numbers.get(parseInt(c, 10))) {
             transliteratedText += c;
             return;
-//            throw new RangeError("Unknown character");
+        }
+
+        if (! (c in data.charMap)) {
+            throw new RangeError(`Unknown ${otherScript} character.`);
         }
 
         transliteratedText += data.charMap[c];
