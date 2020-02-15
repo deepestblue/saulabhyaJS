@@ -214,14 +214,14 @@ function latnToBrahmiya(otherScript, sourceText) {
         }
     })();
 
-    const numbers = Array.from(Array(10).keys()).join(disjunctor);
+    const numbers = Array.from(Array(10).keys()).join('');
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(regex(numbers), function(match) {
+        sourceText = sourceText.replace(regex(`[${numbers}]`), function(match) {
             return data.numbers.get(parseInt(match, 10));
         });
     } else {
-        sourceText = sourceText.replace(regex(`(${numbers})+`), function(match) {
+        sourceText = sourceText.replace(regex(`[${numbers}]+`), function(match) {
             return latnToDravidianNumbers(parseInt(match, 10), data);
         });
     }
