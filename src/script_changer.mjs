@@ -15,6 +15,7 @@ const regex = s => new RegExp(s, 'g');
 
 function dravidianToLatinNumbers(sourceNumber, data) {
     const convertSmallNumber = function(sourceNumber) {
+        // TODO: Use regex?
         let xlittedNumber = 0;
         const hundreds = sourceNumber.indexOf(data.numbers.get(100));
         if (hundreds >= 0) {
@@ -150,47 +151,44 @@ function latnToDravidianNumbers(sourceNumber, data) {
         return data.numbers.get(sourceNumber);
     }
 
-    const convertSmallNumber = function(sourceNumber) {
-        let xlittedText = "";
+    let xlittedText = "";
 
-        const units = sourceNumber % 10;
-        sourceNumber = (sourceNumber - units) / 10;
-        if (units > 0) {
-            xlittedText = data.numbers.get(units) + xlittedText;
-        }
-
-        const tens = sourceNumber % 10;
-        sourceNumber = (sourceNumber - tens) / 10;
-        if (tens > 0) {
-            xlittedText = data.numbers.get(10) + xlittedText;
-            if (tens > 1) {
-                xlittedText = data.numbers.get(tens) + xlittedText;
-            }
-        }
-
-        const hundreds = sourceNumber % 10;
-        sourceNumber = (sourceNumber - hundreds) / 10;
-        if (hundreds > 0) {
-            xlittedText = data.numbers.get(100) + xlittedText;
-            if (hundreds > 1) {
-                xlittedText = data.numbers.get(hundreds) + xlittedText;
-            }
-        }
-
-        return xlittedText;
-    };
-
-    let xlittedText = "", power = 0;
-    while (sourceNumber > 0) {
-        const rem = sourceNumber % 1000;
-        if (rem > 0) {
-            xlittedText = data.numbers.get(1000).repeat(power) + xlittedText;
-            if (rem > 1 || power == 0) {
-                xlittedText = convertSmallNumber(rem, data) + xlittedText;
-            }
-        }
+    for (let mille = 0; sourceNumber > 0; ++mille) {
+        let rem = sourceNumber % 1000;
         sourceNumber = (sourceNumber - rem) / 1000;
-        ++power;
+
+        if (rem == 0) {
+            continue;
+        }
+
+        xlittedText = data.numbers.get(1000).repeat(mille) + xlittedText;
+
+        if (rem == 1 && mille > 0) {
+            // 1 is implicit, unless there are no thousand symbols.
+            continue;
+        }
+
+        /* jshint -W083 */
+        [1, 10, 100].forEach(function(place) {
+            const digit = rem % 10;
+            rem = (rem - digit) / 10;
+
+            if (digit == 0) {
+                // Nothing to do if zero mantissa.
+                return;
+            }
+
+            // For tens and hundreds, we need to output the corresponding symbol.
+            if (place > 1) {
+                xlittedText = data.numbers.get(place) + xlittedText;
+                if (digit == 1) {
+                    return;
+                }
+            }
+
+            xlittedText = data.numbers.get(digit) + xlittedText;
+        });
+        /* jshint +W083 */
     }
 
     return xlittedText;
