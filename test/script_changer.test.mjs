@@ -343,3 +343,12 @@ QUnit.test("deva to gran: sa text with punctuation, spacing, etc.", function(ass
             brahmiyaToLatn("deva", granthaTextWithPunctuationAndSpacing.deva)),
         granthaTextWithPunctuationAndSpacing.gran);
     });
+
+QUnit.module("Invalid inputs");
+const invalidTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
+QUnit.test("Foo", function(assert) {
+    assert.throws(
+        function() { brahmiyaToLatn("taml", invalidTamlText); },
+        RangeError
+        );
+    });
