@@ -14,13 +14,9 @@ const disjunctor = '|';
 const regex = s => new RegExp(s, 'g');
 
 function dravidianToLatinNumbers(sourceNumber, data) {
-    const ten = data.numbers.get(10);
-    const hundred = data.numbers.get(100);
-    const thousand = data.numbers.get(1000);
-
     const convertSmallNumber = function(sourceNumber) {
         let xlittedNumber = 0;
-        const hundreds = sourceNumber.indexOf(hundred);
+        const hundreds = sourceNumber.indexOf(data.numbers.get(100));
         if (hundreds >= 0) {
             if (hundreds == 0) {
                 xlittedNumber += 100;
@@ -30,7 +26,7 @@ function dravidianToLatinNumbers(sourceNumber, data) {
                 sourceNumber = sourceNumber.slice(2);
             }
         }
-        const tens = sourceNumber.indexOf(ten);
+        const tens = sourceNumber.indexOf(data.numbers.get(10));
         if (tens >= 0) {
             if (tens == 0) {
                 xlittedNumber += 10;
@@ -48,20 +44,29 @@ function dravidianToLatinNumbers(sourceNumber, data) {
     };
 
     let xlittedNumber = 0;
-    const numbersExceptThousand = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).filter(x => x!=thousand).join(disjunctor);
-    const groupRegex = regex(`(?:${numbersExceptThousand})*${thousand}*`);
-    sourceNumber.match(groupRegex).reverse().forEach(g => {
-        const thousands = g.match(regex(`${thousand}*$`))[0].length;
-        if (thousands == 0) {
-            xlittedNumber += convertSmallNumber(g);
-        } else {
-            g = g.slice(0, -thousands);
-            const power = 1000 ** thousands;
-            if (g == "") {
-                xlittedNumber += power;
-            }
-            xlittedNumber += power * convertSmallNumber(g);
+
+    // Let's divide up the number into groups of thousands.
+    const thousand = data.numbers.get(1000);
+    const otherNumbers = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).filter(x => x!=thousand).join('');
+
+    // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
+    // But while both the constituents are optional, one of them has to exist, hence the positive lookahead.
+    const groupRegex = regex(`(?=.)[${otherNumbers}]*${thousand}*`);
+
+    // From the least significant group to the most.
+    sourceNumber.match(groupRegex).reverse().forEach(group => {
+        const thousands = group.match(regex(`${thousand}*$`))[0].length;
+        if (thousands > 0) {
+            // Strip off the thousand symbols, unless there are none.
+            group = group.slice(0, -thousands);
         }
+        const power = 1000 ** thousands;
+        if (group == "") {
+            // Nothing in front of the thousand symbols is just the value of the power
+            xlittedNumber += power;
+            return;
+        }
+        xlittedNumber += power * convertSmallNumber(group);
     });
     return xlittedNumber;
 }
@@ -70,7 +75,7 @@ function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
     const numbers = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
-    // mlym, taml and gran don't use a strict place-value system
+    // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(regex(numbers), function(match) {
             return data.charMap[match];
@@ -192,7 +197,6 @@ function latnToDravidianNumbers(sourceNumber, data) {
 }
 
 function latnToBrahmiya(otherScript, sourceText) {
-
     const data = scriptDataMap.get(otherScript);
 
     // Validate no foreign characters
@@ -213,7 +217,7 @@ function latnToBrahmiya(otherScript, sourceText) {
     })();
 
     const numbers = Array.from(Array(10).keys()).join(disjunctor);
-    // mlym, taml and gran don't use a strict place-value system
+    // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(regex(numbers), function(match) {
             return data.numbers.get(parseInt(match, 10));
@@ -250,7 +254,7 @@ function latnToBrahmiya(otherScript, sourceText) {
         return implicitVowel + data.vowels.get(p1);
     });
 
-    // We need to first sweep through and xlit all diphthong non-consequents. Otherwise "aū" will be xlitted as a diphthong followed by a macron.
+    // We need to first sweep through and xlit all diphthong non‐consequents. Otherwise "aū" will be xlitted as a diphthong followed by a macron.
     const vowels1 = Array.from(data.vowels.keys()).filter(x => ! diphthongsAndConstituents.includes(x)).sort().reverse().join(disjunctor);
     // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn't xlitted separately.
     const consonants = Array.from(data.consonants.keys()).sort().reverse().join(disjunctor);
