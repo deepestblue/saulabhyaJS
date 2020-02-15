@@ -123,7 +123,7 @@ function brahmiyaToLatn(otherScript, sourceText) {
         }
 
         if (! (c in data.charMap)) {
-            throw new RangeError(`Unknown ${otherScript} character.`);
+            throw new RangeError(`Unknown ${otherScript} character ${c}.`);
         }
 
         transliteratedText += data.charMap[c];
@@ -194,6 +194,23 @@ function latnToDravidianNumbers(sourceNumber, data) {
 function latnToBrahmiya(otherScript, sourceText) {
 
     const data = scriptDataMap.get(otherScript);
+
+    // Validate no foreign characters
+    (function() {
+        // Need to handle these specially, as they do bad stuff in regexes.
+        const splCharacters = "\\.?\\s";
+        const scriptCharacters = [
+            ...data.numbers.keys(), ...data.misc.keys(), ...data.modifiers.keys(),
+            ...data.vowelMarks.keys(), ...data.vowels.keys(), ...data.consonants.keys(),
+            separator, ...splCharacters,
+        ];
+
+        const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`);
+        const result = sourceText.match(invalidRegex);
+        if (result) {
+            throw new RangeError(`Unknown ${otherScript} character ${result[0]}.`);
+        }
+    })();
 
     const numbers = Array.from(Array(10).keys()).join(disjunctor);
     // mlym, taml and gran don't use a strict place-value system
