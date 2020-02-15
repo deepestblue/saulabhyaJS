@@ -142,7 +142,7 @@ function brahmiyaToLatn(otherScript, sourceText) {
     return transliteratedText;
 }
 
-function latnToDravidianNumbers(sourceNumber, data) {
+function indicToSouthDravidianNumbers(sourceNumber, data) {
     if (sourceNumber < 0) {
         throw new Error("No support for negative numbers.");
     }
@@ -174,12 +174,21 @@ function latnToDravidianNumbers(sourceNumber, data) {
             rem = (rem - digit) / 10;
 
             if (digit == 0) {
-                // Nothing to do if zero mantissa.
+                // Nothing to do if zero digit.
                 return;
             }
 
-            // For tens and hundreds, we need to output the corresponding symbol.
-            if (place > 1) {
+            /*
+            ╔════════════╦═════════════╦════════════════════════╗
+            ║            ║ Units place ║ Tens or Hundreds place ║
+            ╠════════════╬═════════════╬════════════════════════╣
+            ║ Digit = 1  ║ Digit       ║ Place                  ║
+            ╠════════════╬═════════════╬════════════════════════╣
+            ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
+            ╚════════════╩═════════════╩════════════════════════╝
+            */
+
+            if (place != 1) {
                 xlittedText = data.numbers.get(place) + xlittedText;
                 if (digit == 1) {
                     return;
@@ -222,7 +231,7 @@ function latnToBrahmiya(otherScript, sourceText) {
         });
     } else {
         sourceText = sourceText.replace(regex(`[${numbers}]+`), function(match) {
-            return latnToDravidianNumbers(parseInt(match, 10), data);
+            return indicToSouthDravidianNumbers(parseInt(match, 10), data);
         });
     }
 
