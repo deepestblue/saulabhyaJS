@@ -14,7 +14,10 @@ const disjunctor = '|';
 const regex = s => new RegExp(s, 'g');
 
 // Regex pattern that matches any of the elements of the passed‐in array.
-const anyOf = arr => `[${arr.join('')}]`;
+const anyOfArray = arr => `[${arr.join('')}]`;
+
+// Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
+const anyOfIterable = it => anyOfArray(Array.from(it));
 
 function southDravidianToIndicNumbers(sourceNumber, data) {
     const thousand = data.numbers.get(1000);
@@ -27,7 +30,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
-    const groupRegex = regex(`(?=.)${anyOf(otherNumbers)}*${thousand}*`);
+    const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers)}*${thousand}*`);
 
     return sourceNumber.match(groupRegex).reduce((ator, group) => {
         // Process each group.
@@ -37,7 +40,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
             group = group.slice(0, -thousands);
         }
 
-        const anyDigit = anyOf(digits);
+        const anyDigit = anyOfArray(digits);
         const subThousandNumberRegex =
             regex(`(?:(${anyDigit}?)(${hundred}))?(?:(${anyDigit})?(${ten}))?(${anyDigit}?)`);
         const components = subThousandNumberRegex.exec(group);
@@ -60,15 +63,14 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
 function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
-    const numbers = Array.from(data.numbers.values());
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(
-            regex(anyOf(numbers)),
+            regex(anyOfIterable(data.numbers.values())),
             match => data.charMap[match]);
     } else {
         sourceText = sourceText.replace(
-            regex(`${anyOf(numbers)}+`),
+            regex(`${anyOfIterable(data.numbers.values())}+`),
             match => southDravidianToIndicNumbers(match, data));
     }
 
@@ -213,21 +215,19 @@ function latnToBrahmiya(otherScript, sourceText) {
         }
     })();
 
-    const digits = Array.from(Array(10).keys());
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(
-            regex(anyOf(digits)),
+            regex(anyOfIterable(Array(10).keys())),
             match => data.numbers.get(parseInt(match, 10)));
     } else {
         sourceText = sourceText.replace(
-            regex(`${anyOf(digits)}+`),
+            regex(`${anyOfIterable(Array(10).keys())}+`),
             match => indicToSouthDravidianNumbers(parseInt(match, 10), data));
     }
 
-    const misc = Array.from(data.misc.keys());
     sourceText = sourceText.replace(
-        regex(anyOf(misc)),
+        regex(anyOfIterable(data.misc.keys())),
         match => data.misc.get(match));
 
     // Handle modifiers separately first to get them out of the way.
@@ -238,14 +238,14 @@ function latnToBrahmiya(otherScript, sourceText) {
 
     // Handle separated consonants like 'b:h'
     sourceText = sourceText.replace(
-        regex(`(${anyOf(plosiveConsonants)})${separator}`),
+        regex(`(${anyOfArray(plosiveConsonants)})${separator}`),
         (match, p1) => data.consonants.get(p1) + data.vowelMarks.get(suppressedVowel));
 
     // Handle separated vowels like 'a:i'
     const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
-        regex(`${diphthongAntecedent}${separator}(${anyOf(diphthongConsequents)})`),
+        regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents)})`),
         (match, p1) => implicitVowel + data.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
