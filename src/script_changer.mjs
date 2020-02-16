@@ -14,60 +14,44 @@ const disjunctor = '|';
 const regex = s => new RegExp(s, 'g');
 
 function southDravidianToIndicNumbers(sourceNumber, data) {
-    const convertSmallNumber = function(sourceNumber) {
-        let xlittedNumber = 0;
-        const hundreds = sourceNumber.indexOf(data.numbers.get(100));
-        if (hundreds >= 0) {
-            if (hundreds == 0) {
-                xlittedNumber += 100;
-                sourceNumber = sourceNumber.slice(1);
-            } else {
-                xlittedNumber += 100 * data.charMap[sourceNumber[0]];
-                sourceNumber = sourceNumber.slice(2);
-            }
-        }
-        const tens = sourceNumber.indexOf(data.numbers.get(10));
-        if (tens >= 0) {
-            if (tens == 0) {
-                xlittedNumber += 10;
-                sourceNumber = sourceNumber.slice(1);
-            } else {
-                xlittedNumber += 10 * data.charMap[sourceNumber[0]];
-                sourceNumber = sourceNumber.slice(2);
-            }
-        }
-
-        if (sourceNumber.length > 0) {
-            xlittedNumber += data.charMap[sourceNumber[0]];
-        }
-
-        return xlittedNumber;
-    };
-
-    let xlittedNumber = 0;
+    const thousand = data.numbers.get(1000);
+    const hundred = data.numbers.get(100);
+    const ten = data.numbers.get(10);
+    const digits = Array.from(data.numbers.values()).filter(x => data.charMap[x] < 10).join('');
 
     // Let's divide up the number into groups of thousands.
-    const thousand = data.numbers.get(1000);
     const otherNumbers = Array.from(data.numbers.values()).filter(x => x!=thousand).join('');
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
-    // But while both the constituents are optional, one of them has to exist, hence the positive lookahead.
+    // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
     const groupRegex = regex(`(?=.)[${otherNumbers}]*${thousand}*`);
 
-    // From the least significant group to the most.
-    sourceNumber.match(groupRegex).reverse().forEach(group => {
+    let xlittedNumber = 0;
+
+    // Process each group.
+    sourceNumber.match(groupRegex).forEach(group => {
         const thousands = group.match(regex(`${thousand}*$`))[0].length;
         if (thousands > 0) {
             // Strip off the thousand symbols, unless there are none.
             group = group.slice(0, -thousands);
         }
-        const power = 1000 ** thousands;
-        if (group == "") {
-            // Nothing in front of the thousand symbols is just the value of the power
-            xlittedNumber += power;
-            return;
-        }
-        xlittedNumber += power * convertSmallNumber(group);
+
+        const subThousandNumberRegex = regex(`(?:([${digits}]?)(${hundred}))?(?:([${digits}])?(${ten}))?([${digits}]?)`);
+        const components = subThousandNumberRegex.exec(group);
+
+        xlittedNumber += 1000 ** thousands *
+            (components[0] ?
+                (components[5] ? data.charMap[components[5]] : 0) + // Add in any units.
+                (components[4] ? // If there is a tens symbol, …
+                    // … add in the tens, treating a missing digit prefix as 1.
+                    10 * (components[3] ? data.charMap[components[3]] : 1)
+                    : 0) +
+                (components[2] ? // If there is a hundreds symbol, …
+                    // … add in the hundreds, treating a missing digit prefix as 1.
+                    100 * (components[1] ? data.charMap[components[1]] : 1)
+                    : 0)
+                : 1); // Nothing in front of the thousand symbols is just the value of the power.
+
     });
     return xlittedNumber;
 }
