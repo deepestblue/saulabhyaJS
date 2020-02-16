@@ -60,7 +60,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
     }, 0);
 }
 
-function brahmiyaToLatn(otherScript, sourceText) {
+function brahmicToLatin(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
     // mlym, taml and gran don't use a strict place‐value system
@@ -193,7 +193,7 @@ function indicToSouthDravidianNumbers(sourceNumber, data) {
     return xlittedText;
 }
 
-function latnToBrahmiya(otherScript, sourceText) {
+function latinToBrahmic(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
     // Validate no foreign characters
@@ -274,4 +274,4 @@ function latnToBrahmiya(otherScript, sourceText) {
     return sourceText;
 }
 
-export { brahmiyaToLatn, latnToBrahmiya };
+export { brahmicToLatin, latinToBrahmic };

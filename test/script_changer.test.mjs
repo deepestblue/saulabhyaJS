@@ -1,6 +1,6 @@
 /* global QUnit:false */
 
-import { brahmiyaToLatn, latnToBrahmiya } from "http://localhost:8000/src/script_changer.mjs";
+import { brahmicToLatin, latinToBrahmic } from "http://localhost:8000/src/script_changer.mjs";
 
 QUnit.config.maxDepth = -1;
 QUnit.config.noglobals = true;
@@ -36,7 +36,7 @@ QUnit.module("taml unit tests", () => {
         [...Array(data.taml.length).keys()].forEach(i => {
             QUnit.test(data.taml[i], t => {
                 t.deepEqual(
-                    brahmiyaToLatn("taml", data.taml[i]),
+                    brahmicToLatin("taml", data.taml[i]),
                     data.latn[i]);
             });
         });
@@ -45,7 +45,7 @@ QUnit.module("taml unit tests", () => {
         [...Array(data.latn.length).keys()].forEach(i => {
             QUnit.test(data.latn[i], t => {
                 t.deepEqual(
-                    latnToBrahmiya("taml", data.latn[i]),
+                    latinToBrahmic("taml", data.latn[i]),
                     data.taml[i]);
             });
         });
@@ -71,7 +71,7 @@ QUnit.module("telu unit tests", () => {
         [...Array(data.telu.length).keys()].forEach(i => {
             QUnit.test(data.telu[i], t => {
                 t.deepEqual(
-                    brahmiyaToLatn("telu", data.telu[i]),
+                    brahmicToLatin("telu", data.telu[i]),
                     data.latn[i]);
             });
         });
@@ -80,7 +80,7 @@ QUnit.module("telu unit tests", () => {
         [...Array(data.latn.length).keys()].forEach(i => {
             QUnit.test(data.latn[i], t => {
                 t.deepEqual(
-                    latnToBrahmiya("telu", data.latn[i]),
+                    latinToBrahmic("telu", data.latn[i]),
                     data.telu[i]);
             });
         });
@@ -124,7 +124,7 @@ QUnit.module("deva unit tests", () => {
         [...Array(data.deva.length).keys()].forEach(i => {
             QUnit.test(data.deva[i], t => {
                 t.deepEqual(
-                    brahmiyaToLatn("deva", data.deva[i], false),
+                    brahmicToLatin("deva", data.deva[i], false),
                     data.latn[i]);
             });
         });
@@ -133,7 +133,7 @@ QUnit.module("deva unit tests", () => {
         [...Array(data.latn.length).keys()].forEach(i => {
             QUnit.test(data.latn[i], t => {
                 t.deepEqual(
-                    latnToBrahmiya("deva", data.latn[i]),
+                    latinToBrahmic("deva", data.latn[i]),
                     data.deva[i]);
             });
         });
@@ -214,32 +214,32 @@ QUnit.module("Numbers", () => {
     [...Array(data.latn.length).keys()].forEach(i => {
         QUnit.test("தமிழ் " + data.taml[i], t => {
             t.deepEqual(
-                brahmiyaToLatn("taml", data.taml[i]),
+                brahmicToLatin("taml", data.taml[i]),
                 data.latn[i]);
         });
         QUnit.test(data.latn[i] + " → தமிழ்", t => {
             t.deepEqual(
-                latnToBrahmiya("taml", data.latn[i]),
+                latinToBrahmic("taml", data.latn[i]),
                 data.taml[i]);
         });
         QUnit.test("తెలుగు " + data.telu[i], t => {
             t.deepEqual(
-                brahmiyaToLatn("telu", data.telu[i]),
+                brahmicToLatin("telu", data.telu[i]),
                 data.latn[i]);
         });
         QUnit.test(data.latn[i] + " → తెలుగు", t => {
             t.deepEqual(
-                latnToBrahmiya("telu", data.latn[i]),
+                latinToBrahmic("telu", data.latn[i]),
                 data.telu[i]);
         });
         QUnit.test("देवनागरी " + data.deva[i], t => {
             t.deepEqual(
-                brahmiyaToLatn("deva", data.deva[i]),
+                brahmicToLatin("deva", data.deva[i]),
                 data.latn[i]);
         });
         QUnit.test(data.latn[i] + " → देवनागरी", t => {
             t.deepEqual(
-                latnToBrahmiya("deva", data.latn[i]),
+                latinToBrahmic("deva", data.latn[i]),
                 data.deva[i]);
         });
     });
@@ -283,24 +283,24 @@ cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātut
         `,};
         QUnit.test("taml to latn: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                brahmiyaToLatn("taml", textWithPunctuationAndSpacing.taml),
+                brahmicToLatin("taml", textWithPunctuationAndSpacing.taml),
                 textWithPunctuationAndSpacing.latn);
         });
         QUnit.test("latn to taml: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("taml", textWithPunctuationAndSpacing.latn),
+                latinToBrahmic("taml", textWithPunctuationAndSpacing.latn),
                 textWithPunctuationAndSpacing.taml);
         });
         QUnit.test("taml to knda: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("knda",
-                    brahmiyaToLatn("taml", textWithPunctuationAndSpacing.taml)),
+                latinToBrahmic("knda",
+                    brahmicToLatin("taml", textWithPunctuationAndSpacing.taml)),
                 textWithPunctuationAndSpacing.knda);
         });
         QUnit.test("knda to taml: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("taml",
-                    brahmiyaToLatn("knda", textWithPunctuationAndSpacing.knda)),
+                latinToBrahmic("taml",
+                    brahmicToLatin("knda", textWithPunctuationAndSpacing.knda)),
                 textWithPunctuationAndSpacing.taml);
         });
     });
@@ -334,24 +334,24 @@ athānyabhāṣāṇāmadhikāraḥ svapradēṣvēvōta nēti । aiti
 
         QUnit.test("gran to latn: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                brahmiyaToLatn("gran", textWithPunctuationAndSpacing.gran),
+                brahmicToLatin("gran", textWithPunctuationAndSpacing.gran),
                 textWithPunctuationAndSpacing.latn);
         });
         QUnit.test("latn to gran: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("gran", textWithPunctuationAndSpacing.latn),
+                latinToBrahmic("gran", textWithPunctuationAndSpacing.latn),
                 textWithPunctuationAndSpacing.gran);
         });
         QUnit.test("gran to deva: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("deva",
-                    brahmiyaToLatn("gran", textWithPunctuationAndSpacing.gran)),
+                latinToBrahmic("deva",
+                    brahmicToLatin("gran", textWithPunctuationAndSpacing.gran)),
                 textWithPunctuationAndSpacing.deva);
         });
         QUnit.test("deva to gran: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                latnToBrahmiya("gran",
-                    brahmiyaToLatn("deva", textWithPunctuationAndSpacing.deva)),
+                latinToBrahmic("gran",
+                    brahmicToLatin("deva", textWithPunctuationAndSpacing.deva)),
                 textWithPunctuationAndSpacing.gran);
         });
     });
@@ -361,7 +361,7 @@ QUnit.module("Invalid Tamil inputs", () => {
     const invalidTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Taml", t => {
         t.throws(
-            () => brahmiyaToLatn("taml", invalidTamlText),
+            () => brahmicToLatin("taml", invalidTamlText),
             function(err) {
                 return err instanceof RangeError &&
                 /^Unknown taml character .\./u.test(err.message);
@@ -370,7 +370,7 @@ QUnit.module("Invalid Tamil inputs", () => {
     const invalidLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Latn", t => {
         t.throws(
-            () => latnToBrahmiya("taml", invalidLatnText),
+            () => latinToBrahmic("taml", invalidLatnText),
             function(err) {
                 return err instanceof RangeError &&
                 /^Unknown taml character .\./u.test(err.message);
