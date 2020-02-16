@@ -26,10 +26,8 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
     const groupRegex = regex(`(?=.)[${otherNumbers}]*${thousand}*`);
 
-    let xlittedNumber = 0;
-
-    // Process each group.
-    sourceNumber.match(groupRegex).forEach(group => {
+    return sourceNumber.match(groupRegex).reduce((ator, group) => {
+        // Process each group.
         const thousands = group.match(regex(`${thousand}*$`))[0].length;
         if (thousands > 0) {
             // Strip off the thousand symbols, unless there are none.
@@ -39,7 +37,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
         const subThousandNumberRegex = regex(`(?:([${digits}]?)(${hundred}))?(?:([${digits}])?(${ten}))?([${digits}]?)`);
         const components = subThousandNumberRegex.exec(group);
 
-        xlittedNumber += 1000 ** thousands *
+        return ator + 1000 ** thousands *
             (components[0] ?
                 (components[5] ? data.charMap[components[5]] : 0) + // Add in any units.
                 (components[4] ? // If there is a tens symbol, …
@@ -51,9 +49,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
                     100 * (components[1] ? data.charMap[components[1]] : 1)
                     : 0)
                 : 1); // Nothing in front of the thousand symbols is just the value of the power.
-
-    });
-    return xlittedNumber;
+    }, 0);
 }
 
 function brahmiyaToLatn(otherScript, sourceText) {
