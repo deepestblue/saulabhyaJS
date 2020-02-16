@@ -123,10 +123,6 @@ function brahmiyaToLatn(otherScript, sourceText) {
 }
 
 function indicToSouthDravidianNumbers(sourceNumber, data) {
-    if (sourceNumber < 0) {
-        throw new Error("No support for negative numbers.");
-    }
-
     // Zero is special, and is in fact not allowed in the traditional system. But modern usage demands it.
     if (sourceNumber == 0) {
         return data.numbers.get(sourceNumber);
