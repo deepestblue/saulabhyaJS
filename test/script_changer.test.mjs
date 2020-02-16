@@ -2,6 +2,9 @@
 
 import { brahmiyaToLatn, latnToBrahmiya } from "http://localhost:8000/src/script_changer.mjs";
 
+QUnit.config.maxDepth = -1;
+QUnit.config.noglobals = true;
+
 QUnit.module("taml unit tests", () => {
     const data = {
         taml : [
@@ -40,10 +43,10 @@ QUnit.module("taml unit tests", () => {
     });
     QUnit.module("From Latin", () => {
         [...Array(data.latn.length).keys()].forEach(function(i) {
-                QUnit.test(data.latn[i], t => {
-            t.deepEqual(
-                latnToBrahmiya("taml", data.latn[i]),
-                data.taml[i]);
+            QUnit.test(data.latn[i], t => {
+                t.deepEqual(
+                    latnToBrahmiya("taml", data.latn[i]),
+                    data.taml[i]);
             });
         });
     });
