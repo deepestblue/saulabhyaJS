@@ -59,13 +59,13 @@ function brahmiyaToLatn(otherScript, sourceText) {
     const numbers = Array.from(data.numbers.values()).join('');
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(regex(`[${numbers}]`), match => {
-            return data.charMap[match];
-        });
+        sourceText = sourceText.replace(
+            regex(`[${numbers}]`),
+            match => data.charMap[match]);
     } else {
-        sourceText = sourceText.replace(regex(`[${numbers}]+`), match => {
-            return southDravidianToIndicNumbers(match, data);
-        });
+        sourceText = sourceText.replace(
+            regex(`[${numbers}]+`),
+            match => southDravidianToIndicNumbers(match, data));
     }
 
     const vowelMarks = Array.from(data.vowelMarks.values());
@@ -200,6 +200,8 @@ function latnToBrahmiya(otherScript, sourceText) {
             separator, ...splCharacters,
         ];
 
+        // Should not use 'g' for this regex alone.
+        // Seems to result in some sort of combinatorial explosion.
         const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`);
         const result = sourceText.match(invalidRegex);
         if (result) {
@@ -210,43 +212,38 @@ function latnToBrahmiya(otherScript, sourceText) {
     const numbers = Array.from(Array(10).keys()).join('');
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(regex(`[${numbers}]`), match => {
-            return data.numbers.get(parseInt(match, 10));
-        });
+        sourceText = sourceText.replace(
+            regex(`[${numbers}]`),
+            match => data.numbers.get(parseInt(match, 10)));
     } else {
-        sourceText = sourceText.replace(regex(`[${numbers}]+`), match => {
-            return indicToSouthDravidianNumbers(parseInt(match, 10), data);
-        });
+        sourceText = sourceText.replace(
+            regex(`[${numbers}]+`),
+            match => indicToSouthDravidianNumbers(parseInt(match, 10), data));
     }
 
-    const misc = Array.from(data.misc.keys()).join(disjunctor);
-    // Many scripts have no misc. section. A empty regex always matches, which is undesirable.
-    if (misc.length) {
-        sourceText = sourceText.replace(regex(misc), match => {
-            return data.misc.get(match);
-        });
-    }
+    const misc = Array.from(data.misc.keys()).join('');
+    sourceText = sourceText.replace(
+        regex(`[${misc}]`),
+        match => data.misc.get(match));
 
     // Handle modifiers separately first to get them out of the way.
     const modifiers = Array.from(data.modifiers.keys()).join(disjunctor);
-    sourceText = sourceText.replace(regex(modifiers), match => {
-        return data.modifiers.get(match);
-    });
+    sourceText = sourceText.replace(
+        regex(modifiers),
+        match => data.modifiers.get(match));
 
     // Handle separated consonants like 'b:h'
-    const plosives = plosiveConsonants.join(disjunctor);
-    sourceText = sourceText.replace(regex(`(${plosives})${separator}`), (match, p1) => {
-        return data.consonants.get(p1) + data.vowelMarks.get(suppressedVowel);
-    });
+    const plosives = plosiveConsonants.join('');
+    sourceText = sourceText.replace(
+        regex(`([${plosives}])${separator}`),
+        (match, p1) => data.consonants.get(p1) + data.vowelMarks.get(suppressedVowel));
 
     // Handle separated vowels like 'a:i'
     const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
-        regex(`${diphthongAntecedent}${separator}(${diphthongConsequents.join(disjunctor)})`),
-        (match, p1) => {
-            return implicitVowel + data.vowels.get(p1);
-    });
+        regex(`${diphthongAntecedent}${separator}([${diphthongConsequents.join('')}])`),
+        (match, p1) => implicitVowel + data.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise "aū" will be xlitted as a diphthong followed by a macron.
@@ -254,26 +251,22 @@ function latnToBrahmiya(otherScript, sourceText) {
         .sort().reverse().join(disjunctor);
     // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn't xlitted separately.
     const consonants = Array.from(data.consonants.keys()).sort().reverse().join(disjunctor);
-    sourceText = sourceText.replace(regex(`(${consonants})(${vowels1})`), (match, p1, p2) => {
-        return data.consonants.get(p1) + data.vowelMarks.get(p2);
-    });
-    sourceText = sourceText.replace(regex(vowels1), match => {
-        return data.vowels.get(match);
-    });
+    sourceText = sourceText.replace(
+        regex(`(${consonants})(${vowels1})`),
+        (match, p1, p2) => data.consonants.get(p1) + data.vowelMarks.get(p2));
+    sourceText = sourceText.replace(regex(vowels1), match => data.vowels.get(match));
 
     // Diphthongs and their constituents are in phase 2.
     const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor);
-    sourceText = sourceText.replace(regex(`(${consonants})(${vowels2})`), (match, p1, p2) => {
-        return data.consonants.get(p1) + data.vowelMarks.get(p2);
-    });
-    sourceText = sourceText.replace(regex(vowels2), match => {
-        return data.vowels.get(match);
-    });
+    sourceText = sourceText.replace(
+        regex(`(${consonants})(${vowels2})`),
+        (match, p1, p2) => data.consonants.get(p1) + data.vowelMarks.get(p2));
+    sourceText = sourceText.replace(regex(vowels2), match => data.vowels.get(match));
 
     // Remaining bare consonants.
-    sourceText = sourceText.replace(regex(consonants), match => {
-        return data.consonants.get(match) + data.vowelMarks.get(suppressedVowel);
-    });
+    sourceText = sourceText.replace(
+        regex(consonants),
+        match => data.consonants.get(match) + data.vowelMarks.get(suppressedVowel));
 
     return sourceText;
 }
