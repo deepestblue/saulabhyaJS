@@ -159,7 +159,7 @@ function indicToSouthDravidianNumbers(sourceNumber, data) {
         // JSHint doesn't like functions that close on loop‐scoped variables,
         // but this seems to be the cleanest way to implement the algorithm.
         /* jshint -W083 */
-        [1, 10, 100].forEach(place => {
+        [1, 10, 100,].forEach(place => {
             const digit = rem % 10;
             rem = (rem - digit) / 10;
 
