@@ -359,14 +359,12 @@ QUnit.module("Invalid Tamil inputs", () => {
     QUnit.test("Invalid Ta text in Taml", t => {
         t.throws(
             function() { brahmiyaToLatn("taml", invalidTamlText); },
-            RangeError
-            );
+            RangeError);
     });
     const invalidLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Latn", t => {
         t.throws(
             function() { latnToBrahmiya("taml", invalidLatnText); },
-            RangeError
-            );
+            RangeError);
     });
 });
