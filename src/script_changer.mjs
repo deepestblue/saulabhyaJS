@@ -13,9 +13,8 @@ const disjunctor = '|';
 
 const regex = s => new RegExp(s, 'g');
 
-function dravidianToLatinNumbers(sourceNumber, data) {
+function southDravidianToIndicNumbers(sourceNumber, data) {
     const convertSmallNumber = function(sourceNumber) {
-        // TODO: Use regex?
         let xlittedNumber = 0;
         const hundreds = sourceNumber.indexOf(data.numbers.get(100));
         if (hundreds >= 0) {
@@ -41,6 +40,7 @@ function dravidianToLatinNumbers(sourceNumber, data) {
         if (sourceNumber.length > 0) {
             xlittedNumber += data.charMap[sourceNumber[0]];
         }
+
         return xlittedNumber;
     };
 
@@ -48,7 +48,7 @@ function dravidianToLatinNumbers(sourceNumber, data) {
 
     // Let's divide up the number into groups of thousands.
     const thousand = data.numbers.get(1000);
-    const otherNumbers = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).filter(x => x!=thousand).join('');
+    const otherNumbers = Array.from(data.numbers.values()).filter(x => x!=thousand).join('');
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
     // But while both the constituents are optional, one of them has to exist, hence the positive lookahead.
@@ -75,15 +75,15 @@ function dravidianToLatinNumbers(sourceNumber, data) {
 function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
-    const numbers = Array.from(data.numbers.values()).filter(x => isNaN(parseInt(x, 10))).join(disjunctor);
+    const numbers = Array.from(data.numbers.values()).join('');
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(regex(numbers), function(match) {
+        sourceText = sourceText.replace(regex(`[${numbers}]`), function(match) {
             return data.charMap[match];
         });
     } else {
-        sourceText = sourceText.replace(regex(`(${numbers})+`), function(match) {
-            return dravidianToLatinNumbers(match, data);
+        sourceText = sourceText.replace(regex(`[${numbers}]+`), function(match) {
+            return southDravidianToIndicNumbers(match, data);
         });
     }
 
