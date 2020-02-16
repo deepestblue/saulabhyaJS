@@ -127,47 +127,53 @@ function indicToSouthDravidianNumbers(sourceNumber, data) {
         throw new Error("No support for negative numbers.");
     }
 
+    // Zero is special, and is in fact not allowed in the traditional system. But modern usage demands it.
     if (sourceNumber == 0) {
         return data.numbers.get(sourceNumber);
     }
 
     let xlittedText = "";
 
+    // Let's process each group of 3 digits at a time.
     for (let mille = 0; sourceNumber > 0; ++mille) {
         let rem = sourceNumber % 1000;
         sourceNumber = (sourceNumber - rem) / 1000;
 
+        // Nothing in thir group.
         if (rem == 0) {
             continue;
         }
 
+        // We need mille‐many thousand‐symbols.
         xlittedText = data.numbers.get(1000).repeat(mille) + xlittedText;
 
         if (rem == 1 && mille > 0) {
-            // 1 is implicit, unless there are no thousand symbols.
+            // 1 is implicit, except for the least significant group.
             continue;
         }
 
+        // JSHint doesn't like functions that close on loop‐scoped variables,
+        // but this seems to be the cleanest way to implement the algorithm.
         /* jshint -W083 */
         [1, 10, 100].forEach(function(place) {
             const digit = rem % 10;
             rem = (rem - digit) / 10;
 
             if (digit == 0) {
-                // Nothing to do if zero digit.
+                // Zeroes are not explicitly written.
                 return;
             }
 
             /*
-            ╔════════════╦═════════════╦════════════════════════╗
-            ║            ║ Units place ║ Tens or Hundreds place ║
-            ╠════════════╬═════════════╬════════════════════════╣
-            ║ Digit = 1  ║ Digit       ║ Place                  ║
-            ╠════════════╬═════════════╬════════════════════════╣
-            ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
-            ╚════════════╩═════════════╩════════════════════════╝
+                Below is a table of what needs to be written out in each case.
+                ╔════════════╦═════════════╦════════════════════════╗
+                ║            ║ Units place ║ Tens or Hundreds place ║
+                ╠════════════╬═════════════╬════════════════════════╣
+                ║ Digit = 1  ║ Digit       ║ Place                  ║
+                ╠════════════╬═════════════╬════════════════════════╣
+                ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
+                ╚════════════╩═════════════╩════════════════════════╝
             */
-
             if (place != 1) {
                 xlittedText = data.numbers.get(place) + xlittedText;
                 if (digit == 1) {
