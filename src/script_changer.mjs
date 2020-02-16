@@ -13,18 +13,21 @@ const disjunctor = '|';
 
 const regex = s => new RegExp(s, 'g');
 
+// Regex pattern that matches any of the elements of the passed‐in array.
+const anyOf = arr => `[${arr.join('')}]`;
+
 function southDravidianToIndicNumbers(sourceNumber, data) {
     const thousand = data.numbers.get(1000);
     const hundred = data.numbers.get(100);
     const ten = data.numbers.get(10);
-    const digits = Array.from(data.numbers.values()).filter(x => data.charMap[x] < 10).join('');
+    const digits = Array.from(data.numbers.values()).filter(x => data.charMap[x] < 10);
 
     // Let's divide up the number into groups of thousands.
-    const otherNumbers = Array.from(data.numbers.values()).filter(x => x!=thousand).join('');
+    const otherNumbers = Array.from(data.numbers.values()).filter(x => x!=thousand);
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
-    const groupRegex = regex(`(?=.)[${otherNumbers}]*${thousand}*`);
+    const groupRegex = regex(`(?=.)${anyOf(otherNumbers)}*${thousand}*`);
 
     return sourceNumber.match(groupRegex).reduce((ator, group) => {
         // Process each group.
@@ -34,8 +37,9 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
             group = group.slice(0, -thousands);
         }
 
+        const anyDigit = anyOf(digits);
         const subThousandNumberRegex =
-            regex(`(?:([${digits}]?)(${hundred}))?(?:([${digits}])?(${ten}))?([${digits}]?)`);
+            regex(`(?:(${anyDigit}?)(${hundred}))?(?:(${anyDigit})?(${ten}))?(${anyDigit}?)`);
         const components = subThousandNumberRegex.exec(group);
 
         return ator + 1000 ** thousands *
@@ -56,15 +60,15 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
 function brahmiyaToLatn(otherScript, sourceText) {
     const data = scriptDataMap.get(otherScript);
 
-    const numbers = Array.from(data.numbers.values()).join('');
+    const numbers = Array.from(data.numbers.values());
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(
-            regex(`[${numbers}]`),
+            regex(anyOf(numbers)),
             match => data.charMap[match]);
     } else {
         sourceText = sourceText.replace(
-            regex(`[${numbers}]+`),
+            regex(`${anyOf(numbers)}+`),
             match => southDravidianToIndicNumbers(match, data));
     }
 
@@ -209,21 +213,21 @@ function latnToBrahmiya(otherScript, sourceText) {
         }
     })();
 
-    const numbers = Array.from(Array(10).keys()).join('');
+    const digits = Array.from(Array(10).keys());
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(
-            regex(`[${numbers}]`),
+            regex(anyOf(digits)),
             match => data.numbers.get(parseInt(match, 10)));
     } else {
         sourceText = sourceText.replace(
-            regex(`[${numbers}]+`),
+            regex(`${anyOf(digits)}+`),
             match => indicToSouthDravidianNumbers(parseInt(match, 10), data));
     }
 
-    const misc = Array.from(data.misc.keys()).join('');
+    const misc = Array.from(data.misc.keys());
     sourceText = sourceText.replace(
-        regex(`[${misc}]`),
+        regex(anyOf(misc)),
         match => data.misc.get(match));
 
     // Handle modifiers separately first to get them out of the way.
@@ -233,16 +237,15 @@ function latnToBrahmiya(otherScript, sourceText) {
         match => data.modifiers.get(match));
 
     // Handle separated consonants like 'b:h'
-    const plosives = plosiveConsonants.join('');
     sourceText = sourceText.replace(
-        regex(`([${plosives}])${separator}`),
+        regex(`(${anyOf(plosiveConsonants)})${separator}`),
         (match, p1) => data.consonants.get(p1) + data.vowelMarks.get(suppressedVowel));
 
     // Handle separated vowels like 'a:i'
     const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
-        regex(`${diphthongAntecedent}${separator}([${diphthongConsequents.join('')}])`),
+        regex(`${diphthongAntecedent}${separator}(${anyOf(diphthongConsequents)})`),
         (match, p1) => implicitVowel + data.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
