@@ -143,7 +143,7 @@ function indicToSouthDravidianNumbers(sourceNumber, data) {
         let rem = sourceNumber % 1000;
         sourceNumber = (sourceNumber - rem) / 1000;
 
-        // Nothing in thir group.
+        // Nothing in this group.
         if (rem == 0) {
             continue;
         }
