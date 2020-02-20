@@ -1,4 +1,4 @@
-const scriptDataMap = {
+const scriptsData = {
     taml: {
         vowels: new Map([
             ['a','அ'], ['ā','ஆ'],
@@ -237,4 +237,4 @@ const scriptDataMap = {
     },
 };
 
-export { scriptDataMap };
+export { scriptsData };
