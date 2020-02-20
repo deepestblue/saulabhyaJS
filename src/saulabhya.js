@@ -94,7 +94,7 @@ function brahmicToLatin(otherScript, sourceText) {
 
     let transliteratedText = "";
     [...sourceText].forEach(c => {
-        let shouldEmitImplicitVowel = isConsonant &&
+        const shouldEmitImplicitVowel = isConsonant &&
             ! vowelMarks.includes(c);
         if (shouldEmitImplicitVowel) {
             transliteratedText += implicitVowel;
