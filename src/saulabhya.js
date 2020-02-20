@@ -1,4 +1,4 @@
-import { scriptsData } from "./script_data.mjs";
+import { scriptsData } from "./data.js";
 
 ["taml", "gran", "knda", "mlym", "telu", "deva",].forEach(script => {
     const scriptData = scriptsData[script];

@@ -1,6 +1,6 @@
 /* global QUnit:false */
 
-import { brahmicToLatin, latinToBrahmic } from "http://localhost:8000/src/script_changer.mjs";
+import { brahmicToLatin, latinToBrahmic } from "http://localhost:8000/src/saulabhya.js";
 
 QUnit.config.maxDepth = -1;
 QUnit.config.noglobals = true;
