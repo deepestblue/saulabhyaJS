@@ -1,5 +1,15 @@
 import { scriptDataMap } from "./script_data.mjs";
 
+["taml", "gran", "knda", "mlym", "telu", "deva",].forEach(scriptName => {
+    const script = scriptDataMap[scriptName];
+    const revArray = Array.from(
+        [...script.vowels, ...script.vowelMarks, ...script.consonants, ...script.numbers, ...script.modifiers, ...script.misc,],
+        a => a.reverse());
+    script.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1]}), {});
+    script.brahmicToLatin['.'] = '.';
+    script.brahmicToLatin['?'] = '?';
+});
+
 const implicitVowel = 'a';
 const plosiveConsonants = ['k', 'g', 'c', 'j', 'ṭ', 'ḍ', 'ṯ', 'ḏ', 't', 'd', 'p', 'b',];
 const suppressedVowel = '';
@@ -23,7 +33,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
     const thousand = data.numbers.get(1000);
     const hundred = data.numbers.get(100);
     const ten = data.numbers.get(10);
-    const digits = Array.from(data.numbers.values()).filter(x => data.charMap[x] < 10);
+    const digits = Array.from(data.numbers.values()).filter(x => data.brahmicToLatin[x] < 10);
 
     // Let's divide up the number into groups of thousands.
     const otherNumbers = Array.from(data.numbers.values()).filter(x => x!=thousand);
@@ -47,14 +57,14 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
 
         return ator + 1000 ** thousands *
             (components[0] ?
-                (components[5] ? data.charMap[components[5]] : 0) + // Add in any units.
+                (components[5] ? data.brahmicToLatin[components[5]] : 0) + // Add in any units.
                 (components[4] ? // If there is a tens symbol, …
                     // … add in the tens, treating a missing digit prefix as 1.
-                    10 * (components[3] ? data.charMap[components[3]] : 1)
+                    10 * (components[3] ? data.brahmicToLatin[components[3]] : 1)
                     : 0) +
                 (components[2] ? // If there is a hundreds symbol, …
                     // … add in the hundreds, treating a missing digit prefix as 1.
-                    100 * (components[1] ? data.charMap[components[1]] : 1)
+                    100 * (components[1] ? data.brahmicToLatin[components[1]] : 1)
                     : 0)
                 : 1); // Nothing in front of the thousand symbols is just the value of the power.
     }, 0);
@@ -67,7 +77,7 @@ function brahmicToLatin(otherScript, sourceText) {
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
         sourceText = sourceText.replace(
             regex(anyOfIterable(data.numbers.values())),
-            match => data.charMap[match]);
+            match => data.brahmicToLatin[match]);
     } else {
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(data.numbers.values())}+`),
@@ -89,19 +99,19 @@ function brahmicToLatin(otherScript, sourceText) {
         if (shouldEmitImplicitVowel) {
             transliteratedText += implicitVowel;
         }
-        if (isHalfPlosive && data.charMap[c] == aspirateConsonant) {
+        if (isHalfPlosive && data.brahmicToLatin[c] == aspirateConsonant) {
             transliteratedText += separator;
         }
 
         if (isVowelImplicitVowel || shouldEmitImplicitVowel) {
-            if (diphthongConsequents.indexOf(data.charMap[c]) >= 0) {
+            if (diphthongConsequents.indexOf(data.brahmicToLatin[c]) >= 0) {
                 transliteratedText += separator;
             }
         }
 
-        isHalfPlosive = isPlosive && data.charMap[c] == suppressedVowel;
-        isPlosive = plosiveConsonants.includes(data.charMap[c]);
-        isVowelImplicitVowel = data.charMap[c] == implicitVowel;
+        isHalfPlosive = isPlosive && data.brahmicToLatin[c] == suppressedVowel;
+        isPlosive = plosiveConsonants.includes(data.brahmicToLatin[c]);
+        isVowelImplicitVowel = data.brahmicToLatin[c] == implicitVowel;
         isConsonant = consonants.includes(c);
 
         if (/\s/u.test(c)) {
@@ -115,11 +125,11 @@ function brahmicToLatin(otherScript, sourceText) {
             return;
         }
 
-        if (! (c in data.charMap)) {
+        if (! (c in data.brahmicToLatin)) {
             throw new RangeError(`Unknown ${otherScript} character ${c}.`);
         }
 
-        transliteratedText += data.charMap[c];
+        transliteratedText += data.brahmicToLatin[c];
     });
 
     if (isConsonant) {
