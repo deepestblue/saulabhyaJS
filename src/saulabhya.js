@@ -17,7 +17,7 @@ const scriptsData = {
         ]),
         misc: new Map([
             ['Ω','ௐ',], ['₨','௹'], ['〃','௸',], ['#','𑿩',],
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
         ]),
         modifiers: new Map([['ḵ','ஃ'],]),
         consonants: new Map([
@@ -59,7 +59,8 @@ const scriptsData = {
         ]),
         misc: new Map([
             ['Ω','𑍐',],
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'], ['।','।'], ['॥','॥'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
+            ['।','।'], ['॥','॥'],
         ]),
         modifiers: new Map([
             ['m̐','𑌁'], ['ṁ','𑌂'], ['ḥ','𑌃'],
@@ -96,7 +97,7 @@ const scriptsData = {
             ['','್'],
         ]),
         misc: new Map([
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
         ]),
         modifiers: new Map([
             ['ḵ','ಃ'],
@@ -134,7 +135,7 @@ const scriptsData = {
             ['','്'],
         ]),
         misc: new Map([
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
         ]),
         modifiers: new Map([
             ['ḵ','ഃ'],
@@ -173,7 +174,7 @@ const scriptsData = {
             ['','్'],
         ]),
         misc: new Map([
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
         ]),
         modifiers: new Map([
             ['ḵ','ః'],
@@ -216,7 +217,8 @@ const scriptsData = {
         ]),
         misc: new Map([
             ['Ω','ॐ',], ['₨','₹'],
-            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['↩','↩'], ['।','।'], ['॥','॥'],
+            [',',',',], ['“','“'], ['”','”'], ['!','!'], ['?','?',], ['↩','↩'],
+            ['।','।'], ['॥','॥'],
         ]),
         modifiers: new Map([
             ['m̐','ँ'], ['ṁ','ं'], ['ḥ','ः'],
@@ -244,7 +246,6 @@ Object.keys(scriptsData).forEach(script => {
         a => a.reverse());
     scriptData.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1]}), {});
     scriptData.brahmicToLatin['.'] = '.';
-    scriptData.brahmicToLatin['?'] = '?';
 });
 
 const implicitVowel = 'a';
@@ -446,7 +447,7 @@ function latinToBrahmic(otherScript, sourceText) {
     // Validate no foreign characters
     (() => {
         // Need to handle these specially, as they do bad stuff in regexes.
-        const splCharacters = "\\.?\\s";
+        const splCharacters = "\\.\\s";
         const scriptCharacters = [
             ...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(),
             ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(),
