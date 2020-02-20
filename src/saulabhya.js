@@ -237,7 +237,7 @@ const scriptsData = {
     },
 };
 
-["taml", "gran", "knda", "mlym", "telu", "deva",].forEach(script => {
+Object.keys(scriptsData).forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.misc,],
