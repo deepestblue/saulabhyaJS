@@ -61,7 +61,7 @@ function southDravidianToIndicNumbers(sourceNumber, data) {
 }
 
 function brahmicToLatin(otherScript, sourceText) {
-    const data = scriptDataMap.get(otherScript);
+    const data = scriptDataMap[otherScript];
 
     // mlym, taml and gran don't use a strict place‐value system
     if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
@@ -194,7 +194,7 @@ function indicToSouthDravidianNumbers(sourceNumber, data) {
 }
 
 function latinToBrahmic(otherScript, sourceText) {
-    const data = scriptDataMap.get(otherScript);
+    const data = scriptDataMap[otherScript];
 
     // Validate no foreign characters
     (() => {
