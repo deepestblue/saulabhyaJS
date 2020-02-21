@@ -124,7 +124,7 @@ QUnit.module("deva unit tests", () => {
         [...Array(data.deva.length).keys()].forEach(i => {
             QUnit.test(data.deva[i], t => {
                 t.deepEqual(
-                    brahmicToLatin("deva", data.deva[i], false),
+                    brahmicToLatin("deva", data.deva[i]),
                     data.latn[i]);
             });
         });
