@@ -365,7 +365,7 @@ function brahmicToLatin(otherScript, sourceText) {
         }
 
         if (! (c in scriptData.brahmicToLatin)) {
-            throw new RangeError(`Unknown ${otherScript} character ${c}.`);
+            throw new Error(`Unknown ${otherScript} character: ${c}.`);
         }
 
         transliteratedText += scriptData.brahmicToLatin[c];
@@ -458,7 +458,7 @@ function latinToBrahmic(otherScript, sourceText) {
         const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`);
         const result = sourceText.match(invalidRegex);
         if (result) {
-            throw new RangeError(`Unknown ${otherScript} character ${result[0]}.`);
+            throw new Error(`Unknown ${otherScript} character: ${result[0]}.`);
         }
     })();
 
@@ -522,6 +522,13 @@ function latinToBrahmic(otherScript, sourceText) {
 }
 
 function transliterate(srcScript, dstScript, sourceText) {
+    if (scriptNames.concat("latn").indexOf(srcScript) < 0) {
+        throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
+    }
+    if (scriptNames.concat("latn").indexOf(dstScript) < 0) {
+        throw new Error(`Unsupported or invalid destination script: ${dstScript}.`);
+    }
+
     if (srcScript == dstScript) {
         return sourceText;
     }

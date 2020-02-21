@@ -353,23 +353,40 @@ athānyabhāṣāṇāmadhikāraḥ svapradēṣvēvōta nēti । aiti
     });
 });
 
-QUnit.module("Invalid Tamil inputs", () => {
-    const invalidTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
+QUnit.module("Invalid inputs", () => {
+    const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Taml", t => {
         t.throws(
-            () => transliterate("taml", "latn", invalidTamlText),
+            () => transliterate("taml", "latn", invalidTaTamlText),
             function(err) {
-                return err instanceof RangeError &&
-                /^Unknown taml character .\./u.test(err.message);
+                return err instanceof Error &&
+                /^Unknown taml character: .\.$/u.test(err.message);
             });
     });
-    const invalidLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
+    const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Latn", t => {
         t.throws(
-            () => transliterate("latn", "taml", invalidLatnText),
+            () => transliterate("latn", "taml", invalidTaLatnText),
             function(err) {
-                return err instanceof RangeError &&
-                /^Unknown taml character .\./u.test(err.message);
+                return err instanceof Error &&
+                /^Unknown taml character: .\.$/u.test(err.message);
+            });
+    });
+    const unsupportedScriptName = "sinh";
+    QUnit.test("Unsupported source script", t => {
+        t.throws(
+            () => transliterate(unsupportedScriptName, "latn", ""),
+            function(err) {
+                return err instanceof Error &&
+                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}\.$`).test(err.message);
+            });
+    });
+    QUnit.test("Unsupported destination script", t => {
+        t.throws(
+            () => transliterate("latn", unsupportedScriptName, ""),
+            function(err) {
+                return err instanceof Error &&
+                new RegExp(`^Unsupported or invalid destination script: ${unsupportedScriptName}\.$`).test(err.message);
             });
     });
 });
