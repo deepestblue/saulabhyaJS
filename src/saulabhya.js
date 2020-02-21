@@ -237,6 +237,7 @@ const scriptsData = {
     },
 };
 
+// Create a brahmicToLatin reverse‐map Javascript object from the other maps.
 Object.keys(scriptsData).forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
