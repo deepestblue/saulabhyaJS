@@ -343,7 +343,7 @@ function brahmicToLatin(otherScript, sourceText) {
         }
 
         if (isVowelImplicitVowel || shouldEmitImplicitVowel) {
-            if (diphthongConsequents.indexOf(scriptData.brahmicToLatin[c]) >= 0) {
+            if (diphthongConsequents.includes(scriptData.brahmicToLatin[c])) {
                 transliteratedText += separator;
             }
         }
@@ -521,10 +521,10 @@ function latinToBrahmic(otherScript, sourceText) {
 }
 
 function transliterate(srcScript, dstScript, sourceText) {
-    if (scriptNames.concat("latn").indexOf(srcScript) < 0) {
+    if (! scriptNames.concat("latn").includes(srcScript)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
     }
-    if (scriptNames.concat("latn").indexOf(dstScript) < 0) {
+    if (! scriptNames.concat("latn").includes(dstScript)) {
         throw new Error(`Unsupported or invalid destination script: ${dstScript}.`);
     }
 
