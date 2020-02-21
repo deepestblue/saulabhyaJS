@@ -13,9 +13,12 @@ SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text 
 
 Saulabhya is available as an ES6 module for browsers[^Node_support]. The easiest way to get Saulabhya is through jsdeliver. Simply
 
-    import { brahmicToLatin, latinToBrahmic } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@0.2.0/src/saulabhya.min.js";
+    import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@0.2.0/src/saulabhya.min.js";
+    const sourceText = "சௌலப்பியம் எனும் இது ஓர் எழுத்து பெயர்ப்புக் கருவி."; // Valid ta text in taml script
+    const transliteratedLatinText = transliterate("taml", "latn", sourceText); // The above source text in Latin script (ISO-15919 transliteration format)
+    const transliteratedTeluguText = transliterate("taml", "telu", sourceText); // The above source text in Telugu script (ISO-15919 transliteration format)
 
-Both `brahmicToLatin` and `latinToBrahmic` take the name of the script and the text as parameters.
+### Supported languages and scripts:
 
 ## History
 
