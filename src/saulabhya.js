@@ -238,6 +238,7 @@ const scriptsData = {
 };
 
 const scriptNames = Object.keys(scriptsData);
+const thousandBasedNumberScripts = ["taml", "gran", "mlym",]; // mlym, taml and gran don't use a strict place‐value system.
 
 // Create a brahmicToLatin reverse‐map Javascript object from the other maps.
 scriptNames.forEach(script => {
@@ -312,15 +313,14 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData) {
 function brahmicToLatin(otherScript, sourceText) {
     const scriptData = scriptsData[otherScript];
 
-    // mlym, taml and gran don't use a strict place‐value system
-    if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(
-            regex(anyOfIterable(scriptData.numbers.values())),
-            match => scriptData.brahmicToLatin[match]);
-    } else {
+    if (thousandBasedNumberScripts.includes(otherScript)) {
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(scriptData.numbers.values())}+`),
             match => southDravidianToIndicNumbers(match, scriptData));
+    } else {
+        sourceText = sourceText.replace(
+            regex(anyOfIterable(scriptData.numbers.values())),
+            match => scriptData.brahmicToLatin[match]);
     }
 
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
@@ -462,15 +462,14 @@ function latinToBrahmic(otherScript, sourceText) {
         }
     })();
 
-    // mlym, taml and gran don't use a strict place‐value system
-    if (otherScript != "taml" && otherScript != "mlym" && otherScript != "gran") {
-        sourceText = sourceText.replace(
-            regex(anyOfIterable(Array(10).keys())),
-            match => scriptData.numbers.get(parseInt(match, 10)));
-    } else {
+    if (thousandBasedNumberScripts.includes(otherScript)) {
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(Array(10).keys())}+`),
             match => indicToSouthDravidianNumbers(parseInt(match, 10), scriptData));
+    } else {
+        sourceText = sourceText.replace(
+            regex(anyOfIterable(Array(10).keys())),
+            match => scriptData.numbers.get(parseInt(match, 10)));
     }
 
     sourceText = sourceText.replace(
