@@ -255,6 +255,7 @@ const diphthongAntecedent = 'a';
 const diphthongConsequents = ['i', 'u',];
 
 const disjunctor = '|';
+const whitespace = '\\s';
 
 const regex = s => new RegExp(s, 'g');
 
@@ -349,7 +350,7 @@ function brahmicToLatin(otherScript, sourceText) {
         isVowelImplicitVowel = scriptData.brahmicToLatin[c] == implicitVowel;
         isConsonant = consonants.includes(c);
 
-        if (/\s/u.test(c)) {
+        if (new RegExp(whitespace).test(c)) {
             transliteratedText += c;
             return;
         }
@@ -443,7 +444,6 @@ function latinToBrahmic(otherScript, sourceText) {
 
     // Validate no foreign characters
     (() => {
-        const whitespace = "\\s";
         const scriptCharacters = [
             ...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(),
             ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(),
