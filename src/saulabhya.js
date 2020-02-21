@@ -237,8 +237,10 @@ const scriptsData = {
     },
 };
 
+const scriptNames = Object.keys(scriptsData);
+
 // Create a brahmicToLatin reverse‐map Javascript object from the other maps.
-Object.keys(scriptsData).forEach(script => {
+scriptNames.forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.misc,],
@@ -519,4 +521,22 @@ function latinToBrahmic(otherScript, sourceText) {
     return sourceText;
 }
 
-export { brahmicToLatin, latinToBrahmic };
+function transliterate(srcScript, dstScript, sourceText) {
+    if (srcScript == dstScript) {
+        return sourceText;
+    }
+
+    if (dstScript == "latn") {
+        return brahmicToLatin(srcScript, sourceText);
+    }
+
+    if (srcScript == "latn") {
+        return latinToBrahmic(dstScript, sourceText);
+    }
+
+    // Transliterate from one Brahmic script to another through Latin.
+    return latinToBrahmic(dstScript,
+        brahmicToLatin(srcScript, sourceText));
+}
+
+export { transliterate };
