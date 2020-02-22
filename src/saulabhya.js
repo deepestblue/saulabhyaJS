@@ -312,17 +312,6 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData) {
 
 function brahmicToLatin(otherScript, sourceText) {
     const scriptData = scriptsData[otherScript];
-
-    if (thousandBasedNumberScripts.includes(otherScript)) {
-        sourceText = sourceText.replace(
-            regex(`${anyOfIterable(scriptData.numbers.values())}+`),
-            match => southDravidianToIndicNumbers(match, scriptData));
-    } else {
-        sourceText = sourceText.replace(
-            regex(anyOfIterable(scriptData.numbers.values())),
-            match => scriptData.brahmicToLatin[match]);
-    }
-
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
     const consonants = Array.from(scriptData.consonants.values());
 
@@ -330,6 +319,8 @@ function brahmicToLatin(otherScript, sourceText) {
     let isVowelImplicitVowel = false;
     let isPlosive = false;
     let isHalfPlosive = false;
+
+    let number = "";
 
     let transliteratedText = "";
     [...sourceText].forEach(c => {
@@ -353,13 +344,18 @@ function brahmicToLatin(otherScript, sourceText) {
         isVowelImplicitVowel = scriptData.brahmicToLatin[c] == implicitVowel;
         isConsonant = consonants.includes(c);
 
-        if (new RegExp(whitespace).test(c)) {
-            transliteratedText += c;
-            return;
+        if (thousandBasedNumberScripts.includes(otherScript)) {
+            if (Array.from(scriptData.numbers.values()).includes(c)) {
+                number += c;
+                return;
+            }
+            if (number) {
+                transliteratedText += southDravidianToIndicNumbers(number, scriptData);
+                number = "";
+            }
         }
 
-        // We've already taken care of numbers first.
-        if (scriptData.numbers.get(parseInt(c, 10))) {
+        if (new RegExp(whitespace).test(c)) {
             transliteratedText += c;
             return;
         }
@@ -373,6 +369,11 @@ function brahmicToLatin(otherScript, sourceText) {
 
     if (isConsonant) {
         transliteratedText += implicitVowel;
+    }
+
+    if (number) {
+        transliteratedText += southDravidianToIndicNumbers(number, scriptData);
+        number = "";
     }
 
     return transliteratedText;

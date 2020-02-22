@@ -18,6 +18,8 @@ QUnit.module("taml unit tests", () => {
             "ஙஞ்டோ",
             "அஊ",
             "இஓஐஅஓனிறீனௌளஈஅ",
+            "க௧",
+            "௨ங",
         ],
         latn : [
             "a ā i ī u ū e ē ai o ō au ḵ",
@@ -30,6 +32,8 @@ QUnit.module("taml unit tests", () => {
             "ṅañṭō",
             "aū",
             "iōaiaōṉiṯīṉauḷaīa",
+            "ka1",
+            "2ṅa",
         ],
     };
     QUnit.module("To Latin", () => {
