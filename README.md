@@ -6,7 +6,7 @@ SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text 
 
 ## Usage
 
-Saulabhya is available as an ES6 module for browsers (Node support is forthcoming). The easiest way to get Saulabhya is through jsdeliver. Simply
+Saulabhya is available as an ES2015 module for browsers (Node support is forthcoming). The easiest way to get Saulabhya is through jsdeliver. Simply
 
     import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/src/saulabhya.min.js";
 
