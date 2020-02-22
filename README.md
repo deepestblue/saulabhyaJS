@@ -1,6 +1,6 @@
 # SaulabhyaJS
 
-[![License: AGPL-3.0](https://img.shields.io/github/license/deepestblue/SaulabhyaJS?label=LICENCE&style=for-the-badge)](https://www.gnu.org/licenses/agpl-3.0.en.html)
+[![License: AGPL‐3.0](https://img.shields.io/github/license/deepestblue/SaulabhyaJS?label=LICENCE&style=for-the-badge)](https://www.gnu.org/licenses/agpl-3.0.en.html)
 
 SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text to and from Brahmic scripts and the ISO‐15919 Latin transliteration scheme.
 
@@ -14,13 +14,31 @@ SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text 
 Saulabhya is available as an ES6 module for browsers (Node support is forthcoming). The easiest way to get Saulabhya is through jsdeliver. Simply
 
     import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/src/saulabhya.min.js";
+
+and use it like:
+
     const sourceText = "சௌலப்பியம் எனும் இது ஓர் எழுத்து பெயர்ப்புக் கருவி."; // Valid ta text in taml script
-    const transliteratedLatinText = transliterate("taml", "latn", sourceText); // The above source text in Latin script (ISO-15919 transliteration format)
-    const transliteratedTeluguText = transliterate("taml", "telu", sourceText); // The above source text in Telugu script (ISO-15919 transliteration format)
+    const transliteratedLatinText = transliterate("taml", "latn", sourceText); // The above source text in Latin script (ISO‐15919 transliteration format)
+    const transliteratedTeluguText = transliterate("taml", "telu", sourceText); // The above source text in Telugu script
 
-### Supported languages and scripts
+As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 names](https://en.wikipedia.org/wiki/ISO_15924). Supported language/script combinations are as follows:
 
-TODO
+| Language |      Script     | ISO‐15924 name |
+|:--------:|:---------------:|:--------------:|
+|   Tamil  |      Tamil      |      taml      |
+|   Tamil  |    Malayalam    |      mlym      |
+|   Tamil  |     Kannada     |      knda      |
+|   Tamil  |      Telugu     |      telu      |
+|   Tamil  | ISO‐15919 Latin |      latn      |
+| Sanskrit |     Grantha     |      gran      |
+| Sanskrit |    Devanagari   |      deva      |
+| Sanskrit | ISO‐15919 Latin |      latn      |
+
+## Contributing
+
+* Add test coverage to `saulabhya.test.js`.
+* Launch `test/test.html` in a browser to ensure all tests pass.
+* Also run `jshint .`
 
 ## History
 
@@ -32,4 +50,4 @@ So I decided to port my old code to JavaScript. Originally included as part of m
 
 ## Licence
 
-[AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) © Ambarish Sridharanarayanan
+[AGPL‐3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) © Ambarish Sridharanarayanan
