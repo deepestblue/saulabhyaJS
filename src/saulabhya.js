@@ -521,28 +521,28 @@ function latinToBrahmic(otherScript, sourceText) {
     return sourceText;
 }
 
-function transliterate(srcScript, dstScript, sourceText) {
+function transliterate(srcScript, tgtScript, sourceText) {
     if (! scriptNames.concat("latn").includes(srcScript)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
     }
-    if (! scriptNames.concat("latn").includes(dstScript)) {
-        throw new Error(`Unsupported or invalid destination script: ${dstScript}.`);
+    if (! scriptNames.concat("latn").includes(tgtScript)) {
+        throw new Error(`Unsupported or invalid target script: ${tgtScript}.`);
     }
 
-    if (srcScript == dstScript) {
+    if (srcScript == tgtScript) {
         return sourceText;
     }
 
-    if (dstScript == "latn") {
+    if (tgtScript == "latn") {
         return brahmicToLatin(srcScript, sourceText);
     }
 
     if (srcScript == "latn") {
-        return latinToBrahmic(dstScript, sourceText);
+        return latinToBrahmic(tgtScript, sourceText);
     }
 
     // Transliterate from one Brahmic script to another through Latin.
-    return latinToBrahmic(dstScript,
+    return latinToBrahmic(tgtScript,
         brahmicToLatin(srcScript, sourceText));
 }
 

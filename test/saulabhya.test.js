@@ -385,12 +385,12 @@ QUnit.module("Invalid inputs", () => {
                 new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}\.$`).test(err.message);
             });
     });
-    QUnit.test("Unsupported destination script", t => {
+    QUnit.test("Unsupported target script", t => {
         t.throws(
             () => transliterate("latn", unsupportedScriptName, ""),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid destination script: ${unsupportedScriptName}\.$`).test(err.message);
+                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}\.$`).test(err.message);
             });
     });
 });
