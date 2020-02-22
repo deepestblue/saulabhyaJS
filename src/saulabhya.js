@@ -263,7 +263,7 @@ const diphthongConsequents = ['i', 'u',];
 const disjunctor = '|';
 const whitespace = '\\s';
 
-const regex = s => new RegExp(s, 'g');
+const regex = s => new RegExp(s, 'g',);
 
 // Regex pattern that matches any of the elements of the passed‐in array.
 const anyOfArray = arr => `[${arr.join('')}]`;
@@ -271,7 +271,7 @@ const anyOfArray = arr => `[${arr.join('')}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it));
 
-function southDravidianToIndicNumbers(sourceNumber, scriptData) {
+function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
     const thousand = scriptData.numbers.get(1000);
     const hundred = scriptData.numbers.get(100);
     const ten = scriptData.numbers.get(10);
@@ -284,12 +284,12 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData) {
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
     const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers)}*${thousand}*`);
 
-    return sourceNumber.match(groupRegex).reduce((ator, group) => {
+    return sourceNumber.match(groupRegex).reduce((ator, group,) => {
         // Process each group.
         const thousands = group.match(regex(`${thousand}*$`))[0].length;
         if (thousands > 0) {
             // Strip off the thousand symbols, unless there are none.
-            group = group.slice(0, -thousands);
+            group = group.slice(0, -thousands,);
         }
 
         const anyDigit = anyOfArray(digits);
@@ -312,7 +312,7 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData) {
     }, 0);
 }
 
-function brahmicToLatin(otherScript, sourceText) {
+function brahmicToLatin(otherScript, sourceText,) {
     const scriptData = scriptsData[otherScript];
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
     const consonants = Array.from(scriptData.consonants.values());
@@ -353,7 +353,7 @@ function brahmicToLatin(otherScript, sourceText) {
                 return;
             }
             if (number) {
-                transliteratedText += southDravidianToIndicNumbers(number, scriptData);
+                transliteratedText += southDravidianToIndicNumbers(number, scriptData,);
                 number = "";
             }
         }
@@ -375,14 +375,14 @@ function brahmicToLatin(otherScript, sourceText) {
     }
 
     if (number) {
-        transliteratedText += southDravidianToIndicNumbers(number, scriptData);
+        transliteratedText += southDravidianToIndicNumbers(number, scriptData,);
         number = "";
     }
 
     return transliteratedText;
 }
 
-function indicToSouthDravidianNumbers(sourceNumber, scriptData) {
+function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
     // Zero is special, and is in fact not allowed in the traditional system.
     // But modern usage demands it.
     if (sourceNumber == 0) {
@@ -446,7 +446,7 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData) {
     return xlittedText;
 }
 
-function latinToBrahmic(otherScript, sourceText) {
+function latinToBrahmic(otherScript, sourceText,) {
     const scriptData = scriptsData[otherScript];
 
     // Validate no foreign characters
@@ -469,34 +469,34 @@ function latinToBrahmic(otherScript, sourceText) {
     if (thousandBasedNumberScripts.includes(otherScript)) {
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(Array(10).keys())}+`),
-            match => indicToSouthDravidianNumbers(parseInt(match, 10), scriptData));
+            match => indicToSouthDravidianNumbers(parseInt(match, 10,), scriptData,),);
     } else {
         sourceText = sourceText.replace(
             regex(anyOfIterable(Array(10).keys())),
-            match => scriptData.numbers.get(parseInt(match, 10)));
+            match => scriptData.numbers.get(parseInt(match, 10,)),);
     }
 
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.misc.keys())),
-        match => scriptData.misc.get(match));
+        match => scriptData.misc.get(match),);
 
     // Handle modifiers separately first to get them out of the way.
     const modifiers = Array.from(scriptData.modifiers.keys()).join(disjunctor);
     sourceText = sourceText.replace(
         regex(modifiers),
-        match => scriptData.modifiers.get(match));
+        match => scriptData.modifiers.get(match),);
 
     // Handle separated consonants like 'b:h'
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants)})${separator}`),
-        (match, p1) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(suppressedVowel));
+        (_unused, p1,) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(suppressedVowel),);
 
     // Handle separated vowels like 'a:i'
     const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
         regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents)})`),
-        (match, p1) => implicitVowel + scriptData.vowels.get(p1));
+        (_unused, p1,) => implicitVowel + scriptData.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise "aū" will be xlitted as a diphthong followed by a macron.
@@ -506,25 +506,25 @@ function latinToBrahmic(otherScript, sourceText) {
     const consonants = Array.from(scriptData.consonants.keys()).sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels1})`),
-        (match, p1, p2) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(p2));
-    sourceText = sourceText.replace(regex(vowels1), match => scriptData.vowels.get(match));
+        (_unused, p1, p2,) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(p2));
+    sourceText = sourceText.replace(regex(vowels1), match => scriptData.vowels.get(match),);
 
     // Diphthongs and their constituents are in phase 2.
     const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels2})`),
-        (match, p1, p2) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(p2));
-    sourceText = sourceText.replace(regex(vowels2), match => scriptData.vowels.get(match));
+        (_unused, p1, p2) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(p2),);
+    sourceText = sourceText.replace(regex(vowels2), match => scriptData.vowels.get(match),);
 
     // Remaining bare consonants.
     sourceText = sourceText.replace(
         regex(consonants),
-        match => scriptData.consonants.get(match) + scriptData.vowelMarks.get(suppressedVowel));
+        match => scriptData.consonants.get(match) + scriptData.vowelMarks.get(suppressedVowel),);
 
     return sourceText;
 }
 
-function transliterate(srcScript, tgtScript, sourceText) {
+function transliterate(srcScript, tgtScript, sourceText,) {
     if (! scriptNames.includes(srcScript)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
     }
@@ -537,16 +537,16 @@ function transliterate(srcScript, tgtScript, sourceText) {
     }
 
     if (tgtScript == "latn") {
-        return brahmicToLatin(srcScript, sourceText);
+        return brahmicToLatin(srcScript, sourceText,);
     }
 
     if (srcScript == "latn") {
-        return latinToBrahmic(tgtScript, sourceText);
+        return latinToBrahmic(tgtScript, sourceText,);
     }
 
     // Transliterate from one Brahmic script to another through Latin.
     return latinToBrahmic(tgtScript,
-        brahmicToLatin(srcScript, sourceText));
+        brahmicToLatin(srcScript, sourceText,),);
 }
 
 export { transliterate };

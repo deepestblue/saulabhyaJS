@@ -1,5 +1,5 @@
 {
-  "esversion" : 7,
+  "esversion" : 9,
   "bitwise" : true,
   "curly" : true,
   "forin" : true,
