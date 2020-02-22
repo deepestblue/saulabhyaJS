@@ -249,6 +249,8 @@ scriptNames.forEach(script => {
     scriptData.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1]}), {});
 });
 
+scriptNames.push("latn");
+
 const implicitVowel = 'a';
 const plosiveConsonants = ['k', 'g', 'c', 'j', 'ṭ', 'ḍ', 'ṯ', 'ḏ', 't', 'd', 'p', 'b',];
 const suppressedVowel = '';
@@ -523,10 +525,10 @@ function latinToBrahmic(otherScript, sourceText) {
 }
 
 function transliterate(srcScript, tgtScript, sourceText) {
-    if (! scriptNames.concat("latn").includes(srcScript)) {
+    if (! scriptNames.includes(srcScript)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
     }
-    if (! scriptNames.concat("latn").includes(tgtScript)) {
+    if (! scriptNames.includes(tgtScript)) {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`);
     }
 
