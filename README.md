@@ -4,11 +4,6 @@
 
 SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text to and from Brahmic scripts and the ISO‐15919 Latin transliteration scheme.
 
-## Features
-
-* Telugu, Tamil, Malayalam, Kannada and Latin (ISO‐15919) scripts for Tamil text.
-* Grantha, Devanagari and Latin (ISO‐15919) scripts for Sanskrit text.
-
 ## Usage
 
 Saulabhya is available as an ES6 module for browsers (Node support is forthcoming). The easiest way to get Saulabhya is through jsdeliver. Simply
@@ -21,7 +16,11 @@ and use it like:
     const transliteratedLatinText = transliterate("taml", "latn", sourceText); // The above source text in Latin script (ISO‐15919 transliteration format)
     const transliteratedTeluguText = transliterate("taml", "telu", sourceText); // The above source text in Telugu script
 
-As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 names](https://en.wikipedia.org/wiki/ISO_15924). Supported language/script combinations are as follows:
+As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 names](https://en.wikipedia.org/wiki/ISO_15924).
+
+## Features
+
+* Supports the following language/script combinations:
 
 | Language |      Script     | ISO‐15924 name |
 |:--------:|:---------------:|:--------------:|
@@ -34,6 +33,10 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 | Sanskrit |    Devanagari   |      deva      |
 | Sanskrit | ISO‐15919 Latin |      latn      |
 
+* Supports traditional Tamil/Malayalam numbers (not based on the place value system).
+* Supports some commonly used Western punctuation marks (comma, question mark, exclamation mark, double quotes and full stop) for Tamil text.
+* Supports some traditional symbols and signs for both Sanskrit and Tamil text. [If you find anything missing, please create an issue.]
+
 ## Contributing
 
 * Add test coverage to `saulabhya.test.js`.
@@ -42,7 +45,7 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 
 ## History
 
-SaulabhyaJS is a JavaScript‐port of [SaulabhyaPerl](https://github.com/deepestblue/SaulabhyaPerl). I originally wrote SaulabhyaPerl circa 2007 as part of an abortive attempt to view Carnatic music lyrics in the script of my choice.
+SaulabhyaJS is a modernised and enhanced JavaScript‐port of [SaulabhyaPerl](https://github.com/deepestblue/SaulabhyaPerl). I originally wrote SaulabhyaPerl circa 2007 as part of an abortive attempt to view music lyrics in the script of my choice.
 
 In 2010, when I started blogging on blogspot, I was able to use [translipi](https://github.com/srikanthsubra/translipi) and its blogspot widget on my blog. Sometime in 2018, it looks like Google quietly removed support for blogspot widgets (breaking my blog). My pull‐request for Grantha support in translipi also has been stale for years now, confirming that translipi is now dead.
 
