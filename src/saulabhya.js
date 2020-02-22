@@ -321,6 +321,7 @@ function brahmicToLatin(otherScript, sourceText) {
     let isHalfPlosive = false;
 
     let number = "";
+    let whitespaceRegex = new RegExp(whitespace);
 
     let transliteratedText = "";
     [...sourceText].forEach(c => {
@@ -355,7 +356,7 @@ function brahmicToLatin(otherScript, sourceText) {
             }
         }
 
-        if (new RegExp(whitespace).test(c)) {
+        if (new RegExp(whitespaceRegex).test(c)) {
             transliteratedText += c;
             return;
         }
