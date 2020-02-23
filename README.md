@@ -1,6 +1,6 @@
 # SaulabhyaJS
 
-![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/deepestblue/SaulabhyaJS?include_prereleases&sort=semver&style=for-the-badge) [![Licence: AGPL‐3.0](https://img.shields.io/github/license/deepestblue/SaulabhyaJS?label=LICENCE&style=for-the-badge)](https://www.gnu.org/licenses/agpl-3.0.en.html) [![GitHub issues](https://img.shields.io/github/issues/deepestblue/SaulabhyaJS?style=for-the-badge)](https://github.com/deepestblue/SaulabhyaJS/issues)
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/deepestblue/SaulabhyaJS?include_prereleases&sort=semver&style=for-the-badge)](https://github.com/deepestblue/SaulabhyaJS/releases) [![Licence: AGPL‐3.0](https://img.shields.io/github/license/deepestblue/SaulabhyaJS?label=LICENCE&style=for-the-badge)](https://www.gnu.org/licenses/agpl-3.0.en.html) [![GitHub issues](https://img.shields.io/github/issues/deepestblue/SaulabhyaJS?style=for-the-badge)](https://github.com/deepestblue/SaulabhyaJS/issues)
 
 SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text to and from Brahmic scripts and the ISO‐15919 Latin transliteration scheme.
 
