@@ -250,6 +250,14 @@ QUnit.module("Numbers", () => {
 });
 
 QUnit.module("Integration tests", () => {
+    QUnit.module("Trivial transliteration", () => {
+        QUnit.test("Transliterate from taml to taml", t => {
+            const trivialTestText = "தமிழிலிருந்து தமிழ் எளிது.";
+            t.deepEqual(
+                transliterate("taml", "taml", trivialTestText),
+                trivialTestText);
+        });
+    });
     QUnit.module("ta", () => {
         const textWithPunctuationAndSpacing = {
             taml : `
@@ -358,8 +366,8 @@ athānyabhāṣāṇāmadhikāraḥ svapradēṣvēvōta nēti । aiti
 });
 
 QUnit.module("Invalid inputs", () => {
-    const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Taml", t => {
+        const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
             () => transliterate("taml", "latn", invalidTaTamlText),
             function(err) {
@@ -367,8 +375,8 @@ QUnit.module("Invalid inputs", () => {
                 /^Unknown taml character: .\.$/u.test(err.message);
             });
     });
-    const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
     QUnit.test("Invalid Ta text in Latn", t => {
+        const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
             () => transliterate("latn", "taml", invalidTaLatnText),
             function(err) {
