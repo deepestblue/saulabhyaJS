@@ -251,7 +251,7 @@ scriptNames.forEach(script => {
 
 scriptNames.push("latn");
 
-const implicitVowel = 'a';
+const baseVowel = 'a';
 const plosiveConsonants = ['k', 'g', 'c', 'j', 'ṭ', 'ḍ', 'ṯ', 'ḏ', 't', 'd', 'p', 'b',];
 const suppressedVowel = '';
 const aspirateConsonant = 'h';
@@ -314,72 +314,91 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
 
 function brahmicToLatin(otherScript, sourceText,) {
     const scriptData = scriptsData[otherScript];
+
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
     const consonants = Array.from(scriptData.consonants.values());
 
-    let isConsonant = false;
-    let isVowelImplicitVowel = false;
-    let isPlosive = false;
-    let isHalfPlosive = false;
+    const whitespaceRegex = new RegExp(whitespace);
 
-    let number = "";
-    let whitespaceRegex = new RegExp(whitespace);
+    function processChar(state, c,) {
+        const d = scriptData.brahmicToLatin[c];
 
-    let transliteratedText = "";
-    [...sourceText].forEach(c => {
-        const shouldEmitImplicitVowel = isConsonant &&
-            ! vowelMarks.includes(c);
-        if (shouldEmitImplicitVowel) {
-            transliteratedText += implicitVowel;
-        }
-        if (isHalfPlosive && scriptData.brahmicToLatin[c] == aspirateConsonant) {
-            transliteratedText += separator;
-        }
-
-        if (isVowelImplicitVowel || shouldEmitImplicitVowel) {
-            if (diphthongConsequents.includes(scriptData.brahmicToLatin[c])) {
-                transliteratedText += separator;
+        // Vowel special treatments:
+        if (state.isConsonant && ! vowelMarks.includes(c)) {
+            // If we've seen a consonant and we don't have a vowel‐mark next, emit an implicit vowel.
+            state.transliteratedText += baseVowel;
+            if (diphthongConsequents.includes(d)) {
+                // And if we're seeing a different vowel that's the second‐half of a diphthong, emit a separator as well.
+                state.transliteratedText += separator;
             }
         }
 
-        isHalfPlosive = isPlosive && scriptData.brahmicToLatin[c] == suppressedVowel;
-        isPlosive = plosiveConsonants.includes(scriptData.brahmicToLatin[c]);
-        isVowelImplicitVowel = scriptData.brahmicToLatin[c] == implicitVowel;
-        isConsonant = consonants.includes(c);
+        if (state.isVowelBaseVowel && diphthongConsequents.includes(d)) {
+            // Similarly, if there was an explicit base‐vowel and we're seeing a diphthong consequent, emit a separator.
+            state.transliteratedText += separator;
+        }
 
+        state.isConsonant = consonants.includes(c);
+        state.isVowelBaseVowel = d == baseVowel;
+
+        // Consonant special treatments:
+        if (state.isHalfPlosive && d == aspirateConsonant) {
+            // If we've seen a half-plosive and then see the aspirate consonant, we again need a separator.
+            state.transliteratedText += separator;
+        }
+
+        state.isHalfPlosive = state.isPlosive && d == suppressedVowel;
+        state.isPlosive = plosiveConsonants.includes(d);
+
+        // If we're processing a non–place value script, …
         if (thousandBasedNumberScripts.includes(otherScript)) {
+            // … we need to accumulate number symbols …
             if (Array.from(scriptData.numbers.values()).includes(c)) {
-                number += c;
-                return;
+                state.number += c;
+                return state;
             }
-            if (number) {
-                transliteratedText += southDravidianToIndicNumbers(number, scriptData,);
-                number = "";
+            // … until we see a non–number symbol, at which we transliterate the entire number in one shot.
+            if (state.number) {
+                state.transliteratedText += southDravidianToIndicNumbers(state.number, scriptData,);
+                state.number = "";
             }
         }
 
+        // Whitespace we can just pass on as is.
         if (new RegExp(whitespaceRegex).test(c)) {
-            transliteratedText += c;
-            return;
+            state.transliteratedText += c;
+            return state;
         }
 
-        if (! (c in scriptData.brahmicToLatin)) {
+        // At this point, if the character doesn't exist in the map, it's invalid in the target script.
+        if (d == undefined) {
             throw new Error(`Unknown ${otherScript} character: ${c}.`);
         }
 
-        transliteratedText += scriptData.brahmicToLatin[c];
-    });
+        // This is the straightforward case.
+        state.transliteratedText += d;
 
-    if (isConsonant) {
-        transliteratedText += implicitVowel;
+        return state;
     }
 
-    if (number) {
-        transliteratedText += southDravidianToIndicNumbers(number, scriptData,);
-        number = "";
+    let state = [...sourceText].reduce(processChar, {
+        isConsonant: false,
+        isVowelBaseVowel: false,
+        isPlosive: false,
+        isHalfPlosive: false,
+        number: "",
+        transliteratedText: "",
+    },);
+
+    if (state.isConsonant) {
+        state.transliteratedText += baseVowel;
     }
 
-    return transliteratedText;
+    if (state.number) {
+        state.transliteratedText += southDravidianToIndicNumbers(state.number, scriptData,);
+    }
+
+    return state.transliteratedText;
 }
 
 function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
@@ -496,7 +515,7 @@ function latinToBrahmic(otherScript, sourceText,) {
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
         regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents)})`),
-        (_unused, p1,) => implicitVowel + scriptData.vowels.get(p1));
+        (_unused, p1,) => baseVowel + scriptData.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise "aū" will be xlitted as a diphthong followed by a macron.
