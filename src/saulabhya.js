@@ -320,68 +320,69 @@ function brahmicToLatin(otherScript, sourceText,) {
 
     const whitespaceRegex = new RegExp(whitespace);
 
-    function processChar(state, c,) {
-        const d = scriptData.brahmicToLatin[c];
+    function processChar(currState, srcChar,) {
+        const tgtChar = scriptData.brahmicToLatin[srcChar];
+        let nextState = (({transliteratedText, number,}) => ({transliteratedText, number,}))(currState);
 
         // Vowel special treatments:
-        if (state.isConsonant && ! vowelMarks.includes(c)) {
+        if (currState.isConsonant && ! vowelMarks.includes(srcChar)) {
             // If we've seen a consonant and we don't have a vowel‐mark next, emit an implicit vowel.
-            state.transliteratedText += baseVowel;
-            if (diphthongConsequents.includes(d)) {
+            nextState.transliteratedText += baseVowel;
+            if (diphthongConsequents.includes(tgtChar)) {
                 // And if we're seeing a different vowel that's the second‐half of a diphthong, emit a separator as well.
-                state.transliteratedText += separator;
+                nextState.transliteratedText += separator;
             }
         }
 
-        if (state.isVowelBaseVowel && diphthongConsequents.includes(d)) {
+        if (currState.isVowelBaseVowel && diphthongConsequents.includes(tgtChar)) {
             // Similarly, if there was an explicit base‐vowel and we're seeing a diphthong consequent, emit a separator.
-            state.transliteratedText += separator;
+            nextState.transliteratedText += separator;
         }
 
-        state.isConsonant = consonants.includes(c);
-        state.isVowelBaseVowel = d == baseVowel;
+        nextState.isConsonant = consonants.includes(srcChar);
+        nextState.isVowelBaseVowel = tgtChar == baseVowel;
 
         // Consonant special treatments:
-        if (state.isHalfPlosive && d == aspirateConsonant) {
+        if (currState.isHalfPlosive && tgtChar == aspirateConsonant) {
             // If we've seen a half-plosive and then see the aspirate consonant, we again need a separator.
-            state.transliteratedText += separator;
+            nextState.transliteratedText += separator;
         }
 
-        state.isHalfPlosive = state.isPlosive && d == suppressedVowel;
-        state.isPlosive = plosiveConsonants.includes(d);
+        nextState.isHalfPlosive = currState.isPlosive && tgtChar == suppressedVowel;
+        nextState.isPlosive = plosiveConsonants.includes(tgtChar);
 
         // If we're processing a non–place value script, …
         if (thousandBasedNumberScripts.includes(otherScript)) {
             // … we need to accumulate number symbols …
-            if (Array.from(scriptData.numbers.values()).includes(c)) {
-                state.number += c;
-                return state;
+            if (Array.from(scriptData.numbers.values()).includes(srcChar)) {
+                nextState.number += srcChar;
+                return nextState;
             }
             // … until we see a non–number symbol, at which we transliterate the entire number in one shot.
-            if (state.number) {
-                state.transliteratedText += southDravidianToIndicNumbers(state.number, scriptData,);
-                state.number = "";
+            if (currState.number) {
+                nextState.transliteratedText += southDravidianToIndicNumbers(currState.number, scriptData,);
+                nextState.number = "";
             }
         }
 
         // Whitespace we can just pass on as is.
-        if (new RegExp(whitespaceRegex).test(c)) {
-            state.transliteratedText += c;
-            return state;
+        if (new RegExp(whitespaceRegex).test(srcChar)) {
+            nextState.transliteratedText += srcChar;
+            return nextState;
         }
 
         // At this point, if the character doesn't exist in the map, it's invalid in the target script.
-        if (d == undefined) {
-            throw new Error(`Unknown ${otherScript} character: ${c}.`);
+        if (tgtChar == undefined) {
+            throw new Error(`Unknown ${otherScript} character: ${srcChar}.`);
         }
 
         // This is the straightforward case.
-        state.transliteratedText += d;
+        nextState.transliteratedText += tgtChar;
 
-        return state;
+        return nextState;
     }
 
-    let state = [...sourceText].reduce(processChar, {
+    let finalState = [...sourceText].reduce(processChar, {
         isConsonant: false,
         isVowelBaseVowel: false,
         isPlosive: false,
@@ -390,15 +391,15 @@ function brahmicToLatin(otherScript, sourceText,) {
         transliteratedText: "",
     },);
 
-    if (state.isConsonant) {
-        state.transliteratedText += baseVowel;
+    if (finalState.isConsonant) {
+        finalState.transliteratedText += baseVowel;
     }
 
-    if (state.number) {
-        state.transliteratedText += southDravidianToIndicNumbers(state.number, scriptData,);
+    if (finalState.number) {
+        finalState.transliteratedText += southDravidianToIndicNumbers(finalState.number, scriptData,);
     }
 
-    return state.transliteratedText;
+    return finalState.transliteratedText;
 }
 
 function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
