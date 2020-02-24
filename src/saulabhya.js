@@ -382,14 +382,16 @@ function brahmicToLatin(otherScript, sourceText,) {
         return nextState;
     }
 
-    let finalState = [...sourceText].reduce(processChar, {
+    const initialState = {
         isConsonant: false,
         isVowelBaseVowel: false,
         isPlosive: false,
         isHalfPlosive: false,
         number: "",
         transliteratedText: "",
-    },);
+    };
+
+    let finalState = [...sourceText].reduce(processChar, initialState,);
 
     if (finalState.isConsonant) {
         finalState.transliteratedText += baseVowel;
