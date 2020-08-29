@@ -238,7 +238,7 @@ const scriptsData = {
 };
 
 const scriptNames = Object.keys(scriptsData);
-const thousandBasedNumberScripts = ["taml", "gran", "mlym",]; // mlym, taml and gran don't use a strict place‐value system.
+const thousandBasedNumberScripts = ["taml", "gran", "mlym",]; // mlym, taml and gran don’t use a strict place‐value system.
 
 // Create a brahmicToLatin reverse‐map Javascript object from the other maps.
 scriptNames.forEach(script => {
@@ -277,7 +277,7 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
     const ten = scriptData.numbers.get(10);
     const digits = Array.from(scriptData.numbers.values()).filter(x => scriptData.brahmicToLatin[x] < 10);
 
-    // Let's divide up the number into groups of thousands.
+    // Let’s divide up the number into groups of thousands.
     const otherNumbers = Array.from(scriptData.numbers.values()).filter(x => x!=thousand);
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
@@ -326,16 +326,16 @@ function brahmicToLatin(otherScript, sourceText,) {
 
         // Vowel special treatments:
         if (currState.isConsonant && ! vowelMarks.includes(srcChar)) {
-            // If we've seen a consonant and we don't have a vowel‐mark next, emit an implicit vowel.
+            // If we’ve seen a consonant and we don’t have a vowel‐mark next, emit an implicit vowel.
             nextState.transliteratedText += baseVowel;
             if (diphthongConsequents.includes(tgtChar)) {
-                // And if we're seeing a different vowel that's the second‐half of a diphthong, emit a separator as well.
+                // And if we’re seeing a different vowel that’s the second‐half of a diphthong, emit a separator as well.
                 nextState.transliteratedText += separator;
             }
         }
 
         if (currState.isVowelBaseVowel && diphthongConsequents.includes(tgtChar)) {
-            // Similarly, if there was an explicit base‐vowel and we're seeing a diphthong consequent, emit a separator.
+            // Similarly, if there was an explicit base‐vowel and we’re seeing a diphthong consequent, emit a separator.
             nextState.transliteratedText += separator;
         }
 
@@ -344,14 +344,14 @@ function brahmicToLatin(otherScript, sourceText,) {
 
         // Consonant special treatments:
         if (currState.isHalfPlosive && tgtChar == aspirateConsonant) {
-            // If we've seen a half-plosive and then see the aspirate consonant, we again need a separator.
+            // If we’ve seen a half-plosive and then see the aspirate consonant, we again need a separator.
             nextState.transliteratedText += separator;
         }
 
         nextState.isHalfPlosive = currState.isPlosive && tgtChar == suppressedVowel;
         nextState.isPlosive = plosiveConsonants.includes(tgtChar);
 
-        // If we're processing a non–place value script, …
+        // If we’re processing a non–place value script, …
         if (thousandBasedNumberScripts.includes(otherScript)) {
             // … we need to accumulate number symbols …
             if (Array.from(scriptData.numbers.values()).includes(srcChar)) {
@@ -371,7 +371,7 @@ function brahmicToLatin(otherScript, sourceText,) {
             return nextState;
         }
 
-        // At this point, if the character doesn't exist in the map, it's invalid in the target script.
+        // At this point, if the character doesn’t exist in the map, it’s invalid in the target script.
         if (tgtChar == undefined) {
             throw new Error(`Unknown ${otherScript} character: ${srcChar}.`);
         }
@@ -413,7 +413,7 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
 
     let xlittedText = "";
 
-    // Let's process each group of 3 digits at a time.
+    // Let’s process each group of 3 digits at a time.
     for (let mille = 0; sourceNumber > 0; ++mille) {
         let rem = sourceNumber % 1000;
         sourceNumber = (sourceNumber - rem) / 1000;
@@ -431,7 +431,7 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
             continue;
         }
 
-        // JSHint doesn't like functions that close on loop‐scoped variables,
+        // JSHint doesn’t like functions that close on loop‐scoped variables,
         // but this seems to be the cleanest way to implement the algorithm.
         /* jshint -W083 */
         [1, 10, 100,].forEach(place => {
@@ -479,7 +479,7 @@ function latinToBrahmic(otherScript, sourceText,) {
             separator, ...whitespace,
         ];
 
-        // Should not use 'g' for this regex alone.
+        // Should not use ‘g’ for this regex alone.
         // Seems to result in some sort of combinatorial explosion.
         const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`);
         const result = sourceText.match(invalidRegex);
@@ -508,12 +508,12 @@ function latinToBrahmic(otherScript, sourceText,) {
         regex(modifiers),
         match => scriptData.modifiers.get(match),);
 
-    // Handle separated consonants like 'b:h'
+    // Handle separated consonants like ‘b:h’
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants)})${separator}`),
         (_unused, p1,) => scriptData.consonants.get(p1) + scriptData.vowelMarks.get(suppressedVowel),);
 
-    // Handle separated vowels like 'a:i'
+    // Handle separated vowels like ‘a:i’
     const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s).
         concat(diphthongConsequents).concat(new Array(diphthongAntecedent));
     sourceText = sourceText.replace(
@@ -521,10 +521,10 @@ function latinToBrahmic(otherScript, sourceText,) {
         (_unused, p1,) => baseVowel + scriptData.vowels.get(p1));
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
-    // Otherwise "aū" will be xlitted as a diphthong followed by a macron.
+    // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
     const vowels1 = Array.from(scriptData.vowels.keys()).filter(x => ! diphthongsAndConstituents.includes(x))
         .sort().reverse().join(disjunctor);
-    // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn't xlitted separately.
+    // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn’t xlitted separately.
     const consonants = Array.from(scriptData.consonants.keys()).sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels1})`),
