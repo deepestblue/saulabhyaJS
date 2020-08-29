@@ -263,7 +263,7 @@ const diphthongConsequents = ['i', 'u',];
 const disjunctor = '|';
 const whitespace = '\\s';
 
-const regex = s => new RegExp(s, 'g',);
+const regex = s => new RegExp(s, 'gu',);
 
 // Regex pattern that matches any of the elements of the passed‐in array.
 const anyOfArray = arr => `[${arr.join('')}]`;
@@ -275,7 +275,9 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
     const thousand = scriptData.numbers.get(1000);
     const hundred = scriptData.numbers.get(100);
     const ten = scriptData.numbers.get(10);
-    const digits = Array.from(scriptData.numbers.values()).filter(x => scriptData.brahmicToLatin[x] < 10);
+
+    // A digit has Unicode category “Nd”, while the symbols for ten, hundred and thousand have Unicode category “No”.
+    const digits = Array.from(scriptData.numbers.values()).filter(x => regex('\\p{Nd}').test(x));
 
     // Let’s divide up the number into groups of thousands.
     const otherNumbers = Array.from(scriptData.numbers.values()).filter(x => x!=thousand);
