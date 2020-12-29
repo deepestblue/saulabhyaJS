@@ -437,8 +437,8 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
         // but this seems to be the cleanest way to implement the algorithm.
         /* jshint -W083 */
         [1, 10, 100,].forEach(place => {
-            const digit = rem % 10;
-            rem = (rem - digit) / 10;
+            // Extract the digit at ‘place’.
+            const digit = Math.floor(rem / place) % 10;
 
             if (digit == 0) {
                 // Zeroes are not explicitly written.
