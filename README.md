@@ -12,9 +12,9 @@ Saulabhya is available as an ES2015 module for browsers (Node support is forthco
 
 and use it like:
 
-    const sourceText = "சௌலப்பியம் எனும் இது ஓர் எழுத்து பெயர்ப்புக் கருவி."; // Valid ta text in taml script
-    const transliteratedLatinText = transliterate("taml", "latn", sourceText); // The above source text in Latin script (ISO‐15919 transliteration format)
-    const transliteratedTeluguText = transliterate("taml", "telu", sourceText); // The above source text in Telugu script
+    const sourceText = "சௌலப்பியம் எனும் இது ஓர் எழுத்து பெயர்ப்புக் கருவி."; // Valid ta text in Tamil script
+    const transliteratedLatinText = transliterate("Taml", "Latn", sourceText); // The above source text in Latin script (ISO‐15919 transliteration format)
+    const transliteratedTeluguText = transliterate("Taml", "Telu", sourceText); // The above source text in Telugu script
 
 As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 names](https://en.wikipedia.org/wiki/ISO_15924).
 
@@ -24,14 +24,14 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 
 | Language |      Script     | ISO‐15924 name |
 |:--------:|:---------------:|:--------------:|
-|   Tamil  |      Tamil      |      taml      |
-|   Tamil  |    Malayalam    |      mlym      |
-|   Tamil  |     Kannada     |      knda      |
-|   Tamil  |      Telugu     |      telu      |
-|   Tamil  | ISO‐15919 Latin |      latn      |
-| Sanskrit |     Grantha     |      gran      |
-| Sanskrit |    Devanagari   |      deva      |
-| Sanskrit | ISO‐15919 Latin |      latn      |
+|   Tamil  |      Tamil      |      Taml      |
+|   Tamil  |    Malayalam    |      Mlym      |
+|   Tamil  |     Kannada     |      Knda      |
+|   Tamil  |      Telugu     |      Telu      |
+|   Tamil  | ISO‐15919 Latin |      Latn      |
+| Sanskrit |     Grantha     |      Gran      |
+| Sanskrit |    Devanagari   |      Deva      |
+| Sanskrit | ISO‐15919 Latin |      Latn      |
 
 * Supports traditional Tamil/Malayalam numbers (not based on the place value system).
 * Supports some commonly used Western punctuation marks (comma, question mark, exclamation mark, double quotes and full stop) for Tamil text.
