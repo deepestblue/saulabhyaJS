@@ -1,5 +1,5 @@
 const scriptsData = {
-    taml: {
+    Taml: {
         vowels: new Map([
             ['a','அ'], ['ā','ஆ'],
             ['i','இ'], ['ī','ஈ'],
@@ -37,7 +37,7 @@ const scriptsData = {
             [10,'௰'], [100,'௱'], [1000,'௲'],
         ]),
     },
-    gran: {
+    Gran: {
         vowels: new Map([
             ['a','𑌅'], ['ā','𑌆'],
             ['i','𑌇'], ['ī','𑌈'],
@@ -79,7 +79,7 @@ const scriptsData = {
             [10,'௰'], [100,'௱'], [1000,'௲'],
         ]),
     },
-    knda: {
+    Knda: {
         vowels: new Map([
             ['a','ಅ'], ['ā','ಆ'],
             ['i','ಇ'], ['ī','ಈ'],
@@ -117,7 +117,7 @@ const scriptsData = {
             [5,'೫'], [6,'೬'], [7,'೭'], [8,'೮'], [9,'೯'],
         ]),
     },
-    mlym: {
+    Mlym: {
         vowels: new Map([
             ['a','അ'], ['ā','ആ'],
             ['i','ഇ'], ['ī','ഈ'],
@@ -156,7 +156,7 @@ const scriptsData = {
             [10,'൰'], [100,'൱'], [1000,'൲'],
         ]),
     },
-    telu: {
+    Telu: {
         vowels: new Map([
             ['a','అ'], ['ā','ఆ'],
             ['i','ఇ'], ['ī','ఈ'],
@@ -194,7 +194,7 @@ const scriptsData = {
             [5,'౫'], [6,'౬'], [7,'౭'], [8,'౮'], [9,'౯'],
         ]),
     },
-    deva: {
+    Deva: {
         vowels: new Map([
             ['a','अ'], ['ā','आ'],
             ['i','इ'], ['ī','ई'],
@@ -238,7 +238,7 @@ const scriptsData = {
 };
 
 const scriptNames = Object.keys(scriptsData);
-const thousandBasedNumberScripts = ["taml", "gran", "mlym",]; // mlym, taml and gran don’t use a strict place‐value system.
+const thousandBasedNumberScripts = ["Taml", "Gran", "Mlym",]; // Mlym, Taml and Gran don’t use a strict place‐value system.
 
 // Create a brahmicToLatin reverse‐map Javascript object from the other maps.
 scriptNames.forEach(script => {
@@ -249,7 +249,7 @@ scriptNames.forEach(script => {
     scriptData.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1]}), {});
 });
 
-scriptNames.push("latn");
+scriptNames.push("Latn");
 
 const baseVowel = 'a';
 const plosiveConsonants = ['k', 'g', 'c', 'j', 'ṭ', 'ḍ', 'ṯ', 'ḏ', 't', 'd', 'p', 'b',];
@@ -560,11 +560,11 @@ function transliterate(srcScript, tgtScript, sourceText,) {
         return sourceText;
     }
 
-    if (tgtScript == "latn") {
+    if (tgtScript == "Latn") {
         return brahmicToLatin(srcScript, sourceText,);
     }
 
-    if (srcScript == "latn") {
+    if (srcScript == "Latn") {
         return latinToBrahmic(tgtScript, sourceText,);
     }
 
