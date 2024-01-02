@@ -311,7 +311,7 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
                 throw new Error(`Invalid number: ${sourceNumber}.`);
             }
 
-            if ((components[1] == one) || (components[3] == one)) {
+            if (components[1] == one || components[3] == one) {
                 // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
                 throw new Error(`Invalid number: ${sourceNumber}.`);
             }
