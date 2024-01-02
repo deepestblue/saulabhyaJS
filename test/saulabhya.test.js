@@ -384,6 +384,22 @@ QUnit.module("Invalid inputs", () => {
                 /^Unknown Taml character: .\.$/u.test(err.message);
             });
     });
+
+    QUnit.test.each("Invalid Tamil number", [
+        "௨௩",
+        "௰௰",
+        "௰௱",
+        "௧௱",
+        "௩௲௨௰௭௲௲௱௯௰௯",
+    ], (t, invalidNumber) => {
+        t.throws(
+            () => transliterate("Taml", "Latn", invalidNumber),
+            function(err) {
+                return err instanceof Error &&
+                new RegExp(`^Invalid number: ${invalidNumber}\.$`).test(err.message);
+            });
+    });
+
     const unsupportedScriptName = "sinh";
     QUnit.test("Unsupported source script", t => {
         t.throws(
