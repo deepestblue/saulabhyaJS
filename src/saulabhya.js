@@ -561,11 +561,11 @@ function transliterate(srcScript, tgtScript, sourceText,) {
     }
 
     if (tgtScript == "Latn") {
-        return brahmicToLatin(srcScript, sourceText,);
+        return brahmicToLatin(srcScript, sourceText.normalize('NFC',),).normalize('NFD',);
     }
 
     if (srcScript == "Latn") {
-        return latinToBrahmic(tgtScript, sourceText,);
+        return latinToBrahmic(tgtScript, sourceText.normalize('NFD',),).normalize('NFC',);
     }
 
     // Transliterate from one Brahmic script to another through Latin.
