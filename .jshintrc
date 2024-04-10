@@ -1,6 +1,7 @@
 {
   "esversion" : 9,
   "bitwise" : true,
+  "browser": true,
   "curly" : true,
   "forin" : true,
   "freeze" : true,
@@ -10,6 +11,7 @@
   "nocomma" : true,
   "regexpu" : true,
   "singleGroups" : true,
+  "strict" : "implied",
   "undef" : true,
   "unused" : true,
   "varstmt" : true

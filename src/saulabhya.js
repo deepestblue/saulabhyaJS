@@ -263,7 +263,7 @@ const diphthongConsequents = ['i', 'u',];
 const disjunctor = '|';
 const whitespace = '\\s';
 
-const regex = s => new RegExp(s, 'gu',);
+const regex = s => new RegExp(s, 'gv',);
 
 // Regex pattern that matches any of the elements of the passed‐in array.
 const anyOfArray = arr => `[${arr.join('')}]`;
@@ -390,7 +390,7 @@ function brahmicToLatin(otherScript, sourceText,) {
         }
 
         // Whitespace we can just pass on as is.
-        if (new RegExp(whitespaceRegex).test(srcChar)) {
+        if (whitespaceRegex.test(srcChar)) {
             nextState.transliteratedText += srcChar;
             return nextState;
         }
@@ -548,6 +548,7 @@ function latinToBrahmic(otherScript, sourceText,) {
     // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
     const vowels1 = Array.from(scriptData.vowels.keys()).filter(x => ! diphthongsAndConstituents.includes(x))
         .sort().reverse().join(disjunctor);
+
     // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn’t xlitted separately.
     const consonants = Array.from(scriptData.consonants.keys()).sort().reverse().join(disjunctor);
     sourceText = sourceText.replace(
