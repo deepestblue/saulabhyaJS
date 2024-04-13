@@ -246,7 +246,7 @@ scriptNames.forEach(script => {
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.misc,],
         a => a.reverse());
-    scriptData.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1]}), {});
+    scriptData.brahmicToLatin = revArray.reduce((ator, val) => Object.assign(ator, {[val[0]] : val[1],},), {},);
 });
 
 scriptNames.push("Latn");
@@ -415,7 +415,7 @@ function brahmicToLatin(otherScript, sourceText,) {
         transliteratedText: "",
     };
 
-    let finalState = [...sourceText].reduce(processChar, initialState,);
+    let finalState = [...sourceText,].reduce(processChar, initialState,);
 
     if (finalState.isConsonant) {
         finalState.transliteratedText += baseVowel;
