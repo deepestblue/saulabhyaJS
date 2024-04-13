@@ -37,7 +37,7 @@ QUnit.module("Taml unit tests", () => {
         ],
     };
     QUnit.module("To Latin", () => {
-        [...Array(data.Taml.length).keys()].forEach(i => {
+        [...Array(data.Taml.length,).keys(),].forEach(i => {
             QUnit.test(data.Taml[i], t => {
                 t.deepEqual(
                     transliterate("Taml", "Latn", data.Taml[i]),
@@ -46,7 +46,7 @@ QUnit.module("Taml unit tests", () => {
         });
     });
     QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length).keys()].forEach(i => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
                     transliterate("Latn", "Taml", data.Latn[i]),
@@ -72,7 +72,7 @@ QUnit.module("Telu unit tests", () => {
         ],
     };
     QUnit.module("To Latin", () => {
-        [...Array(data.Telu.length).keys()].forEach(i => {
+        [...Array(data.Telu.length,).keys(),].forEach(i => {
             QUnit.test(data.Telu[i], t => {
                 t.deepEqual(
                     transliterate("Telu", "Latn", data.Telu[i]),
@@ -81,7 +81,7 @@ QUnit.module("Telu unit tests", () => {
         });
     });
     QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length).keys()].forEach(i => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
                     transliterate("Latn", "Telu", data.Latn[i]),
@@ -125,7 +125,7 @@ QUnit.module("Deva unit tests", () => {
         ],
     };
     QUnit.module("To Latin", () => {
-        [...Array(data.Deva.length).keys()].forEach(i => {
+        [...Array(data.Deva.length,).keys(),].forEach(i => {
             QUnit.test(data.Deva[i], t => {
                 t.deepEqual(
                     transliterate("Deva", "Latn", data.Deva[i]),
@@ -134,7 +134,7 @@ QUnit.module("Deva unit tests", () => {
         });
     });
     QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length).keys()].forEach(i => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
                     transliterate("Latn", "Deva", data.Latn[i]),
@@ -215,7 +215,7 @@ QUnit.module("Numbers", () => {
             "123456789234",
         ],
     };
-    [...Array(data.Latn.length).keys()].forEach(i => {
+    [...Array(data.Latn.length,).keys(),].forEach(i => {
         QUnit.test("தமிழ் " + data.Taml[i], t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", data.Taml[i]),
