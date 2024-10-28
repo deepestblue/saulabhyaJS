@@ -1,17 +1,21 @@
 {
-  "esversion" : 9,
+  "esversion" : 11,
   "bitwise" : true,
   "browser": true,
   "curly" : true,
+  "eqeqeq" : true,
   "forin" : true,
   "freeze" : true,
   "futurehostile" : true,
   "latedef" : true,
   "noarg" : true,
   "nocomma" : true,
-  "regexpu" : true,
+  "nonew" : true,
+// Doesn't seem to support 'v' flag, so disabling
+//  "regexpu" : true,
   "singleGroups" : true,
   "strict" : "implied",
+  "trailingcomma" : true,
   "undef" : true,
   "unused" : true,
   "varstmt" : true

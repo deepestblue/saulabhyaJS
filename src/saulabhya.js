@@ -281,7 +281,7 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
     const digits = Array.from(scriptData.numbers.values()).filter(x => regex('\\p{Nd}').test(x));
 
     // Let’s divide up the number into groups of thousands.
-    const otherNumbers = Array.from(scriptData.numbers.values()).filter(x => x!=thousand);
+    const otherNumbers = Array.from(scriptData.numbers.values()).filter(x => x!==thousand);
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
@@ -311,7 +311,7 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
                 throw new Error(`Invalid number: ${sourceNumber}.`);
             }
 
-            if (components[1] == one || components[3] == one) {
+            if (components[1] === one || components[3] === one) {
                 // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
                 throw new Error(`Invalid number: ${sourceNumber}.`);
             }
@@ -364,15 +364,15 @@ function brahmicToLatin(otherScript, sourceText,) {
         }
 
         nextState.isConsonant = consonants.includes(srcChar);
-        nextState.isVowelBaseVowel = tgtChar == baseVowel;
+        nextState.isVowelBaseVowel = tgtChar === baseVowel;
 
         // Consonant special treatments:
-        if (currState.isHalfPlosive && tgtChar == aspirateConsonant) {
+        if (currState.isHalfPlosive && tgtChar === aspirateConsonant) {
             // If we’ve seen a half‐plosive and then see the aspirate consonant, we again need a separator.
             nextState.transliteratedText += separator;
         }
 
-        nextState.isHalfPlosive = currState.isPlosive && tgtChar == suppressedVowel;
+        nextState.isHalfPlosive = currState.isPlosive && tgtChar === suppressedVowel;
         nextState.isPlosive = plosiveConsonants.includes(tgtChar);
 
         // If we’re processing a non–place value script, …
@@ -396,7 +396,7 @@ function brahmicToLatin(otherScript, sourceText,) {
         }
 
         // At this point, if the character doesn’t exist in the map, it’s invalid in the target script.
-        if (tgtChar == undefined) {
+        if (tgtChar === undefined) {
             throw new Error(`Unknown ${otherScript} character: ${srcChar}.`);
         }
 
@@ -431,7 +431,7 @@ function brahmicToLatin(otherScript, sourceText,) {
 function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
     // Zero is special, and is in fact not allowed in the traditional system.
     // But modern usage demands it.
-    if (sourceNumber == 0) {
+    if (sourceNumber === 0) {
         return scriptData.numbers.get(sourceNumber);
     }
 
@@ -443,14 +443,14 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
         sourceNumber = (sourceNumber - rem) / 1000;
 
         // Nothing in this group.
-        if (rem == 0) {
+        if (rem === 0) {
             continue;
         }
 
         // We need mille‐many thousand‐symbols.
         xlittedText = scriptData.numbers.get(1000).repeat(mille) + xlittedText;
 
-        if (rem == 1 && mille > 0) {
+        if (rem === 1 && mille > 0) {
             // 1 is implicit, except for the least significant group.
             continue;
         }
@@ -462,7 +462,7 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
             // Extract the digit at ‘place’.
             const digit = Math.floor(rem / place) % 10;
 
-            if (digit == 0) {
+            if (digit === 0) {
                 // Zeroes are not explicitly written.
                 return;
             }
@@ -477,9 +477,9 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
                 ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
                 ╚════════════╩═════════════╩════════════════════════╝
             */
-            if (place != 1) {
+            if (place !== 1) {
                 xlittedText = scriptData.numbers.get(place) + xlittedText;
-                if (digit == 1) {
+                if (digit === 1) {
                     return;
                 }
             }
@@ -579,15 +579,15 @@ function transliterate(srcScript, tgtScript, sourceText,) {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`);
     }
 
-    if (srcScript == tgtScript) {
+    if (srcScript === tgtScript) {
         return sourceText;
     }
 
-    if (tgtScript == "Latn") {
+    if (tgtScript === "Latn") {
         return brahmicToLatin(srcScript, sourceText.normalize('NFC',),).normalize('NFD',);
     }
 
-    if (srcScript == "Latn") {
+    if (srcScript === "Latn") {
         return latinToBrahmic(tgtScript, sourceText.normalize('NFD',),).normalize('NFC',);
     }
 
