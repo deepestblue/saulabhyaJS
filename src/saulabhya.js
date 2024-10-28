@@ -455,9 +455,6 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
             continue;
         }
 
-        // JSHint doesn’t like functions that close on loop‐scoped variables,
-        // but this seems to be the cleanest way to implement the algorithm.
-        /* jshint -W083 */
         [1, 10, 100,].forEach(place => {
             // Extract the digit at ‘place’.
             const digit = Math.floor(rem / place) % 10;
@@ -486,7 +483,6 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
 
             xlittedText = scriptData.numbers.get(digit) + xlittedText;
         });
-        /* jshint +W083 */
     }
 
     return xlittedText;
