@@ -271,7 +271,7 @@ const anyOfArray = arr => `[${arr.join('')}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it));
 
-function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
+const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
     const thousand = scriptData.numbers.get(1000);
     const hundred = scriptData.numbers.get(100);
     const ten = scriptData.numbers.get(10);
@@ -334,9 +334,9 @@ function southDravidianToIndicNumbers(sourceNumber, scriptData,) {
         },
         {total: 0, minThousands: Infinity,}
     ).total;
-}
+};
 
-function brahmicToLatin(otherScript, sourceText,) {
+const brahmicToLatin = (otherScript, sourceText,) => {
     const scriptData = scriptsData[otherScript];
 
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
@@ -344,7 +344,7 @@ function brahmicToLatin(otherScript, sourceText,) {
 
     const whitespaceRegex = new RegExp(whitespace, "v",);
 
-    function processChar(currState, srcChar,) {
+    const processChar = (currState, srcChar,) => {
         const tgtChar = scriptData.brahmicToLatin[srcChar];
         const nextState = (({transliteratedText, number,}) => ({transliteratedText, number,}))(currState);
 
@@ -426,9 +426,9 @@ function brahmicToLatin(otherScript, sourceText,) {
     }
 
     return finalState.transliteratedText;
-}
+};
 
-function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
+const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
     // Zero is special, and is in fact not allowed in the traditional system.
     // But modern usage demands it.
     if (sourceNumber === 0) {
@@ -490,9 +490,9 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
     }
 
     return xlittedText;
-}
+};
 
-function latinToBrahmic(otherScript, sourceText,) {
+const latinToBrahmic = (otherScript, sourceText,) => {
     const scriptData = scriptsData[otherScript];
 
     // Validate no foreign characters
@@ -569,9 +569,9 @@ function latinToBrahmic(otherScript, sourceText,) {
         match => scriptData.consonants.get(match) + scriptData.vowelMarks.get(suppressedVowel),);
 
     return sourceText;
-}
+};
 
-function transliterate(srcScript, tgtScript, sourceText,) {
+const transliterate = (srcScript, tgtScript, sourceText,) => {
     if (! scriptNames.includes(srcScript)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`);
     }
@@ -594,6 +594,6 @@ function transliterate(srcScript, tgtScript, sourceText,) {
     // Transliterate from one Brahmic script to another through Latin.
     return latinToBrahmic(tgtScript,
         brahmicToLatin(srcScript, sourceText,),);
-}
+};
 
 export { transliterate };
