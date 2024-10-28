@@ -1,6 +1,6 @@
 /* global QUnit:false */
 
-import { transliterate } from "http://localhost:8000/src/saulabhya.js";
+import { transliterate } from "../src/saulabhya.js";
 
 QUnit.config.maxDepth = -1;
 QUnit.config.noglobals = true;
