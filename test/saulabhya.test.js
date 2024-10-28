@@ -214,32 +214,32 @@ QUnit.module("Numbers", () => {
         ],
     };
     [...Array(data.Latn.length,).keys(),].forEach(i => {
-        QUnit.test("தமிழ் " + data.Taml[i], t => {
+        QUnit.test(`தமிழ் ${data.Taml[i]}`, t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", data.Taml[i]),
                 data.Latn[i]);
         });
-        QUnit.test(data.Latn[i] + " → தமிழ்", t => {
+        QUnit.test(`${data.Latn[i]} → தமிழ்`, t => {
             t.deepEqual(
                 transliterate("Latn", "Taml", data.Latn[i]),
                 data.Taml[i]);
         });
-        QUnit.test("తెలుగు " + data.Telu[i], t => {
+        QUnit.test(`తెలుగు ${data.Telu[i]}`, t => {
             t.deepEqual(
                 transliterate("Telu", "Latn", data.Telu[i]),
                 data.Latn[i]);
         });
-        QUnit.test(data.Latn[i] + " → తెలుగు", t => {
+        QUnit.test(`${data.Latn[i]} → తెలుగు`, t => {
             t.deepEqual(
                 transliterate("Latn", "Telu", data.Latn[i]),
                 data.Telu[i]);
         });
-        QUnit.test("देवनागरी " + data.Deva[i], t => {
+        QUnit.test(`देवनागरी ${data.Deva[i]}`, t => {
             t.deepEqual(
                 transliterate("Deva", "Latn", data.Deva[i]),
                 data.Latn[i]);
         });
-        QUnit.test(data.Latn[i] + " → देवनागरी", t => {
+        QUnit.test(`${data.Latn[i]} → देवनागरी`, t => {
             t.deepEqual(
                 transliterate("Latn", "Deva", data.Latn[i]),
                 data.Deva[i]);
