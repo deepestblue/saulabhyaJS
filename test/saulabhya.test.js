@@ -368,19 +368,17 @@ QUnit.module("Invalid inputs", () => {
         const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
             () => transliterate("Taml", "Latn", invalidTaTamlText),
-            function(err) {
-                return err instanceof Error &&
-                /^Unknown Taml character: .\.$/v.test(err.message);
-            });
+            err => err instanceof Error &&
+                /^Unknown Taml character: .\.$/v.test(err.message),
+        );
     });
     QUnit.test("Invalid Ta text in Latn", t => {
         const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
             () => transliterate("Latn", "Taml", invalidTaLatnText),
-            function(err) {
-                return err instanceof Error &&
-                /^Unknown Taml character: .\.$/v.test(err.message);
-            });
+            err => err instanceof Error &&
+                /^Unknown Taml character: .\.$/v.test(err.message),
+        );
     });
 
     QUnit.test.each("Invalid Tamil number", [
@@ -392,27 +390,24 @@ QUnit.module("Invalid inputs", () => {
     ], (t, invalidNumber) => {
         t.throws(
             () => transliterate("Taml", "Latn", invalidNumber),
-            function(err) {
-                return err instanceof Error &&
-                new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message);
-            });
+            err => err instanceof Error &&
+                new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message),
+        );
     });
 
     const unsupportedScriptName = "sinh";
     QUnit.test("Unsupported source script", t => {
         t.throws(
             () => transliterate(unsupportedScriptName, "Latn", ""),
-            function(err) {
-                return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`, "v",).test(err.message);
-            });
+            err => err instanceof Error &&
+                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`, "v",).test(err.message),
+        );
     });
     QUnit.test("Unsupported target script", t => {
         t.throws(
             () => transliterate("Latn", unsupportedScriptName, ""),
-            function(err) {
-                return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`, "v",).test(err.message);
-            });
+            err => err instanceof Error &&
+                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`, "v",).test(err.message),
+        );
     });
 });
