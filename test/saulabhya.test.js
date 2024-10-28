@@ -1,5 +1,3 @@
-/* global QUnit:false */
-
 import { transliterate } from "../src/saulabhya.js";
 
 QUnit.config.maxDepth = -1;
