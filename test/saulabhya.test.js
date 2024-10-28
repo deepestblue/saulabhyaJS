@@ -394,7 +394,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Taml", "Latn", invalidNumber),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Invalid number: ${invalidNumber}\.$`).test(err.message);
+                new RegExp(`^Invalid number: ${invalidNumber}.$`).test(err.message);
             });
     });
 
@@ -404,7 +404,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate(unsupportedScriptName, "Latn", ""),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}\.$`).test(err.message);
+                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`).test(err.message);
             });
     });
     QUnit.test("Unsupported target script", t => {
@@ -412,7 +412,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Latn", unsupportedScriptName, ""),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}\.$`).test(err.message);
+                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`).test(err.message);
             });
     });
 });
