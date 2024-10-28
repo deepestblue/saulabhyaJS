@@ -342,7 +342,7 @@ function brahmicToLatin(otherScript, sourceText,) {
     const vowelMarks = Array.from(scriptData.vowelMarks.values());
     const consonants = Array.from(scriptData.consonants.values());
 
-    const whitespaceRegex = new RegExp(whitespace);
+    const whitespaceRegex = new RegExp(whitespace, "v",);
 
     function processChar(currState, srcChar,) {
         const tgtChar = scriptData.brahmicToLatin[srcChar];
@@ -505,7 +505,7 @@ function latinToBrahmic(otherScript, sourceText,) {
 
         // Should not use ‘g’ for this regex alone.
         // Seems to result in some sort of combinatorial explosion.
-        const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`);
+        const invalidRegex = new RegExp(`[^${scriptCharacters.join('')}]`, "v",);
         const result = sourceText.match(invalidRegex);
         if (result) {
             throw new Error(`Unknown ${otherScript} character: ${result[0]}.`);

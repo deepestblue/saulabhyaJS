@@ -370,7 +370,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Taml", "Latn", invalidTaTamlText),
             function(err) {
                 return err instanceof Error &&
-                /^Unknown Taml character: .\.$/u.test(err.message);
+                /^Unknown Taml character: .\.$/v.test(err.message);
             });
     });
     QUnit.test("Invalid Ta text in Latn", t => {
@@ -379,7 +379,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Latn", "Taml", invalidTaLatnText),
             function(err) {
                 return err instanceof Error &&
-                /^Unknown Taml character: .\.$/u.test(err.message);
+                /^Unknown Taml character: .\.$/v.test(err.message);
             });
     });
 
@@ -394,7 +394,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Taml", "Latn", invalidNumber),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Invalid number: ${invalidNumber}.$`).test(err.message);
+                new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message);
             });
     });
 
@@ -404,7 +404,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate(unsupportedScriptName, "Latn", ""),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`).test(err.message);
+                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`, "v",).test(err.message);
             });
     });
     QUnit.test("Unsupported target script", t => {
@@ -412,7 +412,7 @@ QUnit.module("Invalid inputs", () => {
             () => transliterate("Latn", unsupportedScriptName, ""),
             function(err) {
                 return err instanceof Error &&
-                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`).test(err.message);
+                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`, "v",).test(err.message);
             });
     });
 });
