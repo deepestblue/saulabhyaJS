@@ -346,7 +346,7 @@ function brahmicToLatin(otherScript, sourceText,) {
 
     function processChar(currState, srcChar,) {
         const tgtChar = scriptData.brahmicToLatin[srcChar];
-        let nextState = (({transliteratedText, number,}) => ({transliteratedText, number,}))(currState);
+        const nextState = (({transliteratedText, number,}) => ({transliteratedText, number,}))(currState);
 
         // Vowel special treatments:
         if (currState.isConsonant && ! vowelMarks.includes(srcChar)) {
@@ -415,7 +415,7 @@ function brahmicToLatin(otherScript, sourceText,) {
         transliteratedText: "",
     };
 
-    let finalState = [...sourceText,].reduce(processChar, initialState,);
+    const finalState = [...sourceText,].reduce(processChar, initialState,);
 
     if (finalState.isConsonant) {
         finalState.transliteratedText += baseVowel;
@@ -439,7 +439,7 @@ function indicToSouthDravidianNumbers(sourceNumber, scriptData,) {
 
     // Let’s process each group of 3 digits at a time.
     for (let mille = 0; sourceNumber > 0; ++mille) {
-        let rem = sourceNumber % 1000;
+        const rem = sourceNumber % 1000;
         sourceNumber = (sourceNumber - rem) / 1000;
 
         // Nothing in this group.
