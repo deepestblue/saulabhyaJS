@@ -396,7 +396,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         }
 
         // At this point, if the character doesn’t exist in the map, it’s invalid in the target script.
-        if (tgtChar === undefined) {
+        if (typeof tgtChar === "undefined") {
             throw new Error(`Unknown ${otherScript} character: ${srcChar}.`);
         }
 
