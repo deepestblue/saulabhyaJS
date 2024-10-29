@@ -288,51 +288,50 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
     const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers,)}*${thousand}*`,);
 
     return sourceNumber.match(groupRegex,).reduce((ator, group,) => {
-            // Process each group.
-            const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
+        // Process each group.
+        const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
 
-            // Invalid input if the thousands groups aren't strictly decreasing in thousands‐power.
-            if (thousands >= ator.minThousands) {
-                throw new Error(`Invalid number: ${sourceNumber}.`,);
-            }
+        // Invalid input if the thousands groups aren't strictly decreasing in thousands‐power.
+        if (thousands >= ator.minThousands) {
+            throw new Error(`Invalid number: ${sourceNumber}.`,);
+        }
 
-            if (thousands > 0) {
-                // Strip off the thousand symbols, unless there are none.
-                group = group.slice(0, -thousands,);
-            }
+        if (thousands > 0) {
+            // Strip off the thousand symbols, unless there are none.
+            group = group.slice(0, -thousands,);
+        }
 
-            const anyDigit = anyOfArray(digits,);
-            const subThousandNumberRegex =
-                regex(`^(?:(${anyDigit}?)(${hundred}))?(?:(${anyDigit})?(${ten}))?(${anyDigit}?)$`,);
-            const components = subThousandNumberRegex.exec(group,);
+        const anyDigit = anyOfArray(digits,);
+        const subThousandNumberRegex = regex(`^(?:(${anyDigit}?)(${hundred}))?(?:(${anyDigit})?(${ten}))?(${anyDigit}?)$`,);
+        const components = subThousandNumberRegex.exec(group,);
 
-            if (! components) {
-                // Malformed data, e.g. "௩௪".
-                throw new Error(`Invalid number: ${sourceNumber}.`,);
-            }
+        if (! components) {
+            // Malformed data, e.g. "௩௪".
+            throw new Error(`Invalid number: ${sourceNumber}.`,);
+        }
 
-            if (components[1] === one || components[3] === one) {
-                // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
-                throw new Error(`Invalid number: ${sourceNumber}.`,);
-            }
+        if (components[1] === one || components[3] === one) {
+            // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
+            throw new Error(`Invalid number: ${sourceNumber}.`,);
+        }
 
-            return {
-                total: ator.total + 1000 ** thousands *
-                (components[0] ?
+        return {
+            total: ator.total + 1000 ** thousands *
+            (components[0] ?
                     (components[5] ? scriptData.brahmicToLatin[components[5]] : 0) + // Add in any units.
                     (components[4] ? // If there is a tens symbol, …
                         // … add in the tens, treating a missing digit prefix as an implicit 1.
                         10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1)
                         : 0) +
-                    (components[2] ? // If there is a hundreds symbol, …
+                        (components[2] ? // If there is a hundreds symbol, …
                         // … add in the hundreds, treating a missing digit prefix as 1.
-                        100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
-                        : 0)
-                    : 1), // Nothing in front of the thousand symbols is just the value of the power.
-                minThousands: thousands,
-            };
-        },
-        {total: 0, minThousands: Infinity,},
+                            100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
+                            : 0)
+                : 1), // Nothing in front of the thousand symbols is just the value of the power.
+            minThousands: thousands,
+        };
+    },
+    {total: 0, minThousands: Infinity,},
     ).total;
 };
 
