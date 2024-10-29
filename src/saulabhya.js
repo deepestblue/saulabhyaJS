@@ -533,8 +533,7 @@ const latinToBrahmic = (otherScript, sourceText,) => {
         (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(suppressedVowel,),);
 
     // Handle separated vowels like ‘a:i’
-    const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s,).
-        concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
+    const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
     sourceText = sourceText.replace(
         regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
         (_unused, p1,) => baseVowel + scriptData.vowels.get(p1,),);
