@@ -403,7 +403,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         nextState.transliteratedText += tgtChar;
 
         return nextState;
-    }
+    };
 
     const initialState = {
         isConsonant: false,
