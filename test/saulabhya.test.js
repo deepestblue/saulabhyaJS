@@ -1,4 +1,4 @@
-import { transliterate } from "../src/saulabhya.js";
+import { transliterate, } from "../src/saulabhya.js";
 
 QUnit.config.maxDepth = -1;
 QUnit.config.noglobals = true;
@@ -38,21 +38,21 @@ QUnit.module("Taml unit tests", () => {
         [...Array(data.Taml.length,).keys(),].forEach(i => {
             QUnit.test(data.Taml[i], t => {
                 t.deepEqual(
-                    transliterate("Taml", "Latn", data.Taml[i]),
-                    data.Latn[i]);
-            });
-        });
-    });
+                    transliterate("Taml", "Latn", data.Taml[i],),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
     QUnit.module("From Latin", () => {
         [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
-                    transliterate("Latn", "Taml", data.Latn[i]),
-                    data.Taml[i]);
-            });
-        });
-    });
-});
+                    transliterate("Latn", "Taml", data.Latn[i],),
+                    data.Taml[i],);
+            },);
+        },);
+    },);
+},);
 
 QUnit.module("Telu unit tests", () => {
     const data = {
@@ -73,21 +73,21 @@ QUnit.module("Telu unit tests", () => {
         [...Array(data.Telu.length,).keys(),].forEach(i => {
             QUnit.test(data.Telu[i], t => {
                 t.deepEqual(
-                    transliterate("Telu", "Latn", data.Telu[i]),
-                    data.Latn[i]);
-            });
-        });
-    });
+                    transliterate("Telu", "Latn", data.Telu[i],),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
     QUnit.module("From Latin", () => {
         [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
-                    transliterate("Latn", "Telu", data.Latn[i]),
-                    data.Telu[i]);
-            });
-        });
-    });
-});
+                    transliterate("Latn", "Telu", data.Latn[i],),
+                    data.Telu[i],);
+            },);
+        },);
+    },);
+},);
 
 QUnit.module("Deva unit tests", () => {
     const data = {
@@ -126,21 +126,21 @@ QUnit.module("Deva unit tests", () => {
         [...Array(data.Deva.length,).keys(),].forEach(i => {
             QUnit.test(data.Deva[i], t => {
                 t.deepEqual(
-                    transliterate("Deva", "Latn", data.Deva[i]),
-                    data.Latn[i]);
-            });
-        });
-    });
+                    transliterate("Deva", "Latn", data.Deva[i],),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
     QUnit.module("From Latin", () => {
         [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
-                    transliterate("Latn", "Deva", data.Latn[i]),
-                    data.Deva[i]);
-            });
-        });
-    });
-});
+                    transliterate("Latn", "Deva", data.Latn[i],),
+                    data.Deva[i],);
+            },);
+        },);
+    },);
+},);
 
 QUnit.module("Numbers", () => {
     const data = {
@@ -216,46 +216,46 @@ QUnit.module("Numbers", () => {
     [...Array(data.Latn.length,).keys(),].forEach(i => {
         QUnit.test(`தமிழ் ${data.Taml[i]}`, t => {
             t.deepEqual(
-                transliterate("Taml", "Latn", data.Taml[i]),
-                data.Latn[i]);
-        });
+                transliterate("Taml", "Latn", data.Taml[i],),
+                data.Latn[i],);
+        },);
         QUnit.test(`${data.Latn[i]} → தமிழ்`, t => {
             t.deepEqual(
-                transliterate("Latn", "Taml", data.Latn[i]),
-                data.Taml[i]);
-        });
+                transliterate("Latn", "Taml", data.Latn[i],),
+                data.Taml[i],);
+        },);
         QUnit.test(`తెలుగు ${data.Telu[i]}`, t => {
             t.deepEqual(
-                transliterate("Telu", "Latn", data.Telu[i]),
-                data.Latn[i]);
-        });
+                transliterate("Telu", "Latn", data.Telu[i],),
+                data.Latn[i],);
+        },);
         QUnit.test(`${data.Latn[i]} → తెలుగు`, t => {
             t.deepEqual(
-                transliterate("Latn", "Telu", data.Latn[i]),
-                data.Telu[i]);
-        });
+                transliterate("Latn", "Telu", data.Latn[i],),
+                data.Telu[i],);
+        },);
         QUnit.test(`देवनागरी ${data.Deva[i]}`, t => {
             t.deepEqual(
-                transliterate("Deva", "Latn", data.Deva[i]),
-                data.Latn[i]);
-        });
+                transliterate("Deva", "Latn", data.Deva[i],),
+                data.Latn[i],);
+        },);
         QUnit.test(`${data.Latn[i]} → देवनागरी`, t => {
             t.deepEqual(
-                transliterate("Latn", "Deva", data.Latn[i]),
-                data.Deva[i]);
-        });
-    });
-});
+                transliterate("Latn", "Deva", data.Latn[i],),
+                data.Deva[i],);
+        },);
+    },);
+},);
 
 QUnit.module("Integration tests", () => {
     QUnit.module("Trivial transliteration", () => {
         QUnit.test("Transliterate from Taml to Taml", t => {
             const trivialTestText = "தமிழிலிருந்து தமிழ் எளிது.";
             t.deepEqual(
-                transliterate("Taml", "Taml", trivialTestText),
-                trivialTestText);
-        });
-    });
+                transliterate("Taml", "Taml", trivialTestText,),
+                trivialTestText,);
+        },);
+    },);
     QUnit.module("ta", () => {
         const textWithPunctuationAndSpacing = {
             Taml : `
@@ -293,25 +293,25 @@ cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātut
         `,};
         QUnit.test("Taml to Latn: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml),
-                textWithPunctuationAndSpacing.Latn);
-        });
+                transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
+                textWithPunctuationAndSpacing.Latn,);
+        },);
         QUnit.test("Latn to Taml: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Latn", "Taml", textWithPunctuationAndSpacing.Latn),
-                textWithPunctuationAndSpacing.Taml);
-        });
+                transliterate("Latn", "Taml", textWithPunctuationAndSpacing.Latn,),
+                textWithPunctuationAndSpacing.Taml,);
+        },);
         QUnit.test("Taml to Knda: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Taml", "Knda", textWithPunctuationAndSpacing.Taml),
-                textWithPunctuationAndSpacing.Knda);
-        });
+                transliterate("Taml", "Knda", textWithPunctuationAndSpacing.Taml,),
+                textWithPunctuationAndSpacing.Knda,);
+        },);
         QUnit.test("Knda to Taml: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Knda", "Taml", textWithPunctuationAndSpacing.Knda),
-                textWithPunctuationAndSpacing.Taml);
-        });
-    });
+                transliterate("Knda", "Taml", textWithPunctuationAndSpacing.Knda,),
+                textWithPunctuationAndSpacing.Taml,);
+        },);
+    },);
 
     QUnit.module("sa", () => {
         const textWithPunctuationAndSpacing = {
@@ -342,44 +342,44 @@ athānyabhāṣāṇāmadhikāraḥ svapradēṣvēvōta nēti । aiti
 
         QUnit.test("Gran to Latn: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran),
-                textWithPunctuationAndSpacing.Latn);
-        });
+                transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran,),
+                textWithPunctuationAndSpacing.Latn,);
+        },);
         QUnit.test("Latn to Gran: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn),
-                textWithPunctuationAndSpacing.Gran);
-        });
+                transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn,),
+                textWithPunctuationAndSpacing.Gran,);
+        },);
         QUnit.test("Gran to Deva: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran),
-                textWithPunctuationAndSpacing.Deva);
-        });
+                transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran,),
+                textWithPunctuationAndSpacing.Deva,);
+        },);
         QUnit.test("Deva to Gran: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva),
-                textWithPunctuationAndSpacing.Gran);
-        });
-    });
-});
+                transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva,),
+                textWithPunctuationAndSpacing.Gran,);
+        },);
+    },);
+},);
 
 QUnit.module("Invalid inputs", () => {
     QUnit.test("Invalid Ta text in Taml", t => {
         const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
-            () => transliterate("Taml", "Latn", invalidTaTamlText),
+            () => transliterate("Taml", "Latn", invalidTaTamlText,),
             err => err instanceof Error &&
-                /^Unknown Taml character: .\.$/v.test(err.message),
+                /^Unknown Taml character: .\.$/v.test(err.message,),
         );
-    });
+    },);
     QUnit.test("Invalid Ta text in Latn", t => {
         const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
         t.throws(
-            () => transliterate("Latn", "Taml", invalidTaLatnText),
+            () => transliterate("Latn", "Taml", invalidTaLatnText,),
             err => err instanceof Error &&
-                /^Unknown Taml character: .\.$/v.test(err.message),
+                /^Unknown Taml character: .\.$/v.test(err.message,),
         );
-    });
+    },);
 
     QUnit.test.each("Invalid Tamil number", [
         "௨௩",
@@ -387,27 +387,27 @@ QUnit.module("Invalid inputs", () => {
         "௰௱",
         "௧௱",
         "௩௲௨௰௭௲௲௱௯௰௯",
-    ], (t, invalidNumber) => {
+    ], (t, invalidNumber,) => {
         t.throws(
-            () => transliterate("Taml", "Latn", invalidNumber),
+            () => transliterate("Taml", "Latn", invalidNumber,),
             err => err instanceof Error &&
-                new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message),
+                new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message,),
         );
-    });
+    },);
 
     const unsupportedScriptName = "sinh";
     QUnit.test("Unsupported source script", t => {
         t.throws(
-            () => transliterate(unsupportedScriptName, "Latn", ""),
+            () => transliterate(unsupportedScriptName, "Latn", "",),
             err => err instanceof Error &&
-                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`, "v",).test(err.message),
+                new RegExp(`^Unsupported or invalid source script: ${unsupportedScriptName}.$`, "v",).test(err.message,),
         );
-    });
+    },);
     QUnit.test("Unsupported target script", t => {
         t.throws(
-            () => transliterate("Latn", unsupportedScriptName, ""),
+            () => transliterate("Latn", unsupportedScriptName, "",),
             err => err instanceof Error &&
-                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`, "v",).test(err.message),
+                new RegExp(`^Unsupported or invalid target script: ${unsupportedScriptName}.$`, "v",).test(err.message,),
         );
-    });
-});
+    },);
+},);
