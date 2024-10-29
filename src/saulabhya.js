@@ -281,7 +281,7 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
     const digits = Array.from(scriptData.numbers.values(),).filter(x => regex("\\p{Nd}",).test(x,),);
 
     // Let’s divide up the number into groups of thousands.
-    const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x!==thousand,);
+    const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x !== thousand,);
 
     // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
     // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
