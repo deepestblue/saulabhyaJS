@@ -246,7 +246,7 @@ scriptNames.forEach(script => {
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.misc,],
         a => a.reverse(),);
-    scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, {[val[0]]: val[1],},), {},);
+    scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
 },);
 
 scriptNames.push("Latn",);
@@ -331,7 +331,7 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
             minThousands: thousands,
         };
     },
-    {total: 0, minThousands: Infinity,},
+    { total: 0, minThousands: Infinity, },
     ).total;
 };
 
@@ -345,7 +345,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
 
     const processChar = (currState, srcChar,) => {
         const tgtChar = scriptData.brahmicToLatin[srcChar];
-        const nextState = (({transliteratedText, number,},) => ({transliteratedText, number,}))(currState,);
+        const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(currState,);
 
         // Vowel special treatments:
         if (currState.isConsonant && ! vowelMarks.includes(srcChar,)) {

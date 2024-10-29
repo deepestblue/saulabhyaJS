@@ -290,7 +290,7 @@ iḻakkaṇam payiḻumpoṛutu eṭṭu vēṯṯumaiyurupukaḷ, atāvatu ai
 kuṯippāka, ivvitimuṯai peyarkaḷukkum poruntum. irāmanātapurattaic cērntavar “irāmanātapurattuc cīṉivāca ayyaṅkār”. makārācapurattiḻ piṯantavar “makārācapurattu vicuvanāta ayyar”. kumpakōṇattiḻ vāṛntavar “kumpakōṇattu irācamāṇikkam piḷḷai”. māmpaḻattiḻ vacikkum tāttā “māmpaḻattut tāttā”. paḻḻāvarattiḻ vāṛum māmaṉ “paḻḻāvarattu māmaṉ”.
 
 cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātuṭā? irāmaccantirā!
-        `,};
+        `, };
         QUnit.test("Taml to Latn: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
@@ -338,7 +338,7 @@ lēkhēṣu saṁskr̥tāditarā bhāratīyabhāṣāḥ prādēśika
 kaṭākṣaḥ asya astīti innantaṁ kaṭākṣī । sambuddhau na ṅisambuddhau ityanēna kaṭākṣin । dēvyāḥ strītvāt r̥nnēbhyō ṅīp ityataḥ ṇatvācca kaṭākṣiṇī sambuddhau ēṅhrasvātsambuddhēḥ iti hrasvēkārō vihitaḥ tataḥ kaṭākṣiṇi iti vācyam । tathaiva sākṣiṇi । ↩
 
 athānyabhāṣāṇāmadhikāraḥ svapradēṣvēvōta nēti । aitihāsikabhāṣāśāstrē nipuṇā manvatē yat prathamadrāmiḍabhāṣayā kayācidēva dākṣiṇātyē purā vyāhriyatē sma tasyāścacchāyā saṁskr̥tamapi patitā । mīnakuṭumbanīrādayaḥ śabdāḥ prathamadrāmiḍāt saṅgr̥hītā iti spaṣṭaṁ yatō drāmiḍabhāṣāsu tacchabdaiḥ sambaddhānītarāṇi padānyapi prayujyantē yēṣāṁ vyavahāraḥ saṁskr̥tē nāsti । punaśca drāmiḍabhāṣāsu katipayāsu dantyākṣarāṇi mūrdhanyākṣarāṇi vihāya vāyukōśīyākṣarāṇyapi prasiddhāni । saṁskr̥tasambaddhēṣu bhāṣāntarēṣu yavanādiṣu mūrdhanyākṣarāṇāmapyabhāvāt tāni mūrdhanyākṣarāṇi nanu drāmiḍabhāṣābhyaḥ saṁskr̥taṁ praviṣṭāni syuḥ । drāmiḍabhāṣāṇāmadhikāra ābhāratamathavā nyūnātinyūnamādākṣiṇātyaṁ vartatē iti sāraḥ ।
-        `,};
+        `, };
 
         QUnit.test("Gran to Latn: sa text with punctuation, spacing, etc.", t => {
             t.deepEqual(
