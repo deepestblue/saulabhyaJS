@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/deepestblue/SaulabhyaJS/issues"
   },
-  "homepage": "https://github.com/deepestblue/SaulabhyaJS#readme"
+  "homepage": "https://github.com/deepestblue/SaulabhyaJS#readme",
+  "dependencies": {
+    "@eslint/js": "^9.13.0",
+    "@stylistic/eslint-plugin": "^2.9.0",
+    "eslint": "^9.13.0",
+    "eslint-plugin-qunit": "^8.1.2",
+    "globals": "^15.11.0"
+  }
 }
