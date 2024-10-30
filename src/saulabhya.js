@@ -454,6 +454,8 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
             continue;
         }
 
+        // This seems to be the cleanest way to implement the algorithm, despite ESLint misgivings.
+        // eslint-disable-next-line no-loop-func
         [1, 10, 100,].forEach(place => {
             // Extract the digit at ‘place’.
             const digit = Math.floor(rem / place,) % 10;
