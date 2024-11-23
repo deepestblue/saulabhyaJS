@@ -21,10 +21,11 @@
   },
   "homepage": "https://github.com/deepestblue/SaulabhyaJS#readme",
   "dependencies": {
-    "@eslint/js": "^9.13.0",
+    "@eslint/js": "^9.15.0",
     "@stylistic/eslint-plugin": "^2.9.0",
-    "eslint": "^9.13.0",
+    "eslint": "^9.15.0",
     "eslint-plugin-qunit": "^8.1.2",
-    "globals": "^15.11.0"
+    "globals": "^15.11.0",
+    "node-qunit-puppeteer": "^2.2.0"
   }
 }
