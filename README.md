@@ -40,8 +40,8 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 ## Contributing
 
 * Add test coverage to `saulabhya.test.js`.
-* Launch `test/test.html` in a browser to ensure all tests pass.
-* Also run `jshint .`
+* Run all the tests in `test/test.html`, for instance through running a local webserver and opening `test/test.html` in a browser.
+* Also run `npx eslint .`.
 
 ## History
 
