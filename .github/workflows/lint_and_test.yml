@@ -1,6 +1,6 @@
 name: Run linter and unit tests
 
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   lint_and_test:
