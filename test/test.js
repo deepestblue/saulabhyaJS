@@ -89,6 +89,94 @@ QUnit.module("Telu unit tests", () => {
     },);
 },);
 
+QUnit.module("Knda unit tests", () => {
+    const data = {
+        Knda: [
+            "ಅ ಆ ಇ ಈ ಉ ಊ ಎ ಏ ಐ ಒ ಓ ಔ",
+            "ಕ ಕಾ ಕಿ ಕೀ ಕು ಕೂ ಕೆ ಕೇ ಕೈ ಕೊ ಕೋ ಕೌ",
+            "ಕ್ ಙ್ ಚ್ ಞ್ ಟ್ ಣ್ ಱ್ ಴್ ತ್ ನ್ ಪ್ ಮ್ ಯ್ ರ್ ಲ್ ವ್ ೞ್ ಳ್",
+            "ಕ ಙ ಚ ಞ ಟ ಣ ಱ ಴ ತ ನ ಪ ಮ ಯ ರ ಲ ವ ೞ ಳ",
+        ],
+        Latn: [
+            "a ā i ī u ū e ē ai o ō au",
+            "ka kā ki kī ku kū ke kē kai ko kō kau",
+            "k ṅ c ñ ṭ ṇ ṯ ṉ t n p m y r ḻ v ṛ ḷ",
+            "ka ṅa ca ña ṭa ṇa ṯa ṉa ta na pa ma ya ra ḻa va ṛa ḷa",
+        ],
+    };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Knda.length,).keys(),].forEach(i => {
+            QUnit.test(data.Knda[i], t => {
+                t.deepEqual(
+                    transliterate("Knda", "Latn", data.Knda[i],),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
+    QUnit.module("From Latin", () => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
+            QUnit.test(data.Latn[i], t => {
+                t.deepEqual(
+                    transliterate("Latn", "Knda", data.Latn[i],),
+                    data.Knda[i],);
+            },);
+        },);
+    },);
+},);
+
+QUnit.module("Gran unit tests", () => {
+    const data = {
+        Gran: [
+            "𑌅 𑌆 𑌇 𑌈 𑌉 𑌊 𑌋 𑍠 𑌌 𑍡 𑌏 𑌐 𑌓 𑌔 𑌅𑌂 𑌅𑌁 𑌅𑌃",
+            "𑌕 𑌕𑌾 𑌕𑌿 𑌕𑍀 𑌕𑍁 𑌕𑍂 𑌕𑍃 𑌕𑍄 𑌕𑍢 𑌕𑍣 𑌕𑍇 𑌕𑍈 𑌕𑍋 𑌕𑍌 𑌕𑌂 𑌕𑌁 𑌕𑌃",
+            "𑌕𑍍 𑌖𑍍 𑌗𑍍 𑌘𑍍 𑌙𑍍 𑌚𑍍 𑌛𑍍 𑌜𑍍 𑌝𑍍 𑌞𑍍 𑌟𑍍 𑌠𑍍 𑌡𑍍 𑌢𑍍 𑌣𑍍 𑌤𑍍 𑌥𑍍 𑌦𑍍 𑌧𑍍 𑌨𑍍 𑌪𑍍 𑌫𑍍 𑌬𑍍 𑌭𑍍 𑌮𑍍 𑌯𑍍 𑌰𑍍 𑌲𑍍 𑌳𑍍 𑌵𑍍 𑌶𑍍 𑌷𑍍 𑌸𑍍 𑌹𑍍",
+            "𑌕 𑌖 𑌗 𑌘 𑌙 𑌚 𑌛 𑌜 𑌝 𑌞 𑌟 𑌠 𑌡 𑌢 𑌣 𑌤 𑌥 𑌦 𑌧 𑌨 𑌪 𑌫 𑌬 𑌭 𑌮 𑌯 𑌰 𑌲 𑌳 𑌵 𑌶 𑌷 𑌸 𑌹",
+            "𑌕𑌾 𑌖𑌾 𑌗𑌾 𑌘𑌾 𑌙𑌾 𑌚𑌾 𑌛𑌾 𑌜𑌾 𑌝𑌾 𑌞𑌾 𑌟𑌾 𑌠𑌾 𑌡𑌾 𑌢𑌾 𑌣𑌾 𑌤𑌾 𑌥𑌾 𑌦𑌾 𑌧𑌾 𑌨𑌾 𑌪𑌾 𑌫𑌾 𑌬𑌾 𑌭𑌾 𑌮𑌾 𑌯𑌾 𑌰𑌾 𑌲𑌾 𑌳𑌾 𑌵𑌾 𑌶𑌾 𑌷𑌾 𑌸𑌾 𑌹𑌾",
+            "𑌅𑌅𑌕𑍍𑌕𑍍",
+            "𑌕𑍍𑌕",
+            "𑌲𑌅",
+            "𑌙𑌞𑍍𑌟𑍋",
+            "𑌅𑌊",
+            "𑌇𑌓𑌐𑌅𑌓𑌨𑌿𑌤𑍀𑌨𑍌𑌳𑌈𑌅",
+            "𑌅𑌗𑍍𑌃",
+            "𑌬𑍍𑌹𑌣𑍍𑌹𑌪𑌇𑌚𑍍𑌹𑌉𑌅𑌇𑌅𑌓",
+        ],
+        Latn: [
+            "a ā i ī u ū r̥ r̥̄ l̥ l̥̄ ē ai ō au aṁ am̐ aḥ",
+            "ka kā ki kī ku kū kr̥ kr̥̄ kl̥ kl̥̄ kē kai kō kau kaṁ kam̐ kaḥ",
+            "k kh g gh ṅ c ch j jh ñ ṭ ṭh ḍ ḍh ṇ t th d dh n p ph b bh m y r l ḷ v ś ṣ s h",
+            "ka kha ga gha ṅa ca cha ja jha ña ṭa ṭha ḍa ḍha ṇa ta tha da dha na pa pha ba bha ma ya ra la ḷa va śa ṣa sa ha",
+            "kā khā gā ghā ṅā cā chā jā jhā ñā ṭā ṭhā ḍā ḍhā ṇā tā thā dā dhā nā pā phā bā bhā mā yā rā lā ḷā vā śā ṣā sā hā",
+            "aakk",
+            "kka",
+            "laa",
+            "ṅañṭō",
+            "aū",
+            "iōaiaōnitīnauḷaīa",
+            "agḥ",
+            "b:haṇhapa:ic:ha:ua:iaō",
+        ],
+    };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Gran.length,).keys(),].forEach(i => {
+            QUnit.test(data.Gran[i], t => {
+                t.deepEqual(
+                    transliterate("Gran", "Latn", data.Gran[i],),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
+    QUnit.module("From Latin", () => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
+            QUnit.test(data.Latn[i], t => {
+                t.deepEqual(
+                    transliterate("Latn", "Gran", data.Latn[i],),
+                    data.Gran[i],);
+            },);
+        },);
+    },);
+},);
+
 QUnit.module("Deva unit tests", () => {
     const data = {
         Deva: [
