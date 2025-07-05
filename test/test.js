@@ -347,35 +347,37 @@ QUnit.module("Integration tests", () => {
     QUnit.module("ta", () => {
         const textWithPunctuationAndSpacing = {
             Taml: `
-பெரும்பாலும் மகரத்தில் முடியும் சொற்களுக்கு அத்துச்சாரியை வரும். மரத்தை நோக்கினேன். பழத்தினது சுவை. ஆயிரத்தில் ஒருவன். மகரத்தில் முடியும்.
-
-இலக்கணம் பயிலும்பொழுது எட்டு வேற்றுமையுருபுகள், அதாவது ஐ ஆல் ஓடு உடன் முதலியன, பயின்றேன். சில ஆண்டாக வடமொழி கற்கிறேன். வடமொழியிலும் வேற்றுமையுருபுகள் உள்ளன. மொழியை விளக்க இலக்கணம் எனில், வடமொழியில் பெயர்ச்சொற்களை விளக்க வேற்றுமையுருபுகள் இன்றியமையாதவை. உரையிலோ செய்யுளிலோ பெயர்ச்சொல்லது முடிவில் வரும் பிற்சேர்க்கைகள் எட்டே. அவ்வெட்டது மூலம் பெயர்ச்சொல் எல்லாமே எட்டாக வேறுபடும். இப்பிற்சேர்க்கைதான் வேறுபாட்டது உருபகளென கருதப்படுகின்றன.
+மனிதப் பிறவியினர் சகலரும் சுதந்திரமாகவே பிறக்கின்ழனர். அவர்கள் மதிப்பிலும் உரிமைகளிலும் சமமானவர்கள். அவர்கள் நியாயத்தையும் மனசாட்சியையும் இயற்பண்பாகப் பெற்றவர்கள். அவர்கள் ஒருவருடனொருவர் சகோதர உணர்வுப் பாங்கில் நடந்துகொள்ளல் வேண்டும்.
 
 ௨௱௩வது மனிதன்.
-
-குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும். இராமநாதபுரத்தைச் சேர்ந்தவர் “இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்”. மகாராசபுரத்தில் பிறந்தவர் “மகாராசபுரத்து விசுவநாத அய்யர்”. கும்பகோணத்தில் வாழ்ந்தவர் “கும்பகோணத்து இராசமாணிக்கம் பிள்ளை”. மாம்பலத்தில் வசிக்கும் தாத்தா “மாம்பலத்துத் தாத்தா”. பல்லாவரத்தில் வாழும் மாமன் “பல்லாவரத்து மாமன்”.
 
 சந்தடியென்று மறந்தாயோ! இங்கில்லையோ! எதற்கு தயை வராதுடா? இராமச்சந்திரா!
         `,
             Knda: `
-ಪೆರುಮ್ಪಾಲುಮ್ ಮಕರತ್ತಿಲ್ ಮುಟಿಯುಮ್ ಚೊಱ್ಕಳುಕ್ಕು ಅತ್ತುಚ್ಚಾರಿಯೈ ವರುಮ್. ಮರತ್ತೈ ನೋಕ್ಕಿ಴ೇ಴್. ಪೞತ್ತಿ಴ತು ಚುವೈ. ಆಯಿರತ್ತಿಲ್ ಒರುವ಴್. ಮಕರತ್ತಿಲ್ ಮುಟಿಯುಮ್.
-
-ಇಲಕ್ಕಣಮ್ ಪಯಿಲುಮ್ಪೊೞುತು ಎಟ್ಟು ವೇಱ್ಱುಮೈಯುರುಪುಕಳ್, ಅತಾವತು ಐ ಆಲ್ ಓಟು ಉಟ಴್ ಮುತಲಿಯ಴, ಪಯಿ಴್ಱೇ಴್. ಚಿಲ ಆಣ್ಟಾಕ ವಟಮೊೞಿ ಕಱ್ಕಿಱೇ಴್. ವಟಮೊೞಿಯಿಲುಮ್ ವೇಱ್ಱುಮೈಯುರುಪುಕಳ್ ಉಳ್ಳ಴. ಮೊೞಿಯೈ ವಿಳಕ್ಕ ಇಲಕ್ಕಣಮ್ ಎ಴ಿಲ್, ವಟಮೊೞಿಯಿಲ್ ಪೆಯರ್ಚ್ಚೊಱ್ಕಳೈ ವಿಳಕ್ಕ ವೇಱ್ಱುಮೈಯುರುಪುಕಳ್ ಇ಴್ಱಿಯಮೈಯಾತವೈ. ಉರೈಯಿಲೋ ಚೆಯ್ಯುಳಿಲೋ ಪೆಯರ್ಚ್ಚೊಲ್ಲತು ಮುಟಿವಿಲ್ ವರುಮ್ ಪಿಱ್ಚೇರ್ಕ್ಕೈಕಳ್ ಎಟ್ಟೇ. ಅವ್ವೆಟ್ಟತು ಮೂಲಮ್ ಪೆಯರ್ಚ್ಚೊಲ್ ಎಲ್ಲಾಮೇ ಎಟ್ಟಾಕ ವೇಱುಪಟುಮ್. ಇಪ್ಪಿಱ್ಚೇರ್ಕ್ಕೈತಾ಴್ ವೇಱುಪಾಟ್ಟತು ಉರುಪಕಳೆ಴ ಕರುತಪ್ಪಟುಕಿ಴್ಱ಴.
+ಮ಴ಿತಪ್ ಪಿಱವಿಯಿ಴ರ್ ಚಕಲರುಮ್ ಚುತನ್ತಿರಮಾಕವೇ ಪಿಱಕ್ಕಿ಴್ೞ಴ರ್. ಅವರ್ಕಳ್ ಮತಿಪ್ಪಿಲುಮ್ ಉರಿಮೈಕಳಿಲುಮ್ ಚಮಮಾ಴ವರ್ಕಳ್. ಅವರ್ಕಳ್ ನಿಯಾಯತ್ತೈಯುಮ್ ಮ಴ಚಾಟ್ಚಿಯೈಯುಮ್ ಇಯಱ್ಪಣ್ಪಾಕಪ್ ಪೆಱ್ಱವರ್ಕಳ್. ಅವರ್ಕಳ್ ಒರುವರುಟ಴ೊರುವರ್ ಚಕೋತರ ಉಣರ್ವುಪ್ ಪಾಙ್ಕಿಲ್ ನಟನ್ತುಕೊಳ್ಳಲ್ ವೇಣ್ಟುಮ್.
 
 ೨೦೩ವತು ಮ಴ಿತ಴್.
 
-ಕುಱಿಪ್ಪಾಕ, ಇವ್ವಿತಿಮುಱೈ ಪೆಯರ್ಕಳುಕ್ಕುಮ್ ಪೊರುನ್ತುಮ್. ಇರಾಮನಾತಪುರತ್ತೈಚ್ ಚೇರ್ನ್ತವರ್ “ಇರಾಮನಾತಪುರತ್ತುಚ್ ಚೀ಴ಿವಾಚ ಅಯ್ಯಙ್ಕಾರ್”. ಮಕಾರಾಚಪುರತ್ತಿಲ್ ಪಿಱನ್ತವರ್ “ಮಕಾರಾಚಪುರತ್ತು ವಿಚುವನಾತ ಅಯ್ಯರ್”. ಕುಮ್ಪಕೋಣತ್ತಿಲ್ ವಾೞ್ನ್ತವರ್ “ಕುಮ್ಪಕೋಣತ್ತು ಇರಾಚಮಾಣಿಕ್ಕಮ್ ಪಿಳ್ಳೈ”. ಮಾಮ್ಪಲತ್ತಿಲ್ ವಚಿಕ್ಕುಮ್ ತಾತ್ತಾ “ಮಾಮ್ಪಲತ್ತುತ್ ತಾತ್ತಾ”. ಪಲ್ಲಾವರತ್ತಿಲ್ ವಾೞುಮ್ ಮಾಮ಴್ “ಪಲ್ಲಾವರತ್ತು ಮಾಮ಴್”.
-
 ಚನ್ತಟಿಯೆ಴್ಱು ಮಱನ್ತಾಯೋ! ಇಙ್ಕಿಲ್ಲೈಯೋ! ಎತಱ್ಕು ತಯೈ ವರಾತುಟಾ? ಇರಾಮಚ್ಚನ್ತಿರಾ!
         `,
-            Latn: `
-perumpāḻum makarattiḻ muṭiyum coṯkaḷukku attuccāriyai varum. marattai nōkkiṉēṉ. paṛattiṉatu cuvai. āyirattiḻ oruvaṉ. makarattiḻ muṭiyum.
+            Telu: `
+మ఩ితప్ పిఱవియి఩ర్ చకలరుమ్ చుతన్తిరమాకవే పిఱక్కి఩్ఴ఩ర్. అవర్కళ్ మతిప్పిలుమ్ ఉరిమైకళిలుమ్ చమమా఩వర్కళ్. అవర్కళ్ నియాయత్తైయుమ్ మ఩చాట్చియైయుమ్ ఇయఱ్పణ్పాకప్ పెఱ్ఱవర్కళ్. అవర్కళ్ ఒరువరుట఩ొరువర్ చకోతర ఉణర్వుప్ పాఙ్కిల్ నటన్తుకొళ్ళల్ వేణ్టుమ్.
 
-iḻakkaṇam payiḻumpoṛutu eṭṭu vēṯṯumaiyurupukaḷ, atāvatu ai āḻ ōṭu uṭaṉ mutaḻiyaṉa, payiṉṯēṉ. ciḻa āṇṭāka vaṭamoṛi kaṯkiṯēṉ. vaṭamoṛiyiḻum vēṯṯumaiyurupukaḷ uḷḷaṉa. moṛiyai viḷakka iḻakkaṇam eṉiḻ, vaṭamoṛiyiḻ peyarccoṯkaḷai viḷakka vēṯṯumaiyurupukaḷ iṉṯiyamaiyātavai. uraiyiḻō ceyyuḷiḻō peyarccoḻḻatu muṭiviḻ varum piṯcērkkaikaḷ eṭṭē. avveṭṭatu mūḻam peyarccoḻ eḻḻāmē eṭṭāka vēṯupaṭum. ippiṯcērkkaitāṉ vēṯupāṭṭatu urupakaḷeṉa karutappaṭukiṉṯaṉa.
+౨౦౩వతు మ఩ిత఩్.
+
+చన్తటియె఩్ఱు మఱన్తాయో! ఇఙ్కిల్లైయో! ఎతఱ్కు తయై వరాతుటా? ఇరామచ్చన్తిరా!
+        `,
+            Mlym: `
+മഩിതപ് പിറവിയിഩര് ചകലരുമ് ചുതന്തിരമാകവേ പിറക്കിഩ്ഴഩര്. അവര്കള് മതിപ്പിലുമ് ഉരിമൈകളിലുമ് ചമമാഩവര്കള്. അവര്കള് നിയായത്തൈയുമ് മഩചാട്ചിയൈയുമ് ഇയറ്പണ്പാകപ് പെറ്റവര്കള്. അവര്കള് ഒരുവരുടഩൊരുവര് ചകോതര ഉണര്വുപ് പാങ്കില് നടന്തുകൊള്ളല് വേണ്ടുമ്.
+
+൨൱൩വതു മഩിതഩ്.
+
+ചന്തടിയെഩ്റു മറന്തായോ! ഇങ്കില്ലൈയോ! എതറ്കു തയൈ വരാതുടാ? ഇരാമച്ചന്തിരാ!
+        `,
+            Latn: `
+maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṛaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
 
 203vatu maṉitaṉ.
-
-kuṯippāka, ivvitimuṯai peyarkaḷukkum poruntum. irāmanātapurattaic cērntavar “irāmanātapurattuc cīṉivāca ayyaṅkār”. makārācapurattiḻ piṯantavar “makārācapurattu vicuvanāta ayyar”. kumpakōṇattiḻ vāṛntavar “kumpakōṇattu irācamāṇikkam piḷḷai”. māmpaḻattiḻ vacikkum tāttā “māmpaḻattut tāttā”. paḻḻāvarattiḻ vāṛum māmaṉ “paḻḻāvarattu māmaṉ”.
 
 cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātuṭā? irāmaccantirā!
         `, };
@@ -397,6 +399,26 @@ cantaṭiyeṉṯu maṯantāyō! iṅkiḻḻaiyō! etaṯku tayai varātut
         QUnit.test("Knda to Taml: ta text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Knda", "Taml", textWithPunctuationAndSpacing.Knda,),
+                textWithPunctuationAndSpacing.Taml,);
+        },);
+        QUnit.test("Taml to Telu: ta text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Taml", "Telu", textWithPunctuationAndSpacing.Taml,),
+                textWithPunctuationAndSpacing.Telu,);
+        },);
+        QUnit.test("Telu to Taml: ta text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Telu", "Taml", textWithPunctuationAndSpacing.Telu,),
+                textWithPunctuationAndSpacing.Taml,);
+        },);
+        QUnit.test("Taml to Mlym: ta text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Taml", "Mlym", textWithPunctuationAndSpacing.Taml,),
+                textWithPunctuationAndSpacing.Mlym,);
+        },);
+        QUnit.test("Mlym to Taml: ta text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Mlym", "Taml", textWithPunctuationAndSpacing.Mlym,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
     },);
