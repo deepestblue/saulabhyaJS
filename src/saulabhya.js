@@ -58,8 +58,8 @@ const scriptsData = {
             ["", "𑍍",],
         ],),
         misc: new Map([
-            ["Ω", "𑍐",], ["।", "।",], ["॥", "॥",], ["…", "𑍝",],
-            ["↩", "↩",],
+            ["Ω", "𑍐",], ["।", "।",], ["॥", "॥",],
+            ["↩", "↩",], ["…", "𑍝",],
         ],),
         modifiers: new Map([
             ["m̐", "𑌁",], ["ṁ", "𑌂",], ["ḥ", "𑌃",],
@@ -216,7 +216,7 @@ const scriptsData = {
         ],),
         misc: new Map([
             ["Ω", "ॐ",], ["₨", "₹",], ["।", "।",], ["॥", "॥",],
-            ["↩", "↩",],
+            ["↩", "↩",], ["…", "३",],
         ],),
         modifiers: new Map([
             ["m̐", "ँ",], ["ṁ", "ं",], ["ḥ", "ः",],
@@ -244,7 +244,7 @@ const thousandBasedNumberScripts = ["Taml", "Gran", "Mlym",]; // Mlym, Taml and 
 scriptNames.forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
-        [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.misc,],
+        [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers,],
         a => a.reverse(),);
     scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
 },);
@@ -340,11 +340,24 @@ const brahmicToLatin = (otherScript, sourceText,) => {
 
     const vowelMarks = Array.from(scriptData.vowelMarks.values(),);
     const consonants = Array.from(scriptData.consonants.values(),);
+    const letters = [
+        ...Array.from(scriptData.vowels.values(),),
+        ...Array.from(scriptData.modifiers.values(),),
+        ...vowelMarks,
+        ...consonants,
+    ];
 
     const whitespaceRegex = new RegExp(whitespace, "v",);
 
     const processChar = (currState, srcChar,) => {
-        const tgtChar = scriptData.brahmicToLatin[srcChar];
+        const tgtChar = (function () {
+            const tgtChat = scriptData.brahmicToLatin[srcChar];
+            if (tgtChat === 3 && otherScript === "Deva" && currState.isLetter) {
+                return "…";
+            }
+            return tgtChat;
+        })();
+
         const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(currState,);
 
         // Vowel special treatments:
@@ -364,6 +377,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
 
         nextState.isConsonant = consonants.includes(srcChar,);
         nextState.isVowelBaseVowel = tgtChar === baseVowel;
+        nextState.isLetter = letters.includes(srcChar,);
 
         // Consonant special treatments:
         if (currState.isHalfPlosive && tgtChar === aspirateConsonant) {
@@ -410,6 +424,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         isVowelBaseVowel: false,
         isPlosive: false,
         isHalfPlosive: false,
+        isLetter: false,
         number: "",
         transliteratedText: "",
     };
