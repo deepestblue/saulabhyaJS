@@ -211,6 +211,8 @@ QUnit.module("Deva unit tests", () => {
             "लक्ष्मि३",
             "लक्ष्मी३",
             "सुमङ्गलाँ३",
+            "दुᳵखम्",
+            "वᳶपितरः",
         ],
         Latn: [
             "a ā i ī u ū r̥ r̥̄ l̥ l̥̄ ē ai ō au aṁ am̐ aḥ",
@@ -232,6 +234,8 @@ QUnit.module("Deva unit tests", () => {
             "lakṣmi…",
             "lakṣmī…",
             "sumaṅgalām̐…",
+            "duẖkham",
+            "vaḫpitaraḥ",
         ],
     };
     QUnit.module("To Latin", () => {
