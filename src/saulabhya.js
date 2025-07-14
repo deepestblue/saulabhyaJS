@@ -351,13 +351,12 @@ const brahmicToLatin = (otherScript, sourceText,) => {
     const whitespaceRegex = new RegExp(whitespace, "v",);
 
     const processChar = (currState, srcChar,) => {
-        const tgtChar = (function () {
-            const tgtChat = scriptData.brahmicToLatin[srcChar];
-            if (tgtChat === 3 && otherScript === "Deva" && currState.isLetter) {
+        const tgtChar = (c => {
+            if (c === 3 && otherScript === "Deva" && currState.isLetter) {
                 return "…";
             }
-            return tgtChat;
-        })();
+            return c;
+        })(scriptData.brahmicToLatin[srcChar],);
 
         const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(currState,);
 
