@@ -351,18 +351,18 @@ const brahmicToLatin = (otherScript, sourceText,) => {
 
     const whitespaceRegex = new RegExp(whitespace, "v",);
 
-    const processChar = (currState, srcChar,) => {
+    const processChar = (prevState, srcChar,) => {
         const tgtChar = (c => {
-            if (c === 3 && otherScript === "Deva" && currState.isLetter) {
+            if (c === 3 && otherScript === "Deva" && prevState.isLetter) {
                 return "…";
             }
             return c;
         })(scriptData.brahmicToLatin[srcChar],);
 
-        const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(currState,);
+        const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(prevState,);
 
         // Vowel special treatments:
-        if (currState.isConsonant && ! vowelMarks.includes(srcChar,)) {
+        if (prevState.isConsonant && ! vowelMarks.includes(srcChar,)) {
             // If we’ve seen a consonant and we don’t have a vowel‐mark next, emit an implicit vowel.
             nextState.transliteratedText += baseVowel;
             if (diphthongConsequents.includes(tgtChar,)) {
@@ -371,7 +371,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
             }
         }
 
-        if (currState.isVowelBaseVowel && diphthongConsequents.includes(tgtChar,)) {
+        if (prevState.isVowelBaseVowel && diphthongConsequents.includes(tgtChar,)) {
             // Similarly, if there was an explicit base‐vowel and we’re seeing a diphthong consequent, emit a separator.
             nextState.transliteratedText += separator;
         }
@@ -381,7 +381,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         nextState.isLetter = letters.includes(srcChar,);
         nextState.isVisargaAlternate = tgtChar === "ẖ" || tgtChar === "ḫ";
 
-        if (currState.isVisargaAlternate && otherScript === "Gran") {
+        if (prevState.isVisargaAlternate && otherScript === "Gran") {
             const terminalVisargaAlternateRegex = regex(`h.$`,);
             if (tgtChar[0] === "k") {
                 nextState.transliteratedText = nextState.transliteratedText.replace(terminalVisargaAlternateRegex, "ẖ",);
@@ -392,12 +392,12 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         }
 
         // Consonant special treatments:
-        if (currState.isHalfPlosive && tgtChar === aspirateConsonant) {
+        if (prevState.isHalfPlosive && tgtChar === aspirateConsonant) {
             // If we’ve seen a half‐plosive and then see the aspirate consonant, we again need a separator.
             nextState.transliteratedText += separator;
         }
 
-        nextState.isHalfPlosive = currState.isPlosive && tgtChar === suppressedVowel;
+        nextState.isHalfPlosive = prevState.isPlosive && tgtChar === suppressedVowel;
         nextState.isPlosive = plosiveConsonants.includes(tgtChar,);
 
         // If we’re processing a non–place value script, …
@@ -408,8 +408,8 @@ const brahmicToLatin = (otherScript, sourceText,) => {
                 return nextState;
             }
             // … until we see a non–number symbol, at which we transliterate the entire number in one shot.
-            if (currState.number) {
-                nextState.transliteratedText += southDravidianToIndicNumbers(currState.number, scriptData,);
+            if (prevState.number) {
+                nextState.transliteratedText += southDravidianToIndicNumbers(prevState.number, scriptData,);
                 nextState.number = "";
             }
         }
