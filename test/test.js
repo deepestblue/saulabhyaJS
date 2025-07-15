@@ -478,7 +478,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 
 QUnit.module("Invalid inputs", () => {
     QUnit.test("Invalid Ta text in Taml", t => {
-        const invalidTaTamlText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
+        const invalidTaTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
         t.throws(
             () => transliterate("Taml", "Latn", invalidTaTamlText,),
             err => err instanceof Error &&
@@ -486,7 +486,7 @@ QUnit.module("Invalid inputs", () => {
         );
     },);
     QUnit.test("Invalid Ta text in Latn", t => {
-        const invalidTaLatnText = "குறிப்பாக, இவ்விதிமுறை பெயர்களுக்கும் பொருந்தும்: இராமநாதபுரத்தைச் சேர்ந்தவர் இராமநாதபுரத்துச் சீனிவாச அய்யங்கார்.";
+        const invalidTaLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
         t.throws(
             () => transliterate("Latn", "Taml", invalidTaLatnText,),
             err => err instanceof Error &&
