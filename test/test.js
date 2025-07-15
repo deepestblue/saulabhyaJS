@@ -146,6 +146,8 @@ QUnit.module("Gran unit tests", () => {
             "𑌲𑌕𑍍𑌷𑍍𑌮𑌿𑍝",
             "𑌲𑌕𑍍𑌷𑍍𑌮𑍀𑍝",
             "𑌸𑍁𑌮𑌙𑍍𑌗𑌲𑌾𑌁𑍝",
+            "𑌦𑍁ᳲ𑌖𑌮𑍍",
+            "𑌵ᳲ𑌪𑌿𑌤𑌰𑌃",
         ],
         Latn: [
             "a ā i ī u ū r̥ r̥̄ l̥ l̥̄ ē ai ō au aṁ am̐ aḥ",
@@ -167,6 +169,8 @@ QUnit.module("Gran unit tests", () => {
             "lakṣmi…",
             "lakṣmī…",
             "sumaṅgalām̐…",
+            "duẖkham",
+            "vaḫpitaraḥ",
         ],
     };
     QUnit.module("To Latin", () => {

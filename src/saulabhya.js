@@ -63,6 +63,7 @@ const scriptsData = {
         ],),
         modifiers: new Map([
             ["m̐", "𑌁",], ["ṁ", "𑌂",], ["ḥ", "𑌃",],
+            ["ẖ", "ᳲ",], ["ḫ", "ᳲ",],
         ],),
         consonants: new Map([
             ["k", "𑌕",], ["kh", "𑌖",], ["g", "𑌗",], ["gh", "𑌘",], ["ṅ", "𑌙",],
@@ -378,6 +379,17 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         nextState.isConsonant = consonants.includes(srcChar,);
         nextState.isVowelBaseVowel = tgtChar === baseVowel;
         nextState.isLetter = letters.includes(srcChar,);
+        nextState.isVisargaAlternate = tgtChar === "ẖ" || tgtChar === "ḫ";
+
+        if (currState.isVisargaAlternate && otherScript === "Gran") {
+            const terminalVisargaAlternateRegex = regex(`h.$`,);
+            if (tgtChar[0] === "k") {
+                nextState.transliteratedText = nextState.transliteratedText.replace(terminalVisargaAlternateRegex, "ẖ",);
+            }
+            if (tgtChar[0] === "p") {
+                nextState.transliteratedText = nextState.transliteratedText.replace(terminalVisargaAlternateRegex, "ḫ",);
+            }
+        }
 
         // Consonant special treatments:
         if (currState.isHalfPlosive && tgtChar === aspirateConsonant) {
@@ -425,6 +437,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         isPlosive: false,
         isHalfPlosive: false,
         isLetter: false,
+        isVisargaAlternate: false,
         number: "",
         transliteratedText: "",
     };
