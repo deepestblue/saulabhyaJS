@@ -376,7 +376,7 @@ QUnit.module("Integration tests", () => {
                 trivialTestText,);
         },);
     },);
-    QUnit.module("ta", () => {
+    QUnit.module("tam", () => {
         const textWithPunctuationAndSpacing = {
             Taml: `
 மனிதப் பிறவியினர் சகலரும் சுதந்திரமாகவே பிறக்கின்ழனர். அவர்கள் மதிப்பிலும் உரிமைகளிலும் சமமானவர்கள். அவர்கள் நியாயத்தையும் மனசாட்சியையும் இயற்பண்பாகப் பெற்றவர்கள். அவர்கள் ஒருவருடனொருவர் சகோதர உணர்வுப் பாங்கில் நடந்துகொள்ளல் வேண்டும்.
@@ -393,49 +393,49 @@ QUnit.module("Integration tests", () => {
             Latn: `
 maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṛaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
         `, };
-        QUnit.test("Taml to Latn: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Taml to Latn: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
                 textWithPunctuationAndSpacing.Latn,);
         },);
-        QUnit.test("Latn to Taml: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Latn to Taml: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Latn", "Taml", textWithPunctuationAndSpacing.Latn,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
-        QUnit.test("Taml to Knda: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Taml to Knda: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Knda", textWithPunctuationAndSpacing.Taml,),
                 textWithPunctuationAndSpacing.Knda,);
         },);
-        QUnit.test("Knda to Taml: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Knda to Taml: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Knda", "Taml", textWithPunctuationAndSpacing.Knda,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
-        QUnit.test("Taml to Telu: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Taml to Telu: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Telu", textWithPunctuationAndSpacing.Taml,),
                 textWithPunctuationAndSpacing.Telu,);
         },);
-        QUnit.test("Telu to Taml: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Telu to Taml: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Telu", "Taml", textWithPunctuationAndSpacing.Telu,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
-        QUnit.test("Taml to Mlym: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Taml to Mlym: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Mlym", textWithPunctuationAndSpacing.Taml,),
                 textWithPunctuationAndSpacing.Mlym,);
         },);
-        QUnit.test("Mlym to Taml: ta text with punctuation, spacing, etc.", t => {
+        QUnit.test("Mlym to Taml: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Mlym", "Taml", textWithPunctuationAndSpacing.Mlym,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
     },);
 
-    QUnit.module("sa", () => {
+    QUnit.module("cls", () => {
         const textWithPunctuationAndSpacing = {
             Gran: `
 𑌸𑌰𑍍𑌵𑍇 𑌮𑌾𑌨𑌵𑌾𑌃 𑌜𑌨𑍍𑌮𑌨𑌾 𑌸𑍍𑌵𑌤𑌨𑍍𑌤𑍍𑌰𑌾𑌃 𑌵𑍈𑌯𑌕𑍍𑌤𑌿𑌕𑌗𑍌𑌰𑌵𑍇𑌣 𑌅𑌧𑌿𑌕𑌾𑌰𑍇𑌣 𑌚 𑌤𑍁𑌲𑍍𑌯𑌾𑌃 𑌏𑌵 । 𑌸𑌰𑍍𑌵𑍇𑌷𑌾𑌂 𑌵𑌿𑌵𑍇𑌕𑌃 𑌆𑌤𑍍𑌮𑌸𑌾𑌕𑍍𑌷𑍀 𑌚 𑌵𑌰𑍍𑌤𑌤𑍇 । 𑌸𑌰𑍍𑌵𑍇 𑌪𑌰𑌸𑍍𑌪𑌰𑌂 𑌭𑍍𑌰𑌾𑌤𑍃𑌭𑌾𑌵𑍇𑌨 𑌵𑍍𑌯𑌵𑌹𑌰𑍇𑌯𑍁𑌃 ।
@@ -453,22 +453,22 @@ sarvē mānavāḥ janmanā svatantrāḥ vaiyaktikagauravēṇa adhikār
 sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr̥śā adhikāradr̥śā ca samānāḥ ēva vartantē । ētē sarvē cētanātarkaśaktibhyāṁ susampannāḥ santi । api ca sarvēpi bandhutvabhāvanayā parasparaṁ vyavaharantu ।
         `, };
 
-        QUnit.test("Gran to Latn: sa text with punctuation, spacing, etc.", t => {
+        QUnit.test("Gran to Latn: cls text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran,),
                 textWithPunctuationAndSpacing.Latn,);
         },);
-        QUnit.test("Latn to Gran: sa text with punctuation, spacing, etc.", t => {
+        QUnit.test("Latn to Gran: cls text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn,),
                 textWithPunctuationAndSpacing.Gran,);
         },);
-        QUnit.test("Gran to Deva: sa text with punctuation, spacing, etc.", t => {
+        QUnit.test("Gran to Deva: cls text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran,),
                 textWithPunctuationAndSpacing.Deva,);
         },);
-        QUnit.test("Deva to Gran: sa text with punctuation, spacing, etc.", t => {
+        QUnit.test("Deva to Gran: cls text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva,),
                 textWithPunctuationAndSpacing.Gran,);
@@ -477,7 +477,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 },);
 
 QUnit.module("Invalid inputs", () => {
-    QUnit.test("Invalid Ta text in Taml", t => {
+    QUnit.test("Invalid Tam text in Taml", t => {
         const invalidTaTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
         t.throws(
             () => transliterate("Taml", "Latn", invalidTaTamlText,),
@@ -485,7 +485,7 @@ QUnit.module("Invalid inputs", () => {
                 /^Unknown Taml character: .\.$/v.test(err.message,),
         );
     },);
-    QUnit.test("Invalid Ta text in Latn", t => {
+    QUnit.test("Invalid Tam text in Latn", t => {
         const invalidTaLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
         t.throws(
             () => transliterate("Latn", "Taml", invalidTaLatnText,),
@@ -494,7 +494,7 @@ QUnit.module("Invalid inputs", () => {
         );
     },);
 
-    QUnit.test.each("Invalid Tamil number", [
+    QUnit.test.each("Invalid Tamil numbers", [
         "௨௩",
         "௰௰",
         "௰௱",
