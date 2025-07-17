@@ -298,10 +298,8 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
             throw new Error(`Invalid number: ${sourceNumber}.`,);
         }
 
-        if (thousands > 0) {
-            // Strip off the thousand symbols, unless there are none.
-            group = group.slice(0, -thousands,);
-        }
+        // Strip off the thousand symbols.
+        group = group.slice(0, group.length - thousands,);
 
         const anyDigit = anyOfArray(digits,);
         const subThousandNumberRegex = regex(
@@ -334,7 +332,7 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
                         10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1)
                         : 0) +
                         (components[2] ? // If there is a hundreds symbol, …
-                        // … add in the hundreds, treating a missing digit prefix as 1.
+                            // … add in the hundreds, treating a missing digit prefix as 1.
                             100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
                             : 0)
                 : 1), // Nothing in front of the thousand symbols is just the value of the power.
