@@ -247,7 +247,7 @@ scriptNames.forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers,],
-        a => a.reverse(),);
+        a => [...a,].reverse(),);
     scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
 },);
 
@@ -304,7 +304,15 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
         }
 
         const anyDigit = anyOfArray(digits,);
-        const subThousandNumberRegex = regex(`^(?:(${anyDigit}?)(${hundred}))?(?:(${anyDigit})?(${ten}))?(${anyDigit}?)$`,);
+        const subThousandNumberRegex = regex(
+            // Hundreds
+            `^(?:(${anyDigit}?)(${hundred}))?` +
+            // Tens
+            `(?:(${anyDigit})?(${ten}))?` +
+            // Units
+            `(${anyDigit}?)$`,
+        );
+
         const components = subThousandNumberRegex.exec(group,);
 
         if (! components) {
@@ -348,6 +356,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         ...vowelMarks,
         ...consonants,
     ];
+    const numbers = new Set(scriptData.numbers.values(),);
 
     const whitespaceRegex = new RegExp(whitespace, "v",);
 
@@ -403,7 +412,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         // If we’re processing a non–place value script, …
         if (thousandBasedNumberScripts.includes(otherScript,)) {
             // … we need to accumulate number symbols …
-            if (Array.from(scriptData.numbers.values(),).includes(srcChar,)) {
+            if (numbers.has(srcChar,)) {
                 nextState.number += srcChar;
                 return nextState;
             }
@@ -467,7 +476,7 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
     // Let’s process each group of 3 digits at a time.
     for (let mille = 0; sourceNumber > 0; ++mille) {
         const rem = sourceNumber % 1000;
-        sourceNumber = (sourceNumber - rem) / 1000;
+        sourceNumber = Math.floor(sourceNumber / 1000,);
 
         // Nothing in this group.
         if (rem === 0) {
@@ -561,7 +570,7 @@ const latinToBrahmic = (otherScript, sourceText,) => {
         (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(suppressedVowel,),);
 
     // Handle separated vowels like ‘a:i’
-    const diphthongsAndConstituents = diphthongConsequents.map(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
+    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
     sourceText = sourceText.replace(
         regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
         (_unused, p1,) => baseVowel + scriptData.vowels.get(p1,),);
@@ -602,7 +611,7 @@ const transliterate = (srcScript, tgtScript, sourceText,) => {
     }
 
     if (srcScript === tgtScript) {
-        return sourceText;
+        return sourceText.normalize(tgtScript === "Latn" ? "NFD" : "NFC",);
     }
 
     if (tgtScript === "Latn") {
