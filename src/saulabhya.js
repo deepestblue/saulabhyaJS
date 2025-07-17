@@ -482,15 +482,13 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
             continue;
         }
 
-        // This seems to be the cleanest way to implement the algorithm, despite ESLint misgivings.
-        // eslint-disable-next-line no-loop-func
-        [1, 10, 100,].forEach(place => {
+        xlittedText = [1, 10, 100,].reduce((ator, place,) => {
             // Extract the digit at ‘place’.
             const digit = Math.floor(rem / place,) % 10;
 
             if (digit === 0) {
                 // Zeroes are not explicitly written.
-                return;
+                return ator;
             }
 
             /*
@@ -504,14 +502,14 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
                 ╚════════════╩═════════════╩════════════════════════╝
             */
             if (place !== 1) {
-                xlittedText = scriptData.numbers.get(place,) + xlittedText;
+                ator = scriptData.numbers.get(place,) + ator;
                 if (digit === 1) {
-                    return;
+                    return ator;
                 }
             }
 
-            xlittedText = scriptData.numbers.get(digit,) + xlittedText;
-        },);
+            return scriptData.numbers.get(digit,) + ator;
+        }, "",) + xlittedText;
     }
 
     return xlittedText;
