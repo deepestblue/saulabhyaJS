@@ -253,7 +253,7 @@ scriptNames.forEach(script => {
 
 scriptNames.push("Latn",);
 
-const baseVowel = "a";
+const inherentVowel = "a";
 const plosiveConsonants = ["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",];
 const suppressedVowel = "";
 const aspirateConsonant = "h";
@@ -371,7 +371,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         // Vowel special treatments:
         if (prevState.isConsonant && ! vowelMarks.includes(srcChar,)) {
             // If we’ve seen a consonant and we don’t have a vowel‐mark next, emit an implicit vowel.
-            nextState.transliteratedText += baseVowel;
+            nextState.transliteratedText += inherentVowel;
             if (diphthongConsequents.includes(tgtChar,)) {
                 // And if we’re seeing a different vowel that’s the second‐half of a diphthong, emit a separator as well.
                 nextState.transliteratedText += separator;
@@ -384,7 +384,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         }
 
         nextState.isConsonant = consonants.includes(srcChar,);
-        nextState.isVowelBaseVowel = tgtChar === baseVowel;
+        nextState.isVowelBaseVowel = tgtChar === inherentVowel;
         nextState.isLetter = letters.includes(srcChar,);
         nextState.isVisargaAlternate = tgtChar === "ẖ" || tgtChar === "ḫ";
 
@@ -452,7 +452,7 @@ const brahmicToLatin = (otherScript, sourceText,) => {
     const finalState = [...sourceText,].reduce(processChar, initialState,);
 
     if (finalState.isConsonant) {
-        finalState.transliteratedText += baseVowel;
+        finalState.transliteratedText += inherentVowel;
     }
 
     if (finalState.number) {
@@ -571,7 +571,7 @@ const latinToBrahmic = (otherScript, sourceText,) => {
     const diphthongsAndConstituents = diphthongConsequents.flatMap(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
     sourceText = sourceText.replace(
         regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
-        (_unused, p1,) => baseVowel + scriptData.vowels.get(p1,),);
+        (_unused, p1,) => inherentVowel + scriptData.vowels.get(p1,),);
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
