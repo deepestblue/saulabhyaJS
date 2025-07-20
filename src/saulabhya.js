@@ -613,16 +613,27 @@ const transliterate = (srcScript, tgtScript, sourceText,) => {
     }
 
     if (tgtScript === "Latn") {
-        return brahmicToLatin(srcScript, sourceText.normalize("NFC",),).normalize("NFD",);
+        return brahmicToLatin(
+            srcScript,
+            sourceText.normalize("NFC",),
+        ).normalize("NFD",);
     }
 
     if (srcScript === "Latn") {
-        return latinToBrahmic(tgtScript, sourceText.normalize("NFD",),).normalize("NFC",);
+        return latinToBrahmic(
+            tgtScript,
+            sourceText.normalize("NFD",),
+        ).normalize("NFC",);
     }
 
     // Transliterate from one Brahmic script to another through Latin.
-    return latinToBrahmic(tgtScript,
-        brahmicToLatin(srcScript, sourceText,),);
+    return latinToBrahmic(
+        tgtScript,
+        brahmicToLatin(
+            srcScript,
+            sourceText.normalize("NFC",),
+        ).normalize("NFD",),
+    ).normalize("NFC",);
 };
 
 export { transliterate, };
