@@ -20,6 +20,7 @@ const scriptsData = {
             [",", ",",], ["“", "“",], ["”", "”",], ["!", "!",], ["?", "?",], [".", ".",], ["↩", "↩",],
         ],),
         modifiers: new Map([["ḵ", "ஃ",],],),
+        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "க",], ["ṅ", "ங",],
             ["c", "ச",], ["ñ", "ஞ",],
@@ -46,6 +47,7 @@ const scriptsData = {
             ["l̥", "𑌌",], ["l̥̄", "𑍡",],
             ["ē", "𑌏",], ["ai", "𑌐",],
             ["ō", "𑌓",], ["au", "𑌔",],
+            ["Ω", "𑍐",],
         ],),
         vowelMarks: new Map([
             ["a", "",], ["ā", "𑌾",],
@@ -58,12 +60,15 @@ const scriptsData = {
             ["", "𑍍",],
         ],),
         misc: new Map([
-            ["Ω", "𑍐",], ["।", "।",], ["॥", "॥",],
+            ["।", "।",], ["॥", "॥",],
             ["↩", "↩",], ["…", "𑍝",],
         ],),
         modifiers: new Map([
             ["m̐", "𑌁",], ["ṁ", "𑌂",], ["ḥ", "𑌃",],
             ["ẖ", "ᳲ",], ["ḫ", "ᳲ",],
+        ],),
+        accentMarks: new Map([
+            ["", "॒",], ["́", "",], ["̀", "᳴",], ["̏", "॑",],
         ],),
         consonants: new Map([
             ["k", "𑌕",], ["kh", "𑌖",], ["g", "𑌗",], ["gh", "𑌘",], ["ṅ", "𑌙",],
@@ -102,6 +107,7 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ಃ",],
         ],),
+        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "ಕ",], ["ṅ", "ಙ",],
             ["c", "ಚ",], ["ñ", "ಞ",],
@@ -140,6 +146,7 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ഃ",],
         ],),
+        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "ക",], ["ṅ", "ങ",],
             ["c", "ച",], ["ñ", "ഞ",],
@@ -179,6 +186,7 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ః",],
         ],),
+        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "క",], ["ṅ", "ఙ",],
             ["c", "చ",], ["ñ", "ఞ",],
@@ -204,6 +212,7 @@ const scriptsData = {
             ["l̥", "ऌ",], ["l̥̄", "ॡ",],
             ["ē", "ए",], ["ai", "ऐ",],
             ["ō", "ओ",], ["au", "औ",],
+            ["Ω", "ॐ",],
         ],),
         vowelMarks: new Map([
             ["a", "",], ["ā", "ा",],
@@ -216,12 +225,15 @@ const scriptsData = {
             ["", "्",],
         ],),
         misc: new Map([
-            ["Ω", "ॐ",], ["₨", "₹",], ["।", "।",], ["॥", "॥",],
+            ["₨", "₹",], ["।", "।",], ["॥", "॥",],
             ["↩", "↩",], ["…", "३",],
         ],),
         modifiers: new Map([
             ["m̐", "ँ",], ["ṁ", "ं",], ["ḥ", "ः",],
             ["ẖ", "ᳵ",], ["ḫ", "ᳶ",],
+        ],),
+        accentMarks: new Map([
+            ["", "॒",], ["́", "",], ["̀", "॑",], ["̏", "᳚",],
         ],),
         consonants: new Map([
             ["k", "क",], ["kh", "ख",], ["g", "ग",], ["gh", "घ",], ["ṅ", "ङ",],
@@ -522,7 +534,7 @@ const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
     return xlittedText;
 };
 
-const latinToBrahmic = (otherScript, sourceText,) => {
+const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
     // Validate no foreign characters
@@ -530,6 +542,7 @@ const latinToBrahmic = (otherScript, sourceText,) => {
         const scriptCharacters = [
             ...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(),
             ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(),
+            ...scriptData.accentMarks.keys(),
             separator, ...whitespace,
         ];
 
@@ -562,16 +575,32 @@ const latinToBrahmic = (otherScript, sourceText,) => {
         regex(modifiers,),
         match => scriptData.modifiers.get(match,),);
 
+    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
+
+    if (! options?.vedicAccents) {
+        // Handle separated vowels like ‘a:i’
+        sourceText = sourceText.replace(
+            regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            (_unused, p1,) => inherentVowel + scriptData.vowels.get(p1,),);
+    } else {
+        const vowels = Array.from(scriptData.vowels.keys(),).sort().reverse().join(disjunctor,);
+        const accentMarks = Array.from(scriptData.accentMarks.keys(),).sort().reverse().join(disjunctor,);
+
+        // Handle Vedic accent marks
+        sourceText = sourceText.replace(
+            regex(`(${vowels})(${accentMarks})`,),
+            (_unused, p1, p2,) => p1 + scriptData.accentMarks.get(p2,),);
+
+        // Handle separated vowels like ‘a:i’
+        sourceText = sourceText.replace(
+            regex(`${diphthongAntecedent}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            (_unused, p1, p2,) => inherentVowel + p1 + scriptData.vowels.get(p2,),);
+    }
+
     // Handle separated consonants like ‘b:h’
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants,)})${separator}`,),
         (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(suppressedVowel,),);
-
-    // Handle separated vowels like ‘a:i’
-    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
-    sourceText = sourceText.replace(
-        regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
-        (_unused, p1,) => inherentVowel + scriptData.vowels.get(p1,),);
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
@@ -600,7 +629,7 @@ const latinToBrahmic = (otherScript, sourceText,) => {
     return sourceText;
 };
 
-const transliterate = (srcScript, tgtScript, sourceText,) => {
+const transliterate = (srcScript, tgtScript, sourceText, options,) => {
     if (! scriptNames.includes(srcScript,)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`,);
     }
@@ -616,6 +645,7 @@ const transliterate = (srcScript, tgtScript, sourceText,) => {
         return brahmicToLatin(
             srcScript,
             sourceText.normalize("NFC",),
+            options,
         ).normalize("NFD",);
     }
 
@@ -623,6 +653,7 @@ const transliterate = (srcScript, tgtScript, sourceText,) => {
         return latinToBrahmic(
             tgtScript,
             sourceText.normalize("NFD",),
+            options,
         ).normalize("NFC",);
     }
 
@@ -632,7 +663,9 @@ const transliterate = (srcScript, tgtScript, sourceText,) => {
         brahmicToLatin(
             srcScript,
             sourceText.normalize("NFC",),
+            options,
         ).normalize("NFD",),
+        options,
     ).normalize("NFC",);
 };
 
