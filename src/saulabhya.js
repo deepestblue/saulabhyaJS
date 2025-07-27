@@ -266,14 +266,12 @@ scriptNames.forEach(script => {
 scriptNames.push("Latn",);
 
 const inherentVowel = "a";
+const diphthongConsequents = ["i", "u",];
 const plosiveConsonants = ["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",];
 const suppressedVowel = "";
 const aspirateConsonant = "h";
+const plutaMark = "…";
 const separator = ":";
-
-const diphthongAntecedent = "a";
-const diphthongConsequents = ["i", "u",];
-
 const disjunctor = "|";
 const whitespace = "\\s";
 
@@ -358,120 +356,118 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
 const brahmicToLatin = (otherScript, sourceText,) => {
     const scriptData = scriptsData[otherScript];
 
-    const vowelMarks = Array.from(scriptData.vowelMarks.values(),);
-    const consonants = Array.from(scriptData.consonants.values(),);
-    const letters = [
-        ...Array.from(scriptData.vowels.values(),),
-        ...Array.from(scriptData.modifiers.values(),),
-        ...vowelMarks,
-        ...consonants,
-    ];
-    const numbers = new Set(scriptData.numbers.values(),);
+    // Validate no foreign characters
+    (() => {
+        const scriptCharacters = [
+            ...scriptData.misc.values(),
+            ...scriptData.numbers.values(),
+            ...scriptData.modifiers.values(),
+            ...scriptData.vowelMarks.values(),
+            ...scriptData.vowels.values(),
+            ...scriptData.consonants.values(),
+            ...whitespace,
+        ];
 
-    const whitespaceRegex = new RegExp(whitespace, "v",);
-
-    const processChar = (prevState, srcChar,) => {
-        const tgtChar = (c => {
-            if (c === 3 && otherScript === "Deva" && prevState.isLetter) {
-                return "…";
-            }
-            return c;
-        })(scriptData.brahmicToLatin[srcChar],);
-
-        const nextState = (({ transliteratedText, number, },) => ({ transliteratedText, number, }))(prevState,);
-
-        // Vowel special treatments:
-        if (prevState.isConsonant && ! vowelMarks.includes(srcChar,)) {
-            // If we’ve seen a consonant and we don’t have a vowel‐mark next, emit an implicit vowel.
-            nextState.transliteratedText += inherentVowel;
-            if (diphthongConsequents.includes(tgtChar,)) {
-                // And if we’re seeing a different vowel that’s the second‐half of a diphthong, emit a separator as well.
-                nextState.transliteratedText += separator;
-            }
+        // Should not use ‘g’ for this regex alone.
+        // Seems to result in some sort of combinatorial explosion.
+        const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
+        const result = sourceText.match(invalidRegex,);
+        if (result) {
+            throw new Error(`Unknown ${otherScript} character: ${result[0]}.`,);
         }
+    })();
 
-        if (prevState.isVowelBaseVowel && diphthongConsequents.includes(tgtChar,)) {
-            // Similarly, if there was an explicit base‐vowel and we’re seeing a diphthong consequent, emit a separator.
-            nextState.transliteratedText += separator;
-        }
+    // Misc.
+    sourceText = sourceText.replace(
+        regex(anyOfIterable(scriptData.misc.values(),),),
+        match => scriptData.brahmicToLatin[match],
+    );
 
-        nextState.isConsonant = consonants.includes(srcChar,);
-        nextState.isVowelBaseVowel = tgtChar === inherentVowel;
-        nextState.isLetter = letters.includes(srcChar,);
-        nextState.isVisargaAlternate = tgtChar === "ẖ" || tgtChar === "ḫ";
-
-        if (prevState.isVisargaAlternate && otherScript === "Gran") {
-            const terminalVisargaAlternateRegex = regex(`h.$`,);
-            if (tgtChar[0] === "k") {
-                nextState.transliteratedText = nextState.transliteratedText.replace(terminalVisargaAlternateRegex, "ẖ",);
-            }
-            if (tgtChar[0] === "p") {
-                nextState.transliteratedText = nextState.transliteratedText.replace(terminalVisargaAlternateRegex, "ḫ",);
-            }
-        }
-
-        // Consonant special treatments:
-        if (prevState.isHalfPlosive && tgtChar === aspirateConsonant) {
-            // If we’ve seen a half‐plosive and then see the aspirate consonant, we again need a separator.
-            nextState.transliteratedText += separator;
-        }
-
-        nextState.isHalfPlosive = prevState.isPlosive && tgtChar === suppressedVowel;
-        nextState.isPlosive = plosiveConsonants.includes(tgtChar,);
-
-        // If we’re processing a non–place value script, …
-        if (thousandBasedNumberScripts.includes(otherScript,)) {
-            // … we need to accumulate number symbols …
-            if (numbers.has(srcChar,)) {
-                nextState.number += srcChar;
-                return nextState;
-            }
-            // … until we see a non–number symbol, at which we transliterate the entire number in one shot.
-            if (prevState.number) {
-                nextState.transliteratedText += southDravidianToIndicNumbers(prevState.number, scriptData,);
-                nextState.number = "";
-            }
-        }
-
-        // Whitespace we can just pass on as is.
-        if (whitespaceRegex.test(srcChar,)) {
-            nextState.transliteratedText += srcChar;
-            return nextState;
-        }
-
-        // At this point, if the character doesn’t exist in the map, it’s invalid in the target script.
-        if (typeof tgtChar === "undefined") {
-            throw new Error(`Unknown ${otherScript} character: ${srcChar}.`,);
-        }
-
-        // This is the straightforward case.
-        nextState.transliteratedText += tgtChar;
-
-        return nextState;
-    };
-
-    const initialState = {
-        isConsonant: false,
-        isVowelBaseVowel: false,
-        isPlosive: false,
-        isHalfPlosive: false,
-        isLetter: false,
-        isVisargaAlternate: false,
-        number: "",
-        transliteratedText: "",
-    };
-
-    const finalState = [...sourceText,].reduce(processChar, initialState,);
-
-    if (finalState.isConsonant) {
-        finalState.transliteratedText += inherentVowel;
+    // Numbers
+    if (thousandBasedNumberScripts.includes(otherScript,)) {
+        sourceText = sourceText.replace(
+            regex(`${anyOfIterable(scriptData.numbers.values(),)}+`,),
+            match => southDravidianToIndicNumbers(match, scriptData,),
+        );
+    } else {
+        sourceText = sourceText.replace(
+            regex(anyOfIterable(scriptData.numbers.values(),),),
+            match => scriptData.brahmicToLatin[match],
+        );
     }
 
-    if (finalState.number) {
-        finalState.transliteratedText += southDravidianToIndicNumbers(finalState.number, scriptData,);
+    // Pluta‐marker
+    if (otherScript === "Deva") {
+        const letters = [
+            ...scriptData.vowels.values(),
+            ...scriptData.consonants.values(),
+            ...scriptData.vowelMarks.values().filter(x => x !== "",),
+            ...scriptData.modifiers.values(),
+        ];
+        sourceText = sourceText.replace(
+            regex(`(${letters.join(disjunctor,)})3`,),
+            (_unused, p1,) => p1 + plutaMark,
+        );
     }
 
-    return finalState.transliteratedText;
+    // Consonant separator insertion
+    sourceText = sourceText.replace(
+        regex(`(${anyOfIterable(scriptData.consonants.values(),)})(${scriptData.vowelMarks.get("",)})(${scriptData.consonants.get(aspirateConsonant,)})`,),
+        (match, p1, p2, p3,) => {
+            if (! plosiveConsonants.includes(scriptData.brahmicToLatin[p1],)) {
+                return match;
+            }
+            return p1 + p2 + separator + p3;
+        },
+    );
+
+    // Vowel separator insertion
+    sourceText = sourceText.replace(
+        regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
+        (_unused, p1, p2,) => p1 + separator + p2,
+    );
+
+    // Consonant–vowel‐marker pairs
+    sourceText = sourceText.replace(
+        regex(`(${anyOfIterable(scriptData.consonants.values(),)})(${anyOfIterable(scriptData.vowelMarks.values(),)})`,),
+        (_unused, p1, p2,) => scriptData.brahmicToLatin[p1] + scriptData.brahmicToLatin[p2],
+    );
+
+    // Consonants without vowel‐markers
+    sourceText = sourceText.replace(
+        regex(anyOfIterable(scriptData.consonants.values(),),),
+        match => scriptData.brahmicToLatin[match] + inherentVowel,
+    );
+
+    // Modifiers
+    sourceText = sourceText.replace(
+        regex(anyOfIterable(scriptData.modifiers.values(),),),
+        match => scriptData.brahmicToLatin[match],
+    );
+
+    // Visarga alternate for Grantha
+    if (otherScript === "Gran") {
+        sourceText = sourceText.replace(
+            regex(`h([̱̮])([kp])`,),
+            (_unused, p1, p2,) => {
+                if (p2 === "k") {
+                    return "ẖk";
+                }
+                if (p2 === "p") {
+                    return "ḫp";
+                }
+                return `h${p1}${p2}`;
+            },
+        );
+    }
+
+    // Vowels
+    sourceText = sourceText.replace(
+        regex(anyOfIterable(scriptData.vowels.values(),),),
+        match => scriptData.brahmicToLatin[match],
+    );
+
+    return sourceText;
 };
 
 const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
@@ -575,12 +571,12 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
         regex(modifiers,),
         match => scriptData.modifiers.get(match,),);
 
-    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => diphthongAntecedent + s,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
+    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => inherentVowel + s,).concat(diphthongConsequents,).concat(new Array(inherentVowel,),);
 
     if (! options?.vedicAccents) {
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
-            regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            regex(`${inherentVowel}${separator}(${anyOfArray(diphthongConsequents,)})`,),
             (_unused, p1,) => inherentVowel + scriptData.vowels.get(p1,),);
     } else {
         const vowels = Array.from(scriptData.vowels.keys(),).sort().reverse().join(disjunctor,);
@@ -593,7 +589,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
 
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
-            regex(`${diphthongAntecedent}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            regex(`${inherentVowel}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
             (_unused, p1, p2,) => inherentVowel + p1 + scriptData.vowels.get(p2,),);
     }
 
