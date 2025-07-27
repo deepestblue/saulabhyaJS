@@ -268,7 +268,6 @@ scriptNames.push("Latn",);
 const inherentVowel = "a";
 const diphthongConsequents = ["i", "u",];
 const plosiveConsonants = ["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",];
-const suppressedVowel = "";
 const aspirateConsonant = "h";
 const plutaMark = "…";
 const separator = ":";
@@ -596,7 +595,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     // Handle separated consonants like ‘b:h’
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants,)})${separator}`,),
-        (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(suppressedVowel,),);
+        (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get("",),);
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
@@ -620,7 +619,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     // Remaining bare consonants.
     sourceText = sourceText.replace(
         regex(consonants,),
-        match => scriptData.consonants.get(match,) + scriptData.vowelMarks.get(suppressedVowel,),);
+        match => scriptData.consonants.get(match,) + scriptData.vowelMarks.get("",),);
 
     return sourceText;
 };
