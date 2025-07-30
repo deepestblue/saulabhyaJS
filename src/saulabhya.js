@@ -283,76 +283,6 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
-const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
-    const thousand = scriptData.numbers.get(1000,);
-    const hundred = scriptData.numbers.get(100,);
-    const ten = scriptData.numbers.get(10,);
-    const one = scriptData.numbers.get(1,);
-
-    // A digit has Unicode category “Nd”, while the symbols for ten, hundred and thousand have Unicode category “No”.
-    const digits = Array.from(scriptData.numbers.values(),).filter(x => regex("\\p{Nd}",).test(x,),);
-
-    // Let’s divide up the number into groups of thousands.
-    const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x !== thousand,);
-
-    // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
-    // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
-    const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers,)}*${thousand}*`,);
-
-    return sourceNumber.match(groupRegex,).reduce((ator, group,) => {
-        // Process each group.
-        const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
-
-        // Invalid input if the thousands groups aren't strictly decreasing in thousands‐power.
-        if (thousands >= ator.minThousands) {
-            throw new Error(`Invalid number: ${sourceNumber}.`,);
-        }
-
-        // Strip off the thousand symbols.
-        group = group.slice(0, group.length - thousands,);
-
-        const anyDigit = anyOfArray(digits,);
-        const subThousandNumberRegex = regex(
-            // Hundreds
-            `^(?:(${anyDigit}?)(${hundred}))?` +
-            // Tens
-            `(?:(${anyDigit})?(${ten}))?` +
-            // Units
-            `(${anyDigit}?)$`,
-        );
-
-        const components = subThousandNumberRegex.exec(group,);
-
-        if (! components) {
-            // Malformed data, e.g. "௩௪".
-            throw new Error(`Invalid number: ${sourceNumber}.`,);
-        }
-
-        if (components[1] === one || components[3] === one) {
-            // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
-            throw new Error(`Invalid number: ${sourceNumber}.`,);
-        }
-
-        return {
-            total: ator.total + 1000 ** thousands *
-            (components[0] ?
-                    (components[5] ? scriptData.brahmicToLatin[components[5]] : 0) + // Add in any units.
-                    (components[4] ? // If there is a tens symbol, …
-                        // … add in the tens, treating a missing digit prefix as an implicit 1.
-                        10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1)
-                        : 0) +
-                        (components[2] ? // If there is a hundreds symbol, …
-                            // … add in the hundreds, treating a missing digit prefix as 1.
-                            100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
-                            : 0)
-                : 1), // Nothing in front of the thousand symbols is just the value of the power.
-            minThousands: thousands,
-        };
-    },
-    { total: 0, minThousands: Infinity, },
-    ).total;
-};
-
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
@@ -387,9 +317,79 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
 
     // Numbers
     if (thousandBasedNumberScripts.includes(otherScript,)) {
+        const southDravidianNumbers = sourceNumber => {
+            const thousand = scriptData.numbers.get(1000,);
+            const hundred = scriptData.numbers.get(100,);
+            const ten = scriptData.numbers.get(10,);
+            const one = scriptData.numbers.get(1,);
+
+            // A digit has Unicode category “Nd”, while the symbols for ten, hundred and thousand have Unicode category “No”.
+            const digits = Array.from(scriptData.numbers.values(),).filter(x => regex("\\p{Nd}",).test(x,),);
+
+            // Let’s divide up the number into groups of thousands.
+            const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x !== thousand,);
+
+            // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
+            // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
+            const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers,)}*${thousand}*`,);
+
+            return sourceNumber.match(groupRegex,).reduce((ator, group,) => {
+                // Process each group.
+                const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
+
+                // Invalid input if the thousands groups aren't strictly decreasing in thousands‐power.
+                if (thousands >= ator.minThousands) {
+                    throw new Error(`Invalid number: ${sourceNumber}.`,);
+                }
+
+                // Strip off the thousand symbols.
+                group = group.slice(0, group.length - thousands,);
+
+                const anyDigit = anyOfArray(digits,);
+                const subThousandNumberRegex = regex(
+                    // Hundreds
+                    `^(?:(${anyDigit}?)(${hundred}))?` +
+                    // Tens
+                    `(?:(${anyDigit})?(${ten}))?` +
+                    // Units
+                    `(${anyDigit}?)$`,
+                );
+
+                const components = subThousandNumberRegex.exec(group,);
+
+                if (! components) {
+                    // Malformed data, e.g. "௩௪".
+                    throw new Error(`Invalid number: ${sourceNumber}.`,);
+                }
+
+                if (components[1] === one || components[3] === one) {
+                    // The hundreds and tens places in each thousand‐group cannot have an explicit 1.
+                    throw new Error(`Invalid number: ${sourceNumber}.`,);
+                }
+
+                return {
+                    total: ator.total + 1000 ** thousands *
+                    (components[0] ?
+                            (components[5] ? scriptData.brahmicToLatin[components[5]] : 0) + // Add in any units.
+                            (components[4] ? // If there is a tens symbol, …
+                                // … add in the tens, treating a missing digit prefix as an implicit 1.
+                                10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1)
+                                : 0) +
+                                (components[2] ? // If there is a hundreds symbol, …
+                                    // … add in the hundreds, treating a missing digit prefix as 1.
+                                    100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
+                                    : 0)
+                        : 1), // Nothing in front of the thousand symbols is just the value of the power.
+                    minThousands: thousands,
+                };
+            },
+            { total: 0, minThousands: Infinity, },
+            ).total;
+        };
+
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(scriptData.numbers.values(),)}+`,),
-            match => southDravidianToIndicNumbers(match, scriptData,),
+            match => southDravidianNumbers(match, scriptData,),
         );
     } else {
         sourceText = sourceText.replace(
@@ -506,66 +506,6 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     return sourceText;
 };
 
-const indicToSouthDravidianNumbers = (sourceNumber, scriptData,) => {
-    // Zero is special, and is in fact not allowed in the traditional system.
-    // But modern usage demands it.
-    if (sourceNumber === 0) {
-        return scriptData.numbers.get(sourceNumber,);
-    }
-
-    let xlittedText = "";
-
-    // Let’s process each group of 3 digits at a time.
-    for (let mille = 0; sourceNumber > 0; ++mille) {
-        const rem = sourceNumber % 1000;
-        sourceNumber = Math.floor(sourceNumber / 1000,);
-
-        // Nothing in this group.
-        if (rem === 0) {
-            continue;
-        }
-
-        // We need mille‐many thousand‐symbols.
-        xlittedText = scriptData.numbers.get(1000,).repeat(mille,) + xlittedText;
-
-        if (rem === 1 && mille > 0) {
-            // 1 is implicit, except for the least significant group.
-            continue;
-        }
-
-        xlittedText = [1, 10, 100,].reduce((ator, place,) => {
-            // Extract the digit at ‘place’.
-            const digit = Math.floor(rem / place,) % 10;
-
-            if (digit === 0) {
-                // Zeroes are not explicitly written.
-                return ator;
-            }
-
-            /*
-                Below is a table of what needs to be written out in each case.
-                ╔════════════╦═════════════╦════════════════════════╗
-                ║            ║ Units place ║ Tens or Hundreds place ║
-                ╠════════════╬═════════════╬════════════════════════╣
-                ║ Digit = 1  ║ Digit       ║ Place                  ║
-                ╠════════════╬═════════════╬════════════════════════╣
-                ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
-                ╚════════════╩═════════════╩════════════════════════╝
-            */
-            if (place !== 1) {
-                ator = scriptData.numbers.get(place,) + ator;
-                if (digit === 1) {
-                    return ator;
-                }
-            }
-
-            return scriptData.numbers.get(digit,) + ator;
-        }, "",) + xlittedText;
-    }
-
-    return xlittedText;
-};
-
 const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
@@ -594,9 +534,69 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     })();
 
     if (thousandBasedNumberScripts.includes(otherScript,)) {
+        const southDravidianNumbers = sourceNumber => {
+            // Zero is special, and is in fact not allowed in the traditional system.
+            // But modern usage demands it.
+            if (sourceNumber === 0) {
+                return scriptData.numbers.get(sourceNumber,);
+            }
+
+            let xlittedText = "";
+
+            // Let’s process each group of 3 digits at a time.
+            for (let mille = 0; sourceNumber > 0; ++mille) {
+                const rem = sourceNumber % 1000;
+                sourceNumber = Math.floor(sourceNumber / 1000,);
+
+                // Nothing in this group.
+                if (rem === 0) {
+                    continue;
+                }
+
+                // We need mille‐many thousand‐symbols.
+                xlittedText = scriptData.numbers.get(1000,).repeat(mille,) + xlittedText;
+
+                if (rem === 1 && mille > 0) {
+                    // 1 is implicit, except for the least significant group.
+                    continue;
+                }
+
+                xlittedText = [1, 10, 100,].reduce((ator, place,) => {
+                    // Extract the digit at ‘place’.
+                    const digit = Math.floor(rem / place,) % 10;
+
+                    if (digit === 0) {
+                        // Zeroes are not explicitly written.
+                        return ator;
+                    }
+
+                    /*
+                        Below is a table of what needs to be written out in each case.
+                        ╔════════════╦═════════════╦════════════════════════╗
+                        ║            ║ Units place ║ Tens or Hundreds place ║
+                        ╠════════════╬═════════════╬════════════════════════╣
+                        ║ Digit = 1  ║ Digit       ║ Place                  ║
+                        ╠════════════╬═════════════╬════════════════════════╣
+                        ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
+                        ╚════════════╩═════════════╩════════════════════════╝
+                    */
+                    if (place !== 1) {
+                        ator = scriptData.numbers.get(place,) + ator;
+                        if (digit === 1) {
+                            return ator;
+                        }
+                    }
+
+                    return scriptData.numbers.get(digit,) + ator;
+                }, "",) + xlittedText;
+            }
+
+            return xlittedText;
+        };
+
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(Array(10,).keys(),)}+`,),
-            match => indicToSouthDravidianNumbers(parseInt(match, 10,), scriptData,),);
+            match => southDravidianNumbers(parseInt(match, 10,), scriptData,),);
     } else {
         sourceText = sourceText.replace(
             regex(anyOfIterable(Array(10,).keys(),),),
