@@ -215,6 +215,9 @@ QUnit.module("Gran with vedic accents unit tests", () => {
             "𑌕॒", "𑌕", "𑌕᳴", "𑌕॑",
             "𑌕𑌾॒", "𑌕𑌾", "𑌕𑌾᳴", "𑌕𑌾॑",
             "𑌕𑍍𑌕॒", "𑌕𑍍𑌕", "𑌕𑍍𑌕᳴", "𑌕𑍍𑌕॑",
+            "𑌤𑌵", "𑌸𑍋𑌮", "𑌲𑌤𑌾", "𑌮𑌾𑌤𑌾",
+            "𑌮𑌦𑌨", "𑌪𑌾𑌵𑌨", "𑌤𑌦𑍇𑌵", "𑌰𑌚𑌨𑌾",
+            "𑌵𑌾𑌰𑌾𑌹", "𑌸𑌾𑌧𑌨𑌾", "𑌶𑌲𑌾𑌕𑌾", "𑌵𑌾𑌰𑌾𑌹𑍀",
         ],
         Latn: [
             "Ω", "Ώ", "Ὼ", "Ω̏",
@@ -228,8 +231,20 @@ QUnit.module("Gran with vedic accents unit tests", () => {
             "ka", "ká", "kà", "kȁ",
             "kā", "kā́", "kā̀", "kā̏",
             "kka", "kká", "kkà", "kkȁ",
+            "tává", "sṓmá", "látā́", "mā́tā́",
+            "mádáná", "pā́váná", "tádḗvá", "rácánā́",
+            "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
         ],
     };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Gran.length,).keys(),].forEach(i => {
+            QUnit.test(data.Gran[i], t => {
+                t.deepEqual(
+                    transliterate("Gran", "Latn", data.Gran[i], { vedicAccents: true, },),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
     QUnit.module("From Latin", () => {
         [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
@@ -332,6 +347,9 @@ QUnit.module("Deva with vedic accents unit tests", () => {
             "क॒", "क", "क॑", "क᳚",
             "का॒", "का", "का॑", "का᳚",
             "क्क॒", "क्क", "क्क॑", "क्क᳚",
+            "तव", "सोम", "लता", "माता",
+            "मदन", "पावन", "तदेव", "रचना",
+            "वाराह", "साधना", "शलाका", "वाराही",
         ],
         Latn: [
             "Ω", "Ώ", "Ὼ", "Ω̏",
@@ -345,8 +363,20 @@ QUnit.module("Deva with vedic accents unit tests", () => {
             "ka", "ká", "kà", "kȁ",
             "kā", "kā́", "kā̀", "kā̏",
             "kka", "kká", "kkà", "kkȁ",
+            "tává", "sṓmá", "látā́", "mā́tā́",
+            "mádáná", "pā́váná", "tádḗvá", "rácánā́",
+            "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
         ],
     };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Deva.length,).keys(),].forEach(i => {
+            QUnit.test(data.Deva[i], t => {
+                t.deepEqual(
+                    transliterate("Deva", "Latn", data.Deva[i], { vedicAccents: true, },),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
     QUnit.module("From Latin", () => {
         [...Array(data.Latn.length,).keys(),].forEach(i => {
             QUnit.test(data.Latn[i], t => {
@@ -583,9 +613,24 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 Ώ tácchaym̐yṓrā́vr̥̀ṇī́máhḗ । gātúym̐yajñā́yà । gātúym̐yajñápàtáyḗ । daívī̏ svastíràstú náḥ । svastírmā́nùṣḗbhyáḥ । ūrdhváñjìgā́tú bhḗṣajám । śánnṑ ástú dvipádē̏ । śáñcátùṣpádḗ ॥ Ώ śā́ntiśśā́ntiśśā́ntìḥ ॥
         `, };
 
+        QUnit.test("Gran to Latn: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Latn,);
+        },);
         QUnit.test("Latn to Gran: vsn text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Gran,);
+        },);
+        QUnit.test("Gran to Deva: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Deva,);
+        },);
+        QUnit.test("Deva to Gran: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva, { vedicAccents: true, },),
                 textWithPunctuationAndSpacing.Gran,);
         },);
     },);

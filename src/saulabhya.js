@@ -258,7 +258,7 @@ const thousandBasedNumberScripts = ["Taml", "Gran", "Mlym",]; // Mlym, Taml and 
 scriptNames.forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
-        [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers,],
+        [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.accentMarks,],
         a => [...a,].reverse(),);
     scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
 },);
@@ -270,6 +270,7 @@ const diphthongConsequents = ["i", "u",];
 const plosiveConsonants = ["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",];
 const aspirateConsonant = "h";
 const plutaMark = "…";
+const udattaMark = "́";
 const separator = ":";
 const disjunctor = "|";
 const whitespace = "\\s";
@@ -352,7 +353,7 @@ const southDravidianToIndicNumbers = (sourceNumber, scriptData,) => {
     ).total;
 };
 
-const brahmicToLatin = (otherScript, sourceText,) => {
+const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
     // Validate no foreign characters
@@ -365,7 +366,9 @@ const brahmicToLatin = (otherScript, sourceText,) => {
             ...scriptData.vowels.values(),
             ...scriptData.consonants.values(),
             ...whitespace,
-        ];
+        ].concat(
+            ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
+        );
 
         // Should not use ‘g’ for this regex alone.
         // Seems to result in some sort of combinatorial explosion.
@@ -395,16 +398,17 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         );
     }
 
+    const lettersAndModifiers = [
+        ...scriptData.vowels.values(),
+        ...scriptData.vowelMarks.values().filter(x => x !== "",),
+        ...scriptData.modifiers.values(),
+        ...scriptData.consonants.values(),
+    ];
+
     // Pluta‐marker
     if (otherScript === "Deva") {
-        const letters = [
-            ...scriptData.vowels.values(),
-            ...scriptData.consonants.values(),
-            ...scriptData.vowelMarks.values().filter(x => x !== "",),
-            ...scriptData.modifiers.values(),
-        ];
         sourceText = sourceText.replace(
-            regex(`(${letters.join(disjunctor,)})3`,),
+            regex(`(${lettersAndModifiers.join(disjunctor,)})3`,),
             (_unused, p1,) => p1 + plutaMark,
         );
     }
@@ -420,11 +424,44 @@ const brahmicToLatin = (otherScript, sourceText,) => {
         },
     );
 
-    // Vowel separator insertion
-    sourceText = sourceText.replace(
-        regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
-        (_unused, p1, p2,) => p1 + separator + p2,
-    );
+    if (! options?.vedicAccents) {
+        // Vowel separator insertion
+        sourceText = sourceText.replace(
+            regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
+            (_unused, p1, p2,) => p1 + separator + p2,
+        );
+    } else {
+        // Vowel separator insertion
+        sourceText = sourceText.replace(
+            regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(\\p{Mn}?)(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
+            (_unused, p1, p2, p3,) => p1 + p2 + separator + p3,
+        );
+
+        // For the udatta accent, unmarked in Brahmic, we need a two‐pass approach. First, we need to add udatta accent‐marks after each consonant with the inherent‐vowel, unless succeeded by a different accent‐mark.
+        const marks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).concat(Array.from(scriptData.vowelMarks.values().filter(x => x !== "",),),).join("",);
+        sourceText = sourceText.replace(
+            regex(`(${anyOfIterable(scriptData.consonants.values(),)})($|[^${marks}])`,),
+            (_unused, p1, p2,) => p1 + udattaMark + p2,
+        );
+
+        // We then need to add udatta accent‐marks after each letter, be it a vowel, a vowel‐marker (other than the vowel‐suppressor) or even a consonant with the inherent‐vowel, again unless succeeded by a different accent‐mark. Why we need to repeat this replacement for consonants with the inherent‐vowel is that some of those consonants could have been captured as the post‐context in the previous replacement, and thus escaped being processed as the pre-context.
+        const letters = [
+            ...scriptData.vowels.values(),
+            ...scriptData.vowelMarks.values().filter(x => x !== "",).filter(x => scriptData.brahmicToLatin[x] !== "",),
+            ...scriptData.consonants.values(),
+        ];
+        sourceText = sourceText.replace(
+            regex(`(${anyOfArray(letters,)})($|[^${udattaMark}${marks}])`,),
+            (_unused, p1, p2,) => p1 + udattaMark + p2,
+        );
+
+        // Other accents
+        const accentMarks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).join(disjunctor,);
+        sourceText = sourceText.replace(
+            regex(`(${anyOfArray(lettersAndModifiers,)})(${accentMarks})`,),
+            (_unused, p1, p2,) => p1 + scriptData.brahmicToLatin[p2],
+        );
+    }
 
     // Consonant–vowel‐marker pairs
     sourceText = sourceText.replace(
@@ -535,11 +572,17 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     // Validate no foreign characters
     (() => {
         const scriptCharacters = [
-            ...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(),
-            ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(),
-            ...scriptData.accentMarks.keys(),
-            separator, ...whitespace,
-        ];
+            ...scriptData.numbers.keys(),
+            ...scriptData.misc.keys(),
+            ...scriptData.modifiers.keys(),
+            ...scriptData.vowelMarks.keys(),
+            ...scriptData.vowels.keys(),
+            ...scriptData.consonants.keys(),
+            separator,
+            ...whitespace,
+        ].concat(
+            ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
+        );
 
         // Should not use ‘g’ for this regex alone.
         // Seems to result in some sort of combinatorial explosion.
