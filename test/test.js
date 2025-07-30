@@ -124,7 +124,7 @@ QUnit.module("Knda unit tests", () => {
     },);
 },);
 
-QUnit.module("Gran unit tests", () => {
+QUnit.module("Gran without vedic accents unit tests", () => {
     const data = {
         Gran: [
             "𑌅 𑌆 𑌇 𑌈 𑌉 𑌊 𑌋 𑍠 𑌌 𑍡 𑌏 𑌐 𑌓 𑌔 𑌅𑌂 𑌅𑌁 𑌅𑌃",
@@ -139,7 +139,11 @@ QUnit.module("Gran unit tests", () => {
             "𑌅𑌊",
             "𑌇𑌓𑌐𑌅𑌓𑌨𑌿𑌤𑍀𑌨𑍌𑌳𑌈𑌅",
             "𑌅𑌗𑍍𑌃",
-            "𑌬𑍍𑌹𑌣𑍍𑌹𑌪𑌇𑌚𑍍𑌹𑌉𑌅𑌇𑌅𑌓",
+            "𑌪𑌯𑌓𑌷𑌧𑍀",
+            "𑌅𑌰𑍍𑌶𑌉𑌪𑌦𑍍𑌰𑌵𑌃",
+            "𑌕𑌿𑌨𑍍𑌹𑍍𑌨𑍁𑌤𑍇",
+            "𑌵𑌾𑌗𑍍𑌹𑌰𑌿𑌃",
+            "𑌦𑍇𑌵𑌦𑌤𑍍𑌤𑍝",
             "𑌆𑍝",
             "𑌓𑍝",
             "𑌹𑌾𑍝",
@@ -162,7 +166,11 @@ QUnit.module("Gran unit tests", () => {
             "aū",
             "iōaiaōnitīnauḷaīa",
             "agḥ",
-            "b:haṇhapa:ic:ha:ua:iaō",
+            "payaōṣadhī",
+            "arśa:upadravaḥ",
+            "kinhnutē",
+            "vāg:hariḥ",
+            "dēvadatta…",
             "ā…",
             "ō…",
             "hā…",
@@ -193,7 +201,62 @@ QUnit.module("Gran unit tests", () => {
     },);
 },);
 
-QUnit.module("Deva unit tests", () => {
+QUnit.module("Gran with vedic accents unit tests", () => {
+    const data = {
+        Gran: [
+            "𑍐॒", "𑍐", "𑍐᳴", "𑍐॑",
+            "𑌅॒", "𑌅", "𑌅᳴", "𑌅॑",
+            "𑌆॒", "𑌆", "𑌆᳴", "𑌆॑",
+            "𑌔॒", "𑌔", "𑌔᳴", "𑌔॑",
+            "𑌅॒𑌇॒", "𑌅॒𑌇", "𑌅॒𑌇᳴", "𑌅॒𑌇॑",
+            "𑌅𑌇॒", "𑌅𑌇", "𑌅𑌇᳴", "𑌅𑌇॑",
+            "𑌅᳴𑌇॒", "𑌅᳴𑌇", "𑌅᳴𑌇᳴", "𑌅᳴𑌇॑",
+            "𑌅॑𑌇॒", "𑌅॑𑌇", "𑌅॑𑌇᳴", "𑌅॑𑌇॑",
+            "𑌕॒", "𑌕", "𑌕᳴", "𑌕॑",
+            "𑌕𑌾॒", "𑌕𑌾", "𑌕𑌾᳴", "𑌕𑌾॑",
+            "𑌕𑍍𑌕॒", "𑌕𑍍𑌕", "𑌕𑍍𑌕᳴", "𑌕𑍍𑌕॑",
+            "𑌤𑌵", "𑌸𑍋𑌮", "𑌲𑌤𑌾", "𑌮𑌾𑌤𑌾",
+            "𑌮𑌦𑌨", "𑌪𑌾𑌵𑌨", "𑌤𑌦𑍇𑌵", "𑌰𑌚𑌨𑌾",
+            "𑌵𑌾𑌰𑌾𑌹", "𑌸𑌾𑌧𑌨𑌾", "𑌶𑌲𑌾𑌕𑌾", "𑌵𑌾𑌰𑌾𑌹𑍀",
+        ],
+        Latn: [
+            "Ω", "Ώ", "Ὼ", "Ω̏",
+            "a", "á", "à", "ȁ",
+            "ā", "ā́", "ā̀", "ā̏",
+            "au", "aú", "aù", "aȕ",
+            "a:i", "a:í", "a:ì", "a:ȉ",
+            "á:i", "á:í", "á:ì", "á:ȉ",
+            "à:i", "à:í", "à:ì", "à:ȉ",
+            "ȁ:i", "ȁ:í", "ȁ:ì", "ȁ:ȉ",
+            "ka", "ká", "kà", "kȁ",
+            "kā", "kā́", "kā̀", "kā̏",
+            "kka", "kká", "kkà", "kkȁ",
+            "tává", "sṓmá", "látā́", "mā́tā́",
+            "mádáná", "pā́váná", "tádḗvá", "rácánā́",
+            "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
+        ],
+    };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Gran.length,).keys(),].forEach(i => {
+            QUnit.test(data.Gran[i], t => {
+                t.deepEqual(
+                    transliterate("Gran", "Latn", data.Gran[i], { vedicAccents: true, },),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
+    QUnit.module("From Latin", () => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
+            QUnit.test(data.Latn[i], t => {
+                t.deepEqual(
+                    transliterate("Latn", "Gran", data.Latn[i], { vedicAccents: true, },),
+                    data.Gran[i],);
+            },);
+        },);
+    },);
+},);
+
+QUnit.module("Deva without vedic accents unit tests", () => {
     const data = {
         Deva: [
             "अ आ इ ई उ ऊ ऋ ॠ ऌ ॡ ए ऐ ओ औ अं अँ अः",
@@ -208,7 +271,11 @@ QUnit.module("Deva unit tests", () => {
             "अऊ",
             "इओऐअओनितीनौळईअ",
             "अग्ः",
-            "ब्हण्हपइच्हउअइअओ",
+            "पयओषधी",
+            "अर्शउपद्रवः",
+            "किन्ह्नुते",
+            "वाग्हरिः",
+            "देवदत्त३",
             "आ३",
             "ओ३",
             "हा३",
@@ -231,7 +298,11 @@ QUnit.module("Deva unit tests", () => {
             "aū",
             "iōaiaōnitīnauḷaīa",
             "agḥ",
-            "b:haṇhapa:ic:ha:ua:iaō",
+            "payaōṣadhī",
+            "arśa:upadravaḥ",
+            "kinhnutē",
+            "vāg:hariḥ",
+            "dēvadatta…",
             "ā…",
             "ō…",
             "hā…",
@@ -256,6 +327,61 @@ QUnit.module("Deva unit tests", () => {
             QUnit.test(data.Latn[i], t => {
                 t.deepEqual(
                     transliterate("Latn", "Deva", data.Latn[i],),
+                    data.Deva[i],);
+            },);
+        },);
+    },);
+},);
+
+QUnit.module("Deva with vedic accents unit tests", () => {
+    const data = {
+        Deva: [
+            "ॐ॒", "ॐ", "ॐ॑", "ॐ᳚",
+            "अ॒", "अ", "अ॑", "अ᳚",
+            "आ॒", "आ", "आ॑", "आ᳚",
+            "औ॒", "औ", "औ॑", "औ᳚",
+            "अ॒इ॒", "अ॒इ", "अ॒इ॑", "अ॒इ᳚",
+            "अइ॒", "अइ", "अइ॑", "अइ᳚",
+            "अ॑इ॒", "अ॑इ", "अ॑इ॑", "अ॑इ᳚",
+            "अ᳚इ॒", "अ᳚इ", "अ᳚इ॑", "अ᳚इ᳚",
+            "क॒", "क", "क॑", "क᳚",
+            "का॒", "का", "का॑", "का᳚",
+            "क्क॒", "क्क", "क्क॑", "क्क᳚",
+            "तव", "सोम", "लता", "माता",
+            "मदन", "पावन", "तदेव", "रचना",
+            "वाराह", "साधना", "शलाका", "वाराही",
+        ],
+        Latn: [
+            "Ω", "Ώ", "Ὼ", "Ω̏",
+            "a", "á", "à", "ȁ",
+            "ā", "ā́", "ā̀", "ā̏",
+            "au", "aú", "aù", "aȕ",
+            "a:i", "a:í", "a:ì", "a:ȉ",
+            "á:i", "á:í", "á:ì", "á:ȉ",
+            "à:i", "à:í", "à:ì", "à:ȉ",
+            "ȁ:i", "ȁ:í", "ȁ:ì", "ȁ:ȉ",
+            "ka", "ká", "kà", "kȁ",
+            "kā", "kā́", "kā̀", "kā̏",
+            "kka", "kká", "kkà", "kkȁ",
+            "tává", "sṓmá", "látā́", "mā́tā́",
+            "mádáná", "pā́váná", "tádḗvá", "rácánā́",
+            "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
+        ],
+    };
+    QUnit.module("To Latin", () => {
+        [...Array(data.Deva.length,).keys(),].forEach(i => {
+            QUnit.test(data.Deva[i], t => {
+                t.deepEqual(
+                    transliterate("Deva", "Latn", data.Deva[i], { vedicAccents: true, },),
+                    data.Latn[i],);
+            },);
+        },);
+    },);
+    QUnit.module("From Latin", () => {
+        [...Array(data.Latn.length,).keys(),].forEach(i => {
+            QUnit.test(data.Latn[i], t => {
+                t.deepEqual(
+                    transliterate("Latn", "Deva", data.Latn[i], { vedicAccents: true, },),
                     data.Deva[i],);
             },);
         },);
@@ -471,6 +597,40 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
         QUnit.test("Deva to Gran: cls text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva,),
+                textWithPunctuationAndSpacing.Gran,);
+        },);
+    },);
+
+    QUnit.module("vsn", () => {
+        const textWithPunctuationAndSpacing = {
+            Gran: `
+𑍐 𑌤𑌚𑍍𑌛॒𑌯𑍍𑌁𑌯𑍋𑌰𑌾𑌵𑍃᳴𑌣𑍀𑌮𑌹𑍇 । 𑌗𑌾॒𑌤𑍁𑌯𑍍𑌁𑌯॒𑌜𑍍𑌞𑌾𑌯᳴ । 𑌗𑌾॒𑌤𑍁𑌯𑍍𑌁𑌯॒𑌜𑍍𑌞𑌪᳴𑌤𑌯𑍇 । 𑌦𑍈𑌵𑍀॑ 𑌸𑍍𑌵॒𑌸𑍍𑌤𑌿𑌰᳴𑌸𑍍𑌤𑍁 𑌨𑌃 । 𑌸𑍍𑌵॒𑌸𑍍𑌤𑌿𑌰𑍍𑌮𑌾𑌨𑍁᳴𑌷𑍇𑌭𑍍𑌯𑌃 । 𑌊॒𑌰𑍍𑌧𑍍𑌵𑌞𑍍𑌜𑌿᳴𑌗𑌾𑌤𑍁 𑌭𑍇𑌷॒𑌜𑌮𑍍 । 𑌶𑌨𑍍𑌨𑍋᳴ 𑌅𑌸𑍍𑌤𑍁 𑌦𑍍𑌵𑌿॒𑌪𑌦𑍇॑ । 𑌶𑌞𑍍𑌚𑌤𑍁᳴𑌷𑍍𑌪𑌦𑍇 ॥ 𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ॥
+        `,
+            Deva: `
+ॐ तच्छ॒य्ँयोरावृ॑णीमहे । गा॒तुय्ँय॒ज्ञाय॑ । गा॒तुय्ँय॒ज्ञप॑तये । दैवी᳚ स्व॒स्तिर॑स्तु नः । स्व॒स्तिर्मानु॑षेभ्यः । ऊ॒र्ध्वञ्जि॑गातु भेष॒जम् । शन्नो॑ अस्तु द्वि॒पदे᳚ । शञ्चतु॑ष्पदे ॥ ॐ शान्ति॒श्शान्ति॒श्शान्ति॑ः ॥
+        `,
+            Latn: `
+Ώ tácchaym̐yṓrā́vr̥̀ṇī́máhḗ । gātúym̐yajñā́yà । gātúym̐yajñápàtáyḗ । daívī̏ svastíràstú náḥ । svastírmā́nùṣḗbhyáḥ । ūrdhváñjìgā́tú bhḗṣajám । śánnṑ ástú dvipádē̏ । śáñcátùṣpádḗ ॥ Ώ śā́ntiśśā́ntiśśā́ntìḥ ॥
+        `, };
+
+        QUnit.test("Gran to Latn: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Latn,);
+        },);
+        QUnit.test("Latn to Gran: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Gran,);
+        },);
+        QUnit.test("Gran to Deva: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran, { vedicAccents: true, },),
+                textWithPunctuationAndSpacing.Deva,);
+        },);
+        QUnit.test("Deva to Gran: vsn text with punctuation, spacing, etc.", t => {
+            t.deepEqual(
+                transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva, { vedicAccents: true, },),
                 textWithPunctuationAndSpacing.Gran,);
         },);
     },);
