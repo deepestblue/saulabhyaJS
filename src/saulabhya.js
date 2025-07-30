@@ -259,7 +259,7 @@ scriptNames.forEach(script => {
     const scriptData = scriptsData[script];
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.accentMarks,],
-        a => [...a,].reverse(),);
+        a => a.reverse(),);
     scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
 },);
 
