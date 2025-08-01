@@ -3,7 +3,8 @@ import { transliterate, } from "../src/saulabhya.js";
 QUnit.config.maxDepth = -1;
 QUnit.config.noglobals = true;
 
-QUnit.module("Taml unit tests", () => {
+QUnit.module("Tam unit tests", () => {
+    const scripts = ["Taml", "Telu", "Knda", "Mlym",];
     const data = {
         Taml: [
             "அ ஆ இ ஈ உ ஊ எ ஏ ஐ ஒ ஓ ஔ ஃ",
@@ -18,6 +19,108 @@ QUnit.module("Taml unit tests", () => {
             "இஓஐஅஓனிறீனௌளஈஅ",
             "க௧",
             "௨ங",
+            "௦",
+            "௧ ௨ ௩ ௪ ௫ ௬ ௭ ௮ ௯",
+            "௰ ௱",
+            "௱௰௧ ௱௪௰௧ ௨௱௰௩ ௯௱௭௰௧ ௯௱௮௰௫",
+            "௲",
+            "௨௲௰௩",
+            "௰௲",
+            "௰௧௲",
+            "௨௰௲௩",
+            "௲௲",
+            "௰௲௲",
+            "௰௧௲௲௱௰௧௲௱௰௧",
+            "௨௰௲௲௰௩",
+            "௨௰௩௲௲௬௱௫௰௲௫௱௬௰௬",
+            "௱௨௰௩௲௲௲௪௱௫௰௬௲௲௭௱௮௰௯௲௨௱௩௰௪",
+        ],
+        Telu: [
+            "అ ఆ ఇ ఈ ఉ ఊ ఎ ఏ ఐ ఒ ఓ ఔ ః",
+            "క కా కి కీ కు కూ కె కే కై కొ కో కౌ",
+            "క్ ఙ్ చ్ ఞ్ ట్ ణ్ ఱ్ ఩్ త్ న్ ప్ మ్ య్ ర్ ల్ వ్ ఴ్ ళ్",
+            "క ఙ చ ఞ ట ణ ఱ ఩ త న ప మ య ర ల వ ఴ ళ",
+            "అఅక్క్",
+            "క్క",
+            "లఅ",
+            "ఙఞ్టో",
+            "అఊ",
+            "ఇఓఐఅఓ఩ిఱీ఩ౌళఈఅ",
+            "క౧",
+            "౨ఙ",
+            "౦",
+            "౧ ౨ ౩ ౪ ౫ ౬ ౭ ౮ ౯",
+            "౧౦ ౧౦౦",
+            "౧౧౧ ౧౪౧ ౨౧౩ ౯౭౧ ౯౮౫",
+            "౧౦౦౦",
+            "౨౦౧౩",
+            "౧౦౦౦౦",
+            "౧౧౦౦౦",
+            "౨౦౦౦౩",
+            "౧౦౦౦౦౦౦",
+            "౧౦౦౦౦౦౦౦",
+            "౧౧౧౧౧౧౧౧",
+            "౨౦౦౦౦౦౧౩",
+            "౨౩౬౫౦౫౬౬",
+            "౧౨౩౪౫౬౭౮౯౨౩౪",
+        ],
+        Knda: [
+            "ಅ ಆ ಇ ಈ ಉ ಊ ಎ ಏ ಐ ಒ ಓ ಔ ಃ",
+            "ಕ ಕಾ ಕಿ ಕೀ ಕು ಕೂ ಕೆ ಕೇ ಕೈ ಕೊ ಕೋ ಕೌ",
+            "ಕ್ ಙ್ ಚ್ ಞ್ ಟ್ ಣ್ ಱ್ ಴್ ತ್ ನ್ ಪ್ ಮ್ ಯ್ ರ್ ಲ್ ವ್ ೞ್ ಳ್",
+            "ಕ ಙ ಚ ಞ ಟ ಣ ಱ ಴ ತ ನ ಪ ಮ ಯ ರ ಲ ವ ೞ ಳ",
+            "ಅಅಕ್ಕ್",
+            "ಕ್ಕ",
+            "ಲಅ",
+            "ಙಞ್ಟೋ",
+            "ಅಊ",
+            "ಇಓಐಅಓ಴ಿಱೀ಴ೌಳಈಅ",
+            "ಕ೧",
+            "೨ಙ",
+            "೦",
+            "೧ ೨ ೩ ೪ ೫ ೬ ೭ ೮ ೯",
+            "೧೦ ೧೦೦",
+            "೧೧೧ ೧೪೧ ೨೧೩ ೯೭೧ ೯೮೫",
+            "೧೦೦೦",
+            "೨೦೧೩",
+            "೧೦೦೦೦",
+            "೧೧೦೦೦",
+            "೨೦೦೦೩",
+            "೧೦೦೦೦೦೦",
+            "೧೦೦೦೦೦೦೦",
+            "೧೧೧೧೧೧೧೧",
+            "೨೦೦೦೦೦೧೩",
+            "೨೩೬೫೦೫೬೬",
+            "೧೨೩೪೫೬೭೮೯೨೩೪",
+        ],
+        Mlym: [
+            "അ ആ ഇ ഈ ഉ ഊ എ ഏ ഐ ഒ ഓ ഔ ഃ",
+            "ക കാ കി കീ കു കൂ കെ കേ കൈ കൊ കോ കൌ",
+            "ക് ങ് ച് ഞ് ട് ണ് റ് ഩ് ത് ന് പ് മ് യ് ര് ല് വ് ഴ് ള്",
+            "ക ങ ച ഞ ട ണ റ ഩ ത ന പ മ യ ര ല വ ഴ ള",
+            "അഅക്ക്",
+            "ക്ക",
+            "ലഅ",
+            "ങഞ്ടോ",
+            "അഊ",
+            "ഇഓഐഅഓഩിറീഩൌളഈഅ",
+            "ക൧",
+            "൨ങ",
+            "൦",
+            "൧ ൨ ൩ ൪ ൫ ൬ ൭ ൮ ൯",
+            "൰ ൱",
+            "൱൰൧ ൱൪൰൧ ൨൱൰൩ ൯൱൭൰൧ ൯൱൮൰൫",
+            "൲",
+            "൨൲൰൩",
+            "൰൲",
+            "൰൧൲",
+            "൨൰൲൩",
+            "൲൲",
+            "൰൲൲",
+            "൰൧൲൲൱൰൧൲൱൰൧",
+            "൨൰൲൲൰൩",
+            "൨൰൩൲൲൬൱൫൰൲൫൱൬൰൬",
+            "൱൨൰൩൲൲൲൪൱൫൰൬൲൲൭൱൮൰൯൲൨൱൩൰൪",
         ],
         Latn: [
             "a ā i ī u ū e ē ai o ō au ḵ",
@@ -32,99 +135,47 @@ QUnit.module("Taml unit tests", () => {
             "iōaiaōṉiṯīṉauḷaīa",
             "ka1",
             "2ṅa",
+            "0",
+            "1 2 3 4 5 6 7 8 9",
+            "10 100",
+            "111 141 213 971 985",
+            "1000",
+            "2013",
+            "10000",
+            "11000",
+            "20003",
+            "1000000",
+            "10000000",
+            "11111111",
+            "20000013",
+            "23650566",
+            "123456789234",
         ],
     };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Taml.length,).keys(),].forEach(i => {
-            QUnit.test(data.Taml[i], t => {
-                t.deepEqual(
-                    transliterate("Taml", "Latn", data.Taml[i],),
-                    data.Latn[i],);
+    scripts.forEach(script => {
+        QUnit.module(`${script} → Latin`, () => {
+            [...Array(data[script].length,).keys(),].forEach(i => {
+                QUnit.test(data[script][i], t => {
+                    t.deepEqual(
+                        transliterate(script, "Latn", data[script][i],),
+                        data.Latn[i],);
+                },);
             },);
         },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Taml", data.Latn[i],),
-                    data.Taml[i],);
+        QUnit.module(`Latin → ${script}`, () => {
+            [...Array(data.Latn.length,).keys(),].forEach(i => {
+                QUnit.test(data.Latn[i], t => {
+                    t.deepEqual(
+                        transliterate("Latn", script, data.Latn[i],),
+                        data[script][i],);
+                },);
             },);
         },);
     },);
 },);
 
-QUnit.module("Telu unit tests", () => {
-    const data = {
-        Telu: [
-            "అ ఆ ఇ ఈ ఉ ఊ ఎ ఏ ఐ ఒ ఓ ఔ",
-            "క కా కి కీ కు కూ కె కే కై కొ కో కౌ",
-            "క్ ఙ్ చ్ ఞ్ ట్ ణ్ ఱ్ ఩్ త్ న్ ప్ మ్ య్ ర్ ల్ వ్ ఴ్ ళ్",
-            "క ఙ చ ఞ ట ణ ఱ ఩ త న ప మ య ర ల వ ఴ ళ",
-        ],
-        Latn: [
-            "a ā i ī u ū e ē ai o ō au",
-            "ka kā ki kī ku kū ke kē kai ko kō kau",
-            "k ṅ c ñ ṭ ṇ ṯ ṉ t n p m y r ḻ v ṛ ḷ",
-            "ka ṅa ca ña ṭa ṇa ṯa ṉa ta na pa ma ya ra ḻa va ṛa ḷa",
-        ],
-    };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Telu.length,).keys(),].forEach(i => {
-            QUnit.test(data.Telu[i], t => {
-                t.deepEqual(
-                    transliterate("Telu", "Latn", data.Telu[i],),
-                    data.Latn[i],);
-            },);
-        },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Telu", data.Latn[i],),
-                    data.Telu[i],);
-            },);
-        },);
-    },);
-},);
-
-QUnit.module("Knda unit tests", () => {
-    const data = {
-        Knda: [
-            "ಅ ಆ ಇ ಈ ಉ ಊ ಎ ಏ ಐ ಒ ಓ ಔ",
-            "ಕ ಕಾ ಕಿ ಕೀ ಕು ಕೂ ಕೆ ಕೇ ಕೈ ಕೊ ಕೋ ಕೌ",
-            "ಕ್ ಙ್ ಚ್ ಞ್ ಟ್ ಣ್ ಱ್ ಴್ ತ್ ನ್ ಪ್ ಮ್ ಯ್ ರ್ ಲ್ ವ್ ೞ್ ಳ್",
-            "ಕ ಙ ಚ ಞ ಟ ಣ ಱ ಴ ತ ನ ಪ ಮ ಯ ರ ಲ ವ ೞ ಳ",
-        ],
-        Latn: [
-            "a ā i ī u ū e ē ai o ō au",
-            "ka kā ki kī ku kū ke kē kai ko kō kau",
-            "k ṅ c ñ ṭ ṇ ṯ ṉ t n p m y r ḻ v ṛ ḷ",
-            "ka ṅa ca ña ṭa ṇa ṯa ṉa ta na pa ma ya ra ḻa va ṛa ḷa",
-        ],
-    };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Knda.length,).keys(),].forEach(i => {
-            QUnit.test(data.Knda[i], t => {
-                t.deepEqual(
-                    transliterate("Knda", "Latn", data.Knda[i],),
-                    data.Latn[i],);
-            },);
-        },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Knda", data.Latn[i],),
-                    data.Knda[i],);
-            },);
-        },);
-    },);
-},);
-
-QUnit.module("Gran without vedic accents unit tests", () => {
+QUnit.module("Cls unit tests", () => {
+    const scripts = ["Gran", "Deva",];
     const data = {
         Gran: [
             "𑌅 𑌆 𑌇 𑌈 𑌉 𑌊 𑌋 𑍠 𑌌 𑍡 𑌏 𑌐 𑌓 𑌔 𑌅𑌂 𑌅𑌁 𑌅𑌃",
@@ -152,112 +203,22 @@ QUnit.module("Gran without vedic accents unit tests", () => {
             "𑌸𑍁𑌮𑌙𑍍𑌗𑌲𑌾𑌁𑍝",
             "𑌦𑍁ᳲ𑌖𑌮𑍍",
             "𑌵ᳲ𑌪𑌿𑌤𑌰𑌃",
+            "௦",
+            "௧ ௨ ௩ ௪ ௫ ௬ ௭ ௮ ௯",
+            "௰ ௱",
+            "௱௰௧ ௱௪௰௧ ௨௱௰௩ ௯௱௭௰௧ ௯௱௮௰௫",
+            "௲",
+            "௨௲௰௩",
+            "௰௲",
+            "௰௧௲",
+            "௨௰௲௩",
+            "௲௲",
+            "௰௲௲",
+            "௰௧௲௲௱௰௧௲௱௰௧",
+            "௨௰௲௲௰௩",
+            "௨௰௩௲௲௬௱௫௰௲௫௱௬௰௬",
+            "௱௨௰௩௲௲௲௪௱௫௰௬௲௲௭௱௮௰௯௲௨௱௩௰௪",
         ],
-        Latn: [
-            "a ā i ī u ū r̥ r̥̄ l̥ l̥̄ ē ai ō au aṁ am̐ aḥ",
-            "ka kā ki kī ku kū kr̥ kr̥̄ kl̥ kl̥̄ kē kai kō kau kaṁ kam̐ kaḥ",
-            "k kh g gh ṅ c ch j jh ñ ṭ ṭh ḍ ḍh ṇ t th d dh n p ph b bh m y r l ḷ v ś ṣ s h",
-            "ka kha ga gha ṅa ca cha ja jha ña ṭa ṭha ḍa ḍha ṇa ta tha da dha na pa pha ba bha ma ya ra la ḷa va śa ṣa sa ha",
-            "kā khā gā ghā ṅā cā chā jā jhā ñā ṭā ṭhā ḍā ḍhā ṇā tā thā dā dhā nā pā phā bā bhā mā yā rā lā ḷā vā śā ṣā sā hā",
-            "aakk",
-            "kka",
-            "laa",
-            "ṅañṭō",
-            "aū",
-            "iōaiaōnitīnauḷaīa",
-            "agḥ",
-            "payaōṣadhī",
-            "arśa:upadravaḥ",
-            "kinhnutē",
-            "vāg:hariḥ",
-            "dēvadatta…",
-            "ā…",
-            "ō…",
-            "hā…",
-            "lakṣmi…",
-            "lakṣmī…",
-            "sumaṅgalām̐…",
-            "duẖkham",
-            "vaḫpitaraḥ",
-        ],
-    };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Gran.length,).keys(),].forEach(i => {
-            QUnit.test(data.Gran[i], t => {
-                t.deepEqual(
-                    transliterate("Gran", "Latn", data.Gran[i],),
-                    data.Latn[i],);
-            },);
-        },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Gran", data.Latn[i],),
-                    data.Gran[i],);
-            },);
-        },);
-    },);
-},);
-
-QUnit.module("Gran with vedic accents unit tests", () => {
-    const data = {
-        Gran: [
-            "𑍐॒", "𑍐", "𑍐᳴", "𑍐॑",
-            "𑌅॒", "𑌅", "𑌅᳴", "𑌅॑",
-            "𑌆॒", "𑌆", "𑌆᳴", "𑌆॑",
-            "𑌔॒", "𑌔", "𑌔᳴", "𑌔॑",
-            "𑌅॒𑌇॒", "𑌅॒𑌇", "𑌅॒𑌇᳴", "𑌅॒𑌇॑",
-            "𑌅𑌇॒", "𑌅𑌇", "𑌅𑌇᳴", "𑌅𑌇॑",
-            "𑌅᳴𑌇॒", "𑌅᳴𑌇", "𑌅᳴𑌇᳴", "𑌅᳴𑌇॑",
-            "𑌅॑𑌇॒", "𑌅॑𑌇", "𑌅॑𑌇᳴", "𑌅॑𑌇॑",
-            "𑌕॒", "𑌕", "𑌕᳴", "𑌕॑",
-            "𑌕𑌾॒", "𑌕𑌾", "𑌕𑌾᳴", "𑌕𑌾॑",
-            "𑌕𑍍𑌕॒", "𑌕𑍍𑌕", "𑌕𑍍𑌕᳴", "𑌕𑍍𑌕॑",
-            "𑌤𑌵", "𑌸𑍋𑌮", "𑌲𑌤𑌾", "𑌮𑌾𑌤𑌾",
-            "𑌮𑌦𑌨", "𑌪𑌾𑌵𑌨", "𑌤𑌦𑍇𑌵", "𑌰𑌚𑌨𑌾",
-            "𑌵𑌾𑌰𑌾𑌹", "𑌸𑌾𑌧𑌨𑌾", "𑌶𑌲𑌾𑌕𑌾", "𑌵𑌾𑌰𑌾𑌹𑍀",
-        ],
-        Latn: [
-            "Ω", "Ώ", "Ὼ", "Ω̏",
-            "a", "á", "à", "ȁ",
-            "ā", "ā́", "ā̀", "ā̏",
-            "au", "aú", "aù", "aȕ",
-            "a:i", "a:í", "a:ì", "a:ȉ",
-            "á:i", "á:í", "á:ì", "á:ȉ",
-            "à:i", "à:í", "à:ì", "à:ȉ",
-            "ȁ:i", "ȁ:í", "ȁ:ì", "ȁ:ȉ",
-            "ka", "ká", "kà", "kȁ",
-            "kā", "kā́", "kā̀", "kā̏",
-            "kka", "kká", "kkà", "kkȁ",
-            "tává", "sṓmá", "látā́", "mā́tā́",
-            "mádáná", "pā́váná", "tádḗvá", "rácánā́",
-            "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
-        ],
-    };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Gran.length,).keys(),].forEach(i => {
-            QUnit.test(data.Gran[i], t => {
-                t.deepEqual(
-                    transliterate("Gran", "Latn", data.Gran[i], { vedicAccents: true, },),
-                    data.Latn[i],);
-            },);
-        },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Gran", data.Latn[i], { vedicAccents: true, },),
-                    data.Gran[i],);
-            },);
-        },);
-    },);
-},);
-
-QUnit.module("Deva without vedic accents unit tests", () => {
-    const data = {
         Deva: [
             "अ आ इ ई उ ऊ ऋ ॠ ऌ ॡ ए ऐ ओ औ अं अँ अः",
             "क का कि की कु कू कृ कॄ कॢ कॣ के कै को कौ कं कँ कः",
@@ -284,6 +245,21 @@ QUnit.module("Deva without vedic accents unit tests", () => {
             "सुमङ्गलाँ३",
             "दुᳵखम्",
             "वᳶपितरः",
+            "०",
+            "१ २ ३ ४ ५ ६ ७ ८ ९",
+            "१० १००",
+            "१११ १४१ २१३ ९७१ ९८५",
+            "१०००",
+            "२०१३",
+            "१००००",
+            "११०००",
+            "२०००३",
+            "१००००००",
+            "१०००००००",
+            "११११११११",
+            "२०००००१३",
+            "२३६५०५६६",
+            "१२३४५६७८९२३४",
         ],
         Latn: [
             "a ā i ī u ū r̥ r̥̄ l̥ l̥̄ ē ai ō au aṁ am̐ aḥ",
@@ -311,30 +287,64 @@ QUnit.module("Deva without vedic accents unit tests", () => {
             "sumaṅgalām̐…",
             "duẖkham",
             "vaḫpitaraḥ",
+            "0",
+            "1 2 3 4 5 6 7 8 9",
+            "10 100",
+            "111 141 213 971 985",
+            "1000",
+            "2013",
+            "10000",
+            "11000",
+            "20003",
+            "1000000",
+            "10000000",
+            "11111111",
+            "20000013",
+            "23650566",
+            "123456789234",
         ],
     };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Deva.length,).keys(),].forEach(i => {
-            QUnit.test(data.Deva[i], t => {
-                t.deepEqual(
-                    transliterate("Deva", "Latn", data.Deva[i],),
-                    data.Latn[i],);
+    scripts.forEach(script => {
+        QUnit.module(`${script} → Latin`, () => {
+            [...Array(data[script].length,).keys(),].forEach(i => {
+                QUnit.test(data[script][i], t => {
+                    t.deepEqual(
+                        transliterate(script, "Latn", data[script][i],),
+                        data.Latn[i],);
+                },);
             },);
         },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Deva", data.Latn[i],),
-                    data.Deva[i],);
+        QUnit.module(`Latin → ${script}`, () => {
+            [...Array(data.Latn.length,).keys(),].forEach(i => {
+                QUnit.test(data.Latn[i], t => {
+                    t.deepEqual(
+                        transliterate("Latn", script, data.Latn[i],),
+                        data[script][i],);
+                },);
             },);
         },);
     },);
 },);
 
-QUnit.module("Deva with vedic accents unit tests", () => {
+QUnit.module("Vsn unit tests", () => {
+    const scripts = ["Gran", "Deva",];
     const data = {
+        Gran: [
+            "𑍐॒", "𑍐", "𑍐᳴", "𑍐॑",
+            "𑌅॒", "𑌅", "𑌅᳴", "𑌅॑",
+            "𑌆॒", "𑌆", "𑌆᳴", "𑌆॑",
+            "𑌔॒", "𑌔", "𑌔᳴", "𑌔॑",
+            "𑌅॒𑌇॒", "𑌅॒𑌇", "𑌅॒𑌇᳴", "𑌅॒𑌇॑",
+            "𑌅𑌇॒", "𑌅𑌇", "𑌅𑌇᳴", "𑌅𑌇॑",
+            "𑌅᳴𑌇॒", "𑌅᳴𑌇", "𑌅᳴𑌇᳴", "𑌅᳴𑌇॑",
+            "𑌅॑𑌇॒", "𑌅॑𑌇", "𑌅॑𑌇᳴", "𑌅॑𑌇॑",
+            "𑌕॒", "𑌕", "𑌕᳴", "𑌕॑",
+            "𑌕𑌾॒", "𑌕𑌾", "𑌕𑌾᳴", "𑌕𑌾॑",
+            "𑌕𑍍𑌕॒", "𑌕𑍍𑌕", "𑌕𑍍𑌕᳴", "𑌕𑍍𑌕॑",
+            "𑌤𑌵", "𑌸𑍋𑌮", "𑌲𑌤𑌾", "𑌮𑌾𑌤𑌾",
+            "𑌮𑌦𑌨", "𑌪𑌾𑌵𑌨", "𑌤𑌦𑍇𑌵", "𑌰𑌚𑌨𑌾",
+            "𑌵𑌾𑌰𑌾𑌹", "𑌸𑌾𑌧𑌨𑌾", "𑌶𑌲𑌾𑌕𑌾", "𑌵𑌾𑌰𑌾𑌹𑍀",
+        ],
         Deva: [
             "ॐ॒", "ॐ", "ॐ॑", "ॐ᳚",
             "अ॒", "अ", "अ॑", "अ᳚",
@@ -368,127 +378,24 @@ QUnit.module("Deva with vedic accents unit tests", () => {
             "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
         ],
     };
-    QUnit.module("To Latin", () => {
-        [...Array(data.Deva.length,).keys(),].forEach(i => {
-            QUnit.test(data.Deva[i], t => {
-                t.deepEqual(
-                    transliterate("Deva", "Latn", data.Deva[i], { vedicAccents: true, },),
-                    data.Latn[i],);
+    scripts.forEach(script => {
+        QUnit.module(`${script} → Latin`, () => {
+            [...Array(data[script].length,).keys(),].forEach(i => {
+                QUnit.test(data[script][i], t => {
+                    t.deepEqual(
+                        transliterate(script, "Latn", data[script][i], { vedicAccents: true, },),
+                        data.Latn[i],);
+                },);
             },);
         },);
-    },);
-    QUnit.module("From Latin", () => {
-        [...Array(data.Latn.length,).keys(),].forEach(i => {
-            QUnit.test(data.Latn[i], t => {
-                t.deepEqual(
-                    transliterate("Latn", "Deva", data.Latn[i], { vedicAccents: true, },),
-                    data.Deva[i],);
+        QUnit.module(`Latin → ${script}`, () => {
+            [...Array(data.Latn.length,).keys(),].forEach(i => {
+                QUnit.test(data.Latn[i], t => {
+                    t.deepEqual(
+                        transliterate("Latn", script, data.Latn[i], { vedicAccents: true, },),
+                        data[script][i],);
+                },);
             },);
-        },);
-    },);
-},);
-
-QUnit.module("Numbers", () => {
-    const data = {
-        Taml: [
-            "௦",
-            "௧ ௨ ௩ ௪ ௫ ௬ ௭ ௮ ௯",
-            "௰ ௱",
-            "௱௰௧ ௱௪௰௧ ௨௱௰௩ ௯௱௭௰௧ ௯௱௮௰௫",
-            "௲",
-            "௨௲௰௩",
-            "௰௲",
-            "௰௧௲",
-            "௨௰௲௩",
-            "௲௲",
-            "௰௲௲",
-            "௰௧௲௲௱௰௧௲௱௰௧",
-            "௨௰௲௲௰௩",
-            "௨௰௩௲௲௬௱௫௰௲௫௱௬௰௬",
-            "௱௨௰௩௲௲௲௪௱௫௰௬௲௲௭௱௮௰௯௲௨௱௩௰௪",
-        ],
-        Telu: [
-            "౦",
-            "౧ ౨ ౩ ౪ ౫ ౬ ౭ ౮ ౯",
-            "౧౦ ౧౦౦",
-            "౧౧౧ ౧౪౧ ౨౧౩ ౯౭౧ ౯౮౫",
-            "౧౦౦౦",
-            "౨౦౧౩",
-            "౧౦౦౦౦",
-            "౧౧౦౦౦",
-            "౨౦౦౦౩",
-            "౧౦౦౦౦౦౦",
-            "౧౦౦౦౦౦౦౦",
-            "౧౧౧౧౧౧౧౧",
-            "౨౦౦౦౦౦౧౩",
-            "౨౩౬౫౦౫౬౬",
-            "౧౨౩౪౫౬౭౮౯౨౩౪",
-        ],
-        Deva: [
-            "०",
-            "१ २ ३ ४ ५ ६ ७ ८ ९",
-            "१० १००",
-            "१११ १४१ २१३ ९७१ ९८५",
-            "१०००",
-            "२०१३",
-            "१००००",
-            "११०००",
-            "२०००३",
-            "१००००००",
-            "१०००००००",
-            "११११११११",
-            "२०००००१३",
-            "२३६५०५६६",
-            "१२३४५६७८९२३४",
-        ],
-        Latn: [
-            "0",
-            "1 2 3 4 5 6 7 8 9",
-            "10 100",
-            "111 141 213 971 985",
-            "1000",
-            "2013",
-            "10000",
-            "11000",
-            "20003",
-            "1000000",
-            "10000000",
-            "11111111",
-            "20000013",
-            "23650566",
-            "123456789234",
-        ],
-    };
-    [...Array(data.Latn.length,).keys(),].forEach(i => {
-        QUnit.test(`தமிழ் ${data.Taml[i]}`, t => {
-            t.deepEqual(
-                transliterate("Taml", "Latn", data.Taml[i],),
-                data.Latn[i],);
-        },);
-        QUnit.test(`${data.Latn[i]} → தமிழ்`, t => {
-            t.deepEqual(
-                transliterate("Latn", "Taml", data.Latn[i],),
-                data.Taml[i],);
-        },);
-        QUnit.test(`తెలుగు ${data.Telu[i]}`, t => {
-            t.deepEqual(
-                transliterate("Telu", "Latn", data.Telu[i],),
-                data.Latn[i],);
-        },);
-        QUnit.test(`${data.Latn[i]} → తెలుగు`, t => {
-            t.deepEqual(
-                transliterate("Latn", "Telu", data.Latn[i],),
-                data.Telu[i],);
-        },);
-        QUnit.test(`देवनागरी ${data.Deva[i]}`, t => {
-            t.deepEqual(
-                transliterate("Deva", "Latn", data.Deva[i],),
-                data.Latn[i],);
-        },);
-        QUnit.test(`${data.Latn[i]} → देवनागरी`, t => {
-            t.deepEqual(
-                transliterate("Latn", "Deva", data.Latn[i],),
-                data.Deva[i],);
         },);
     },);
 },);
@@ -636,7 +543,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
     },);
 },);
 
-QUnit.module("Invalid inputs", () => {
+QUnit.module("Tam invalid inputs", () => {
     QUnit.test("Invalid Tam text in Taml", t => {
         const invalidTaTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
         t.throws(
@@ -667,7 +574,9 @@ QUnit.module("Invalid inputs", () => {
                 new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message,),
         );
     },);
+},);
 
+QUnit.module("Unsupported script", () => {
     const unsupportedScriptName = "sinh";
     QUnit.test("Unsupported source script", t => {
         t.throws(
