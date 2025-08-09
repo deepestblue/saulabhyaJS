@@ -260,7 +260,7 @@ scriptNames.forEach(script => {
     const revArray = Array.from(
         [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.accentMarks,],
         a => a.reverse(),);
-    scriptData.brahmicToLatin = revArray.reduce((ator, val,) => Object.assign(ator, { [val[0]]: val[1], },), {},);
+    scriptData.brahmicToLatin = Object.fromEntries(revArray,);
 },);
 
 scriptNames.push("Latn",);
@@ -285,6 +285,7 @@ const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
+    const brahmicToLatinData = scriptData.brahmicToLatin;
 
     // Validate no foreign characters
     (() => {
@@ -312,7 +313,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     // Misc.
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.misc.values(),),),
-        match => scriptData.brahmicToLatin[match],
+        match => brahmicToLatinData[match],
     );
 
     // Numbers
@@ -394,7 +395,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     } else {
         sourceText = sourceText.replace(
             regex(anyOfIterable(scriptData.numbers.values(),),),
-            match => scriptData.brahmicToLatin[match],
+            match => brahmicToLatinData[match],
         );
     }
 
@@ -466,19 +467,19 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     // Consonant–vowel‐marker pairs
     sourceText = sourceText.replace(
         regex(`(${anyOfIterable(scriptData.consonants.values(),)})(${anyOfIterable(scriptData.vowelMarks.values(),)})`,),
-        (_unused, p1, p2,) => scriptData.brahmicToLatin[p1] + scriptData.brahmicToLatin[p2],
+        (_unused, p1, p2,) => brahmicToLatinData[p1] + brahmicToLatinData[p2],
     );
 
     // Consonants without vowel‐markers
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.consonants.values(),),),
-        match => scriptData.brahmicToLatin[match] + inherentVowel,
+        match => brahmicToLatinData[match] + inherentVowel,
     );
 
     // Modifiers
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.modifiers.values(),),),
-        match => scriptData.brahmicToLatin[match],
+        match => brahmicToLatinData[match],
     );
 
     // Visarga alternate for Grantha
@@ -500,7 +501,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     // Vowels
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.vowels.values(),),),
-        match => scriptData.brahmicToLatin[match],
+        match => brahmicToLatinData[match],
     );
 
     return sourceText;

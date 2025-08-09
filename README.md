@@ -26,7 +26,7 @@ SaulabhyaJS Supports the following language/script combinations:
 
 ## Usage
 
-SaulabhyaJS is available as an ES2015 module. The easiest way to get SaulabhyaJS is through jsdeliver. Simply
+SaulabhyaJS is available as an ES module. The easiest way to get SaulabhyaJS in the browser is through jsDelivr. Simply
 
     import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/src/saulabhya.min.js";
 

@@ -22,6 +22,9 @@ export default [
     },
     js.configs.all,
     {
+        plugins: {
+            qunit,
+        },
         rules: {
             "complexity": ["error", { max: 50, variant: "modified", },],
             "func-names": "off",
