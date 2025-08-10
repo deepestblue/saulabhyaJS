@@ -405,6 +405,12 @@ QUnit.module("Integration tests", () => {
                 transliterate("Taml", "Taml", trivialTestText,),
                 trivialTestText,);
         },);
+        QUnit.test("Transliterate from Latn to Latn", t => {
+            const trivialTestText = "tamiṛiliruntu tamiṛ eḷitu.";
+            t.deepEqual(
+                transliterate("Latn", "Latn", trivialTestText,),
+                trivialTestText,);
+        },);
     },);
     QUnit.module("tam", () => {
         const textWithPunctuationAndSpacing = {
@@ -542,17 +548,17 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 
 QUnit.module("Tam invalid inputs", () => {
     QUnit.test("Invalid Tam text in Taml", t => {
-        const invalidTaTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
+        const invalidTamTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
         t.throws(
-            () => transliterate("Taml", "Latn", invalidTaTamlText,),
+            () => transliterate("Taml", "Latn", invalidTamTamlText,),
             err => err instanceof Error &&
                 /^Unknown Taml character: .\.$/v.test(err.message,),
         );
     },);
     QUnit.test("Invalid Tam text in Latn", t => {
-        const invalidTaLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
+        const invalidTamLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
         t.throws(
-            () => transliterate("Latn", "Taml", invalidTaLatnText,),
+            () => transliterate("Latn", "Taml", invalidTamLatnText,),
             err => err instanceof Error &&
                 /^Unknown Taml character: .\.$/v.test(err.message,),
         );
@@ -569,6 +575,17 @@ QUnit.module("Tam invalid inputs", () => {
             () => transliterate("Taml", "Latn", invalidNumber,),
             err => err instanceof Error &&
                 new RegExp(`^Invalid number: ${invalidNumber}.$`, "v",).test(err.message,),
+        );
+    },);
+},);
+
+QUnit.module("Cls invalid inputs", () => {
+    QUnit.test("Invalid Cls text in Gran", t => {
+        const invalidClsGranText = "ᳲ𑌤";
+        t.throws(
+            () => transliterate("Gran", "Latn", invalidClsGranText,),
+            err => err instanceof Error &&
+                /^Unknown Gran character combination: .+\.$/v.test(err.message,),
         );
     },);
 },);

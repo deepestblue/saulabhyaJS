@@ -3,12 +3,29 @@
   "version": "0.1.0",
   "type": "module",
   "description": "SaulabhyaJS",
-  "main": "saulabhya.js",
+  "main": "dist/saulabhya.min.js",
+  "module": "dist/saulabhya.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/saulabhya.min.js",
+      "default": "./dist/saulabhya.min.js"
+    }
+  },
+  "files": [
+    "dist/",
+    "src/",
+    "README.md",
+    "LICENCE"
+  ],
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node scripts/build.mjs",
+    "build:cov": "COVERAGE=1 node scripts/build.mjs",
+    "lint": "npx eslint src test",
+    "test": "PUPPETEER_EXECUTABLE_PATH=\"$PUPPETEER_EXECUTABLE_PATH\" node scripts/run-tests.mjs",
+    "coverage": "npm run build:cov && COVERAGE=1 PUPPETEER_EXECUTABLE_PATH=\"$PUPPETEER_EXECUTABLE_PATH\" node scripts/run-tests.mjs && npx nyc report"
   },
   "repository": {
     "type": "git",
@@ -20,12 +37,16 @@
     "url": "https://github.com/deepestblue/SaulabhyaJS/issues"
   },
   "homepage": "https://github.com/deepestblue/SaulabhyaJS#readme",
-  "dependencies": {
+  "sideEffects": false,
+  "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@stylistic/eslint-plugin": "^2.9.0",
+    "esbuild": "^0.23.0",
+    "esbuild-plugin-istanbul": "^0.3.0",
     "eslint": "^9.15.0",
     "eslint-plugin-qunit": "^8.1.2",
     "globals": "^15.11.0",
-    "node-qunit-puppeteer": "^2.2.0"
+    "node-qunit-puppeteer": "^2.2.0",
+    "nyc": "^17.1.0"
   }
 }

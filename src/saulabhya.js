@@ -485,15 +485,15 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     // Visarga alternate for Grantha
     if (otherScript === "Gran") {
         sourceText = sourceText.replace(
-            regex(`h([̱̮])([kp])`,),
-            (_unused, p1, p2,) => {
+            regex(`h([̱̮])(.)`,),
+            (match, p1, p2,) => {
                 if (p2 === "k") {
                     return "ẖk";
                 }
                 if (p2 === "p") {
                     return "ḫp";
                 }
-                return `h${p1}${p2}`;
+                throw new Error(`Unknown ${otherScript} character combination: ${match}.`,);
             },
         );
     }

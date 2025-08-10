@@ -28,7 +28,7 @@ SaulabhyaJS Supports the following language/script combinations:
 
 SaulabhyaJS is available as an ES module. The easiest way to get SaulabhyaJS in the browser is through jsDelivr. Simply
 
-    import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/src/saulabhya.min.js";
+    import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/dist/saulabhya.min.js";
 
 and use it like:
 
@@ -46,9 +46,9 @@ Optionally, `transliterate` also takes an `options` parameter. The only currentl
 
 ## Contributing
 
-* Add test coverage to `saulabhya.test.js`.
-* Run all the tests in `test/test.html`, for instance through running a local webserver and opening `test/test.html` in a browser.
-* Also run `npx eslint .`.
+* Run tests via `npm test`. Set `PUPPETEER_EXECUTABLE_PATH` to your system Chrome if needed.
+* Lint with `npm run lint`.
+* Coverage: `npm run coverage` generates text summary. Coverage data is stored in `.nyc_output/`.
 
 ## History
 
