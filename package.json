@@ -23,7 +23,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "build:cov": "COVERAGE=1 node scripts/build.mjs",
-    "lint": "npx eslint src test",
+    "lint": "npx eslint src test scripts",
     "test": "PUPPETEER_EXECUTABLE_PATH=\"$PUPPETEER_EXECUTABLE_PATH\" node scripts/run-tests.mjs",
     "coverage": "npm run build:cov && COVERAGE=1 PUPPETEER_EXECUTABLE_PATH=\"$PUPPETEER_EXECUTABLE_PATH\" node scripts/run-tests.mjs && npx nyc report"
   },

@@ -13,7 +13,7 @@ jobs:
         run: npm install --no-package-lock --no-fund
 
       - name: Run lint
-        run: npx eslint .
+        run: npm run lint
 
       - name: Run unit tests
-        run: npx node-qunit-puppeteer test/test.html
+        run: npm run test
