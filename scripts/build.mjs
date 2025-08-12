@@ -27,7 +27,7 @@ await build({
     bundle: true,
     format: "esm",
     minify: ! isCoverage,
-    target: "es2022",
+    target: "esnext",
     outfile: "dist/saulabhya.min.js",
     plugins,
 },);
