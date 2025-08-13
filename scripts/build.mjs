@@ -16,7 +16,9 @@ if (isCoverage) {
     const istanbul = istanbulPkg.default?.esbuildPluginIstanbul ?? istanbulPkg.esbuildPluginIstanbul;
     const pluginObj = istanbul({
         name: "istanbul",
-        filter: /\.js$/v,
+        // ESBuild's JavaScript parser doesn't support the `v` flag for Unicode regexes.
+        // eslint-disable-next-line require-unicode-regexp
+        filter: /\.js$/,
         loader: "js",
     },);
     plugins.push({ name: pluginObj.name || "istanbul", setup: pluginObj.setup, },);

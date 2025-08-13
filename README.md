@@ -46,7 +46,7 @@ Optionally, `transliterate` also takes an `options` parameter. The only currentl
 
 ## Contributing
 
-* Run tests via `npm test`. Set `PUPPETEER_EXECUTABLE_PATH` to your system Chrome if needed.
+* Run tests via `npm test`. Set `PUPPETEER_EXECUTABLE_PATH` to your system Chrome as needed.
 * Lint with `npm run lint`.
 * Coverage: `npm run coverage` generates text summary. Coverage data is stored in `.nyc_output/`.
 

@@ -5,6 +5,9 @@ import qunit from "eslint-plugin-qunit";
 
 export default [
     {
+        ignores: ["dist/**", "node_modules/**",],
+    },
+    {
         languageOptions: {
             globals: {
                 ...globals.browser,
