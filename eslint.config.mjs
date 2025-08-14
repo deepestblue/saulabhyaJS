@@ -37,6 +37,7 @@ export default [
             "max-lines": "off",
             "max-params": ["error", 10,],
             "max-statements": "off",
+            "no-alert": "off",
             "no-console": "off",
             "no-continue": "off",
             "no-duplicate-imports": "off",
@@ -51,8 +52,8 @@ export default [
             "no-underscore-dangle": ["error", { allow: ["__coverage__",], enforceInClassFields: true, enforceInMethodNames: true, },],
             "one-var": "off",
             "require-unicode-regexp": ["error", { requireFlag: "v", },],
-            "sort-keys": "off",
             "sort-imports": "off",
+            "sort-keys": "off",
             ...qunit.configs.recommended.rules,
         },
     },
@@ -70,8 +71,9 @@ export default [
         },
         rules: {
             "@stylistic/arrow-parens": ["error", "as-needed",],
-            "@stylistic/space-unary-ops": ["error", { overrides: { "!": true, }, },],
+            "@stylistic/max-statements-per-line": "off",
             "@stylistic/operator-linebreak": ["error", "after", { overrides: { "?": "after", ":": "before", }, },],
+            "@stylistic/space-unary-ops": ["error", { overrides: { "!": true, }, },],
         },
     },
 ];
