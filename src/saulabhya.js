@@ -285,7 +285,6 @@ const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
-    const brahmicToLatinData = scriptData.brahmicToLatin;
 
     // Validate no foreign characters
     (() => {
@@ -309,6 +308,8 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
             throw new Error(`Unknown ${otherScript} character: ${result[0]}.`,);
         }
     })();
+
+    const brahmicToLatinData = scriptData.brahmicToLatin;
 
     // Misc.
     sourceText = sourceText.replace(
@@ -677,7 +678,35 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
     }
 
     if (srcScript === tgtScript) {
-        return sourceText.normalize(tgtScript === "Latn" ? "NFD" : "NFC",);
+        if (tgtScript === "Latn") {
+            return sourceText.normalize("NFD",);
+        }
+
+        // Validate no foreign characters
+        const scriptData = scriptsData[tgtScript];
+        (() => {
+            const scriptCharacters = [
+                ...scriptData.misc.values(),
+                ...scriptData.numbers.values(),
+                ...scriptData.modifiers.values(),
+                ...scriptData.vowelMarks.values(),
+                ...scriptData.vowels.values(),
+                ...scriptData.consonants.values(),
+                ...whitespace,
+            ].concat(
+                ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
+            );
+
+            // Should not use ‘g’ for this regex alone.
+            // Seems to result in some sort of combinatorial explosion.
+            const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
+            const result = sourceText.match(invalidRegex,);
+            if (result) {
+                throw new Error(`Unknown ${tgtScript} character: ${result[0]}.`,);
+            }
+        })();
+
+        return sourceText.normalize("NFC",);
     }
 
     if (tgtScript === "Latn") {

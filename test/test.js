@@ -547,7 +547,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 },);
 
 QUnit.module("Tam invalid inputs", () => {
-    QUnit.test("Invalid Tam text in Taml", t => {
+    QUnit.test("Transliterating invalid Tam text from Taml into Latn", t => {
         const invalidTamTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
         t.throws(
             () => transliterate("Taml", "Latn", invalidTamTamlText,),
@@ -555,7 +555,15 @@ QUnit.module("Tam invalid inputs", () => {
                 /^Unknown Taml character: .\.$/v.test(err.message,),
         );
     },);
-    QUnit.test("Invalid Tam text in Latn", t => {
+    QUnit.test("Transliterating invalid Tam text from Taml into Taml", t => {
+        const invalidTamTamlText = "இடயினம்: ய் ர் ல் வ் ழ் ள்";
+        t.throws(
+            () => transliterate("Taml", "Taml", invalidTamTamlText,),
+            err => err instanceof Error &&
+                /^Unknown Taml character: .\.$/v.test(err.message,),
+        );
+    },);
+    QUnit.test("Transliterating invalid Tam text from Latn into Taml", t => {
         const invalidTamLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
         t.throws(
             () => transliterate("Latn", "Taml", invalidTamLatnText,),
