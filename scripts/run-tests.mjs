@@ -14,14 +14,34 @@ const HttpCodes = {
 
 const port = 54320;
 
+const servedFiles = new Map([
+    ["/test/test.html", "test/test.html",],
+    ["/test/test.js", "test/test.js",],
+    ["/src/saulabhya.js", "src/saulabhya.js",],
+    ["/dist/saulabhya.min.js", "dist/saulabhya.min.js",],
+],);
+
 const server = http.createServer(async (req, res,) => {
     try {
-        let urlPath = req.url === "/" ? "/test/test.html" : req.url;
+        if (! req.url) {
+            res.writeHead(HttpCodes.notFound,);
+            res.end("Not found",);
+            return;
+        }
+
+        const requestUrl = new URL(req.url, `http://localhost:${port}`,);
+        let urlPath = requestUrl.pathname === "/" ? "/test/test.html" : requestUrl.pathname;
         // During coverage runs, map source module to the instrumented bundle
         if (process.env.COVERAGE === "1" && urlPath === "/src/saulabhya.js") {
             urlPath = "/dist/saulabhya.min.js";
         }
-        const filePath = path.resolve(`.${urlPath}`,);
+        const allowedFile = servedFiles.get(urlPath,);
+        if (! allowedFile) {
+            res.writeHead(HttpCodes.notFound,);
+            res.end("Not found",);
+            return;
+        }
+        const filePath = path.resolve(allowedFile,);
         const content = await readFile(filePath,);
 
         let contentType = "text/plain";
