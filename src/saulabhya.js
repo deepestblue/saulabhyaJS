@@ -531,7 +531,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
         const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
         const result = sourceText.match(invalidRegex,);
         if (result) {
-            throw new Error(`Unknown ${otherScript} character: ${result[0]}.`,);
+            throw new Error(`Unknown Latn character: ${result[0]}.`,);
         }
     })();
 

@@ -568,9 +568,10 @@ QUnit.module("Tam invalid inputs", () => {
         t.throws(
             () => transliterate("Latn", "Taml", invalidTamLatnText,),
             err => err instanceof Error &&
-                /^Unknown Taml character: .\.$/v.test(err.message,),
+                /^Unknown Latn character: .\.$/v.test(err.message,),
         );
     },);
+    // We cannot create a similar "Transliterating invalid Tam text from Latn into Latn" test because without a Brahmic script, we do not know what characters are valid.
 
     QUnit.test.each("Invalid Tamil numbers", [
         "௨௩",
