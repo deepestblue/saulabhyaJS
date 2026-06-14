@@ -15,7 +15,7 @@ const HttpCodes = {
 const port = 54320;
 
 const servedFiles = new Map([
-    ["/test/test.html", "test/test.html",],
+    ["/test/index.html", "test/index.html",],
     ["/test/test.js", "test/test.js",],
     ["/src/saulabhya.js", "src/saulabhya.js",],
     ["/dist/saulabhya.min.js", "dist/saulabhya.min.js",],
@@ -30,7 +30,7 @@ const server = http.createServer(async (req, res,) => {
         }
 
         const requestUrl = new URL(req.url, `http://localhost:${port}`,);
-        let urlPath = requestUrl.pathname === "/" ? "/test/test.html" : requestUrl.pathname;
+        let urlPath = requestUrl.pathname === "/" ? "/test/index.html" : requestUrl.pathname;
         // During coverage runs, map source module to the instrumented bundle
         if (process.env.COVERAGE === "1" && urlPath === "/src/saulabhya.js") {
             urlPath = "/dist/saulabhya.min.js";
@@ -69,6 +69,7 @@ await new Promise(resolve => {
 const browser = await puppeteer.launch({
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
     args: ["--no-sandbox",],
+    userDataDir: "./.puppeteer-cache", // Enable persistent cache
 },);
 
 const page = await browser.newPage();
@@ -76,7 +77,7 @@ const page = await browser.newPage();
 let result;
 try {
     result = await qunit.runQunitWithPage(page, {
-        targetUrl: `http://localhost:${port}/test/test.html`,
+        targetUrl: `http://localhost:${port}/test/index.html`,
         timeout: 30000,
         puppeteerArgs: [],
     },);
