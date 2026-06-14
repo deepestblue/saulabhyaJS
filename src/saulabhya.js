@@ -369,21 +369,25 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
                     throw new Error(`Invalid number: ${sourceNumber}.`,);
                 }
 
+                /* eslint-disable @stylistic/indent, @stylistic/indent-binary-ops */
                 return {
                     total: ator.total + 1000 ** thousands *
-                    (components[0] ?
-                            (components[5] ? scriptData.brahmicToLatin[components[5]] : 0) + // Add in any units.
-                            (components[4] ? // If there is a tens symbol, …
-                                // … add in the tens, treating a missing digit prefix as an implicit 1.
-                                10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1)
+                        (components[0] ?
+                            (components[5] ?
+                                scriptData.brahmicToLatin[components[5]] // Add in any units.
                                 : 0) +
-                                (components[2] ? // If there is a hundreds symbol, …
-                                    // … add in the hundreds, treating a missing digit prefix as 1.
-                                    100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1)
-                                    : 0)
-                        : 1), // Nothing in front of the thousand symbols is just the value of the power.
+                            (components[4] ? // If there is a tens symbol, …
+                                10 * (components[3] ? scriptData.brahmicToLatin[components[3]] : 1) // … add in the tens, treating a missing digit prefix as an implicit 1.
+
+                                : 0) +
+                            (components[2] ? // If there is a hundreds symbol, …
+                                100 * (components[1] ? scriptData.brahmicToLatin[components[1]] : 1) // … add in the hundreds, treating a missing digit prefix as 1.
+
+                                : 0)
+                            : 1), // Nothing in front of the thousand symbols is just the value of the power.
                     minThousands: thousands,
                 };
+                /* eslint-enable @stylistic/indent, @stylistic/indent-binary-ops */
             },
             { total: 0, minThousands: Infinity, },
             ).total;
