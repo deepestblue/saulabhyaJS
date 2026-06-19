@@ -122,7 +122,36 @@ QUnit.module("Tam unit tests", () => {
             "൨൰൩൲൲൬൱൫൰൲൫൱൬൰൬",
             "൱൨൰൩൲൲൲൪൱൫൰൬൲൲൭൱൮൰൯൲൨൱൩൰൪",
         ],
-        Latn: [
+        LatnISO15919: [
+            "a ā i ī u ū e ē ai o ō au ḵ",
+            "ka kā ki kī ku kū ke kē kai ko kō kau",
+            "k ṅ c ñ ṭ ṇ ṟ ṉ t n p m y r l v ḻ ḷ",
+            "ka ṅa ca ña ṭa ṇa ṟa ṉa ta na pa ma ya ra la va ḻa ḷa",
+            "aakk",
+            "kka",
+            "laa",
+            "ṅañṭō",
+            "aū",
+            "iōaiaōṉiṟīṉauḷaīa",
+            "ka1",
+            "2ṅa",
+            "0",
+            "1 2 3 4 5 6 7 8 9",
+            "10 100",
+            "111 141 213 971 985",
+            "1000",
+            "2013",
+            "10000",
+            "11000",
+            "20003",
+            "1000000",
+            "10000000",
+            "11111111",
+            "20000013",
+            "23650566",
+            "123456789234",
+        ],
+        LatnISO15919Modified: [
             "a ā i ī u ū e ē ai o ō au ḵ",
             "ka kā ki kī ku kū ke kē kai ko kō kau",
             "k ṅ c ñ ṭ ṇ ṯ ṉ t n p m y r ḻ v ṛ ḷ",
@@ -153,20 +182,38 @@ QUnit.module("Tam unit tests", () => {
         ],
     };
     scripts.forEach(script => {
-        QUnit.module(`${script} → Latin`, () => {
+        QUnit.module(`${script} → LatnISO15919`, () => {
             [...Array(data[script].length,).keys(),].forEach(i => {
                 QUnit.test(data[script][i], t => {
                     t.deepEqual(
                         transliterate(script, "Latn", data[script][i],),
-                        data.Latn[i],);
+                        data.LatnISO15919[i],);
                 },);
             },);
         },);
-        QUnit.module(`Latin → ${script}`, () => {
-            [...Array(data.Latn.length,).keys(),].forEach(i => {
-                QUnit.test(data.Latn[i], t => {
+        QUnit.module(`LatnISO15919 → ${script}`, () => {
+            [...Array(data.LatnISO15919.length,).keys(),].forEach(i => {
+                QUnit.test(data.LatnISO15919[i], t => {
                     t.deepEqual(
-                        transliterate("Latn", script, data.Latn[i],),
+                        transliterate("Latn", script, data.LatnISO15919[i],),
+                        data[script][i],);
+                },);
+            },);
+        },);
+        QUnit.module(`${script} → LatnISO15919Modified`, () => {
+            [...Array(data[script].length,).keys(),].forEach(i => {
+                QUnit.test(data[script][i], t => {
+                    t.deepEqual(
+                        transliterate(script, "Latn", data[script][i], { useModifiedISO15919ForTam: true, },),
+                        data.LatnISO15919Modified[i],);
+                },);
+            },);
+        },);
+        QUnit.module(`LatnISO15919Modified → ${script}`, () => {
+            [...Array(data.LatnISO15919Modified.length,).keys(),].forEach(i => {
+                QUnit.test(data.LatnISO15919Modified[i], t => {
+                    t.deepEqual(
+                        transliterate("Latn", script, data.LatnISO15919Modified[i], { useModifiedISO15919ForTam: true, },),
                         data[script][i],);
                 },);
             },);
@@ -302,7 +349,7 @@ QUnit.module("Cls unit tests", () => {
         ],
     };
     scripts.forEach(script => {
-        QUnit.module(`${script} → Latin`, () => {
+        QUnit.module(`${script} → Latn`, () => {
             [...Array(data[script].length,).keys(),].forEach(i => {
                 QUnit.test(data[script][i], t => {
                     t.deepEqual(
@@ -311,7 +358,7 @@ QUnit.module("Cls unit tests", () => {
                 },);
             },);
         },);
-        QUnit.module(`Latin → ${script}`, () => {
+        QUnit.module(`Latn → ${script}`, () => {
             [...Array(data.Latn.length,).keys(),].forEach(i => {
                 QUnit.test(data.Latn[i], t => {
                     t.deepEqual(
@@ -376,7 +423,7 @@ QUnit.module("Vsn unit tests", () => {
         ],
     };
     scripts.forEach(script => {
-        QUnit.module(`${script} → Latin`, () => {
+        QUnit.module(`${script} → Latn`, () => {
             [...Array(data[script].length,).keys(),].forEach(i => {
                 QUnit.test(data[script][i], t => {
                     t.deepEqual(
@@ -385,7 +432,7 @@ QUnit.module("Vsn unit tests", () => {
                 },);
             },);
         },);
-        QUnit.module(`Latin → ${script}`, () => {
+        QUnit.module(`Latn → ${script}`, () => {
             [...Array(data.Latn.length,).keys(),].forEach(i => {
                 QUnit.test(data.Latn[i], t => {
                     t.deepEqual(
@@ -415,28 +462,31 @@ QUnit.module("Integration tests", () => {
     QUnit.module("tam", () => {
         const textWithPunctuationAndSpacing = {
             Taml: `
-மனிதப் பிறவியினர் சகலரும் சுதந்திரமாகவே பிறக்கின்ழனர். அவர்கள் மதிப்பிலும் உரிமைகளிலும் சமமானவர்கள். அவர்கள் நியாயத்தையும் மனசாட்சியையும் இயற்பண்பாகப் பெற்றவர்கள். அவர்கள் ஒருவருடனொருவர் சகோதர உணர்வுப் பாங்கில் நடந்துகொள்ளல் வேண்டும்.
+மனிதப் பிறவியினர் சகலரும் சுதந்திரமாகவே பிறக்கின்றனர். அவர்கள் மதிப்பிலும் உரிமைகளிலும் சமமானவர்கள். அவர்கள் நியாயத்தையும் மனசாட்சியையும் இயற்பண்பாகப் பெற்றவர்கள். அவர்கள் ஒருவருடனொருவர் சகோதர உணர்வுப் பாங்கில் நடந்துகொள்ளல் வேண்டும்.
         `,
             Knda: `
-ಮ಩ಿತಪ್ ಪಿಱವಿಯಿ಩ರ್ ಚಕಲರುಮ್ ಚುತನ್ತಿರಮಾಕವೇ ಪಿಱಕ್ಕಿ಩್ೞ಩ರ್. ಅವರ್ಕಳ್ ಮತಿಪ್ಪಿಲುಮ್ ಉರಿಮೈಕಳಿಲುಮ್ ಚಮಮಾ಩ವರ್ಕಳ್. ಅವರ್ಕಳ್ ನಿಯಾಯತ್ತೈಯುಮ್ ಮ಩ಚಾಟ್ಚಿಯೈಯುಮ್ ಇಯಱ್ಪಣ್ಪಾಕಪ್ ಪೆಱ್ಱವರ್ಕಳ್. ಅವರ್ಕಳ್ ಒರುವರುಟ಩ೊರುವರ್ ಚಕೋತರ ಉಣರ್ವುಪ್ ಪಾಙ್ಕಿಲ್ ನಟನ್ತುಕೊಳ್ಳಲ್ ವೇಣ್ಟುಮ್.
+ಮ಩ಿತಪ್ ಪಿಱವಿಯಿ಩ರ್ ಚಕಲರುಮ್ ಚುತನ್ತಿರಮಾಕವೇ ಪಿಱಕ್ಕಿ಩್ಱ಩ರ್. ಅವರ್ಕಳ್ ಮತಿಪ್ಪಿಲುಮ್ ಉರಿಮೈಕಳಿಲುಮ್ ಚಮಮಾ಩ವರ್ಕಳ್. ಅವರ್ಕಳ್ ನಿಯಾಯತ್ತೈಯುಮ್ ಮ಩ಚಾಟ್ಚಿಯೈಯುಮ್ ಇಯಱ್ಪಣ್ಪಾಕಪ್ ಪೆಱ್ಱವರ್ಕಳ್. ಅವರ್ಕಳ್ ಒರುವರುಟ಩ೊರುವರ್ ಚಕೋತರ ಉಣರ್ವುಪ್ ಪಾಙ್ಕಿಲ್ ನಟನ್ತುಕೊಳ್ಳಲ್ ವೇಣ್ಟುಮ್.
         `,
             Telu: `
-మ఩ితప్ పిఱవియి఩ర్ చకలరుమ్ చుతన్తిరమాకవే పిఱక్కి఩్ఴ఩ర్. అవర్కళ్ మతిప్పిలుమ్ ఉరిమైకళిలుమ్ చమమా఩వర్కళ్. అవర్కళ్ నియాయత్తైయుమ్ మ఩చాట్చియైయుమ్ ఇయఱ్పణ్పాకప్ పెఱ్ఱవర్కళ్. అవర్కళ్ ఒరువరుట఩ొరువర్ చకోతర ఉణర్వుప్ పాఙ్కిల్ నటన్తుకొళ్ళల్ వేణ్టుమ్.
+మ఩ితప్ పిఱవియి఩ర్ చకలరుమ్ చుతన్తిరమాకవే పిఱక్కి఩్ఱ఩ర్. అవర్కళ్ మతిప్పిలుమ్ ఉరిమైకళిలుమ్ చమమా఩వర్కళ్. అవర్కళ్ నియాయత్తైయుమ్ మ఩చాట్చియైయుమ్ ఇయఱ్పణ్పాకప్ పెఱ్ఱవర్కళ్. అవర్కళ్ ఒరువరుట఩ొరువర్ చకోతర ఉణర్వుప్ పాఙ్కిల్ నటన్తుకొళ్ళల్ వేణ్టుమ్.
         `,
             Mlym: `
-മഩിതപ് പിറവിയിഩര് ചകലരുമ് ചുതന്തിരമാകവേ പിറക്കിഩ്ഴഩര്. അവര്കള് മതിപ്പിലുമ് ഉരിമൈകളിലുമ് ചമമാഩവര്കള്. അവര്കള് നിയായത്തൈയുമ് മഩചാട്ചിയൈയുമ് ഇയറ്പണ്പാകപ് പെറ്റവര്കള്. അവര്കള് ഒരുവരുടഩൊരുവര് ചകോതര ഉണര്വുപ് പാങ്കില് നടന്തുകൊള്ളല് വേണ്ടുമ്.
+മഩിതപ് പിറവിയിഩര് ചകലരുമ് ചുതന്തിരമാകവേ പിറക്കിഩ്റഩര്. അവര്കള് മതിപ്പിലുമ് ഉരിമൈകളിലുമ് ചമമാഩവര്കള്. അവര്കള് നിയായത്തൈയുമ് മഩചാട്ചിയൈയുമ് ഇയറ്പണ്പാകപ് പെറ്റവര്കള്. അവര്കള് ഒരുവരുടഩൊരുവര് ചകോതര ഉണര്വുപ് പാങ്കില് നടന്തുകൊള്ളല് വേണ്ടുമ്.
         `,
-            Latn: `
-maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṛaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
+            LatnISO15919: `
+maṉitap piṟaviyiṉar cakalarum cutantiramākavē piṟakkiṉṟaṉar. avarkaḷ matippilum urimaikaḷilum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṟpaṇpākap peṟṟavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkil naṭantukoḷḷal vēṇṭum.
+        `,
+            LatnISO15919Modified: `
+maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
         `, };
-        QUnit.test("Taml to Latn: tam text with punctuation, spacing, etc.", t => {
+        QUnit.test("Taml to LatnISO15919: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
-                textWithPunctuationAndSpacing.Latn,);
+                textWithPunctuationAndSpacing.LatnISO15919,);
         },);
-        QUnit.test("Latn to Taml: tam text with punctuation, spacing, etc.", t => {
+        QUnit.test("LatnISO15919 to Taml: tam text with punctuation, spacing, etc.", t => {
             t.deepEqual(
-                transliterate("Latn", "Taml", textWithPunctuationAndSpacing.Latn,),
+                transliterate("Latn", "Taml", textWithPunctuationAndSpacing.LatnISO15919,),
                 textWithPunctuationAndSpacing.Taml,);
         },);
         QUnit.test("Taml to Knda: tam text with punctuation, spacing, etc.", t => {

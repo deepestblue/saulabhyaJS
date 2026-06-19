@@ -25,12 +25,12 @@ const scriptsData = {
             ["k", "க",], ["ṅ", "ங",],
             ["c", "ச",], ["ñ", "ஞ",],
             ["ṭ", "ட",], ["ṇ", "ண",],
-            ["ṯ", "ற",], ["ṉ", "ன",],
+            ["ṟ", "ற",], ["ṉ", "ன",],
             ["t", "த",], ["n", "ந",],
             ["p", "ப",], ["m", "ம",],
             ["y", "ய",], ["r", "ர",],
-            ["ḻ", "ல",], ["v", "வ",],
-            ["ṛ", "ழ",], ["ḷ", "ள",],
+            ["l", "ல",], ["v", "வ",],
+            ["ḻ", "ழ",], ["ḷ", "ள",],
         ],),
         numbers: new Map([
             [0, "௦",],
@@ -112,12 +112,12 @@ const scriptsData = {
             ["k", "ಕ",], ["ṅ", "ಙ",],
             ["c", "ಚ",], ["ñ", "ಞ",],
             ["ṭ", "ಟ",], ["ṇ", "ಣ",],
-            ["ṯ", "ಱ",], ["ṉ", "಩",],
+            ["ṟ", "ಱ",], ["ṉ", "಩",],
             ["t", "ತ",], ["n", "ನ",],
             ["p", "ಪ",], ["m", "ಮ",],
             ["y", "ಯ",], ["r", "ರ",],
-            ["ḻ", "ಲ",], ["v", "ವ",],
-            ["ṛ", "ೞ",], ["ḷ", "ಳ",],
+            ["l", "ಲ",], ["v", "ವ",],
+            ["ḻ", "ೞ",], ["ḷ", "ಳ",],
         ],),
         numbers: new Map([
             [0, "೦",], [1, "೧",], [2, "೨",], [3, "೩",], [4, "೪",],
@@ -151,12 +151,12 @@ const scriptsData = {
             ["k", "ക",], ["ṅ", "ങ",],
             ["c", "ച",], ["ñ", "ഞ",],
             ["ṭ", "ട",], ["ṇ", "ണ",],
-            ["ṯ", "റ",], ["ṉ", "ഩ",],
+            ["ṟ", "റ",], ["ṉ", "ഩ",],
             ["t", "ത",], ["n", "ന",],
             ["p", "പ",], ["m", "മ",],
             ["y", "യ",], ["r", "ര",],
-            ["ḻ", "ല",], ["v", "വ",],
-            ["ṛ", "ഴ",], ["ḷ", "ള",],
+            ["l", "ല",], ["v", "വ",],
+            ["ḻ", "ഴ",], ["ḷ", "ള",],
         ],),
         numbers: new Map([
             [0, "൦",],
@@ -191,12 +191,12 @@ const scriptsData = {
             ["k", "క",], ["ṅ", "ఙ",],
             ["c", "చ",], ["ñ", "ఞ",],
             ["ṭ", "ట",], ["ṇ", "ణ",],
-            ["ṯ", "ఱ",], ["ṉ", "఩",],
+            ["ṟ", "ఱ",], ["ṉ", "఩",],
             ["t", "త",], ["n", "న",],
             ["p", "ప",], ["m", "మ",],
             ["y", "య",], ["r", "ర",],
-            ["ḻ", "ల",], ["v", "వ",],
-            ["ṛ", "ఴ",], ["ḷ", "ళ",],
+            ["l", "ల",], ["v", "వ",],
+            ["ḻ", "ఴ",], ["ḷ", "ళ",],
         ],),
         numbers: new Map([
             [0, "౦",], [1, "౧",], [2, "౨",], [3, "౩",], [4, "౪",],
@@ -282,6 +282,8 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
+
+const transformWithMappings = (text, mappings,) => mappings.reduce((acc, val,) => val(acc,), text,);
 
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
@@ -509,6 +511,11 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
         match => brahmicToLatinData[match],
     );
 
+    // At the end, if we're generating modified ISO‐15919 for Tamil, we need to apply the extra mappings.
+    if (options?.useModifiedISO15919ForTam) {
+        sourceText = transformWithMappings(sourceText, [s => s.replace("ṟ", "ṯ",), s => s.replace("ḻ", "ṛ",), s => s.replace(regex("l(?!\\p{Mn})",), "ḻ",),],);
+    }
+
     return sourceText;
 };
 
@@ -607,6 +614,11 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
         sourceText = sourceText.replace(
             regex(anyOfIterable(Array(10,).keys(),),),
             match => scriptData.numbers.get(parseInt(match, 10,),),);
+    }
+
+    // At the start, if we're consuming modified ISO‐15919 for Tamil, we need to reverse the extra mappings.
+    if (options?.useModifiedISO15919ForTam) {
+        sourceText = transformWithMappings(sourceText, [s => s.replace("ḻ", "l",), s => s.replace("ṛ", "ḻ",), s => s.replace("ṯ", "ṟ",),],);
     }
 
     sourceText = sourceText.replace(
