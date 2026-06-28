@@ -1,4 +1,4 @@
-name: Run linter and unit tests
+name: Run linter and tests
 
 on: [push, workflow_dispatch]
 
@@ -25,5 +25,5 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run unit tests
+      - name: Run tests
         run: npm run test
