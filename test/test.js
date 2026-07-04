@@ -290,7 +290,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Taml", "Latn", invalidTamTamlText,),
                 err => err instanceof Error &&
-                    /^Unknown Taml character: .\.$/v.test(err.message,),
+                    /^Unknown Taml character : at 7\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Taml → Taml", t => {
@@ -298,15 +298,31 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Taml", "Taml", invalidTamTamlText,),
                 err => err instanceof Error &&
-                    /^Unknown Taml character: .\.$/v.test(err.message,),
+                    /^Unknown Taml character : at 7\.$/v.test(err.message,),
             );
         },);
-        QUnit.test("Latn → Taml", t => {
-            const invalidTamLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu;";
+        QUnit.test("Latn → Taml 1", t => {
+            const invalidTamLatnText = "tamiḻ eḻuttu muṟaymay olippiyal aṭippaṭayilāṉatu;";
             t.throws(
                 () => transliterate("Latn", "Taml", invalidTamLatnText,),
                 err => err instanceof Error &&
-                    /^Unknown Latn character: .\.$/v.test(err.message,),
+                    /^Unknown Latn character ; at 55\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Taml 2", t => {
+            const invalidTamLatnText = "tamiṛ eṛuttu muṯaymay oḻippiyaḻ aṭippaṭayiḻāṉatu";
+            t.throws(
+                () => transliterate("Latn", "Taml", invalidTamLatnText,),
+                err => err instanceof Error &&
+                    /^Unknown Latn character ̣ at 5\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Taml 3", t => {
+            const invalidTamLatnText = "tamiḻ eḻuttu muṟaymay olippiyal aṭippaṭayilāṉatu";
+            t.throws(
+                () => transliterate("Latn", "Taml", invalidTamLatnText, { useModifiedISO15919ForTam: true, },),
+                err => err instanceof Error &&
+                    /^Unknown Latn character ̱ at 18\.$/v.test(err.message,),
             );
         },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.

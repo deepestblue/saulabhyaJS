@@ -288,29 +288,6 @@ const transformWithMappings = (text, mappings,) => mappings.reduce((acc, val,) =
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
-    // Validate no foreign characters
-    (() => {
-        const scriptCharacters = [
-            ...scriptData.misc.values(),
-            ...scriptData.numbers.values(),
-            ...scriptData.modifiers.values(),
-            ...scriptData.vowelMarks.values(),
-            ...scriptData.vowels.values(),
-            ...scriptData.consonants.values(),
-            ...whitespace,
-        ].concat(
-            ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
-        );
-
-        // Should not use ‘g’ for this regex alone.
-        // Seems to result in some sort of combinatorial explosion.
-        const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
-        const result = sourceText.match(invalidRegex,);
-        if (result) {
-            throw new Error(`Unknown ${otherScript} character: ${result[0]}.`,);
-        }
-    })();
-
     const brahmicToLatinData = scriptData.brahmicToLatin;
 
     // Misc.
@@ -448,7 +425,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
         // For the udatta accent, unmarked in Brahmic, we need a two‐pass approach. First, we need to add udatta accent‐marks after each consonant with the inherent‐vowel, unless succeeded by a different accent‐mark.
         const marks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).concat(Array.from(scriptData.vowelMarks.values().filter(x => x !== "",),),).join("",);
         sourceText = sourceText.replace(
-            regex(`(${anyOfIterable(scriptData.consonants.values(),)})($|[^${marks}])`,),
+            regex(`(${anyOfIterable(scriptData.consonants.values(),)})($${disjunctor}[^${marks}])`,),
             (_unused, p1, p2,) => p1 + udattaMark + p2,
         );
 
@@ -459,7 +436,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
             ...scriptData.consonants.values(),
         ];
         sourceText = sourceText.replace(
-            regex(`(${anyOfArray(letters,)})($|[^${udattaMark}${marks}])`,),
+            regex(`(${anyOfArray(letters,)})($${disjunctor}[^${udattaMark}${marks}])`,),
             (_unused, p1, p2,) => p1 + udattaMark + p2,
         );
 
@@ -522,27 +499,35 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
 const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
-    // Validate no foreign characters
     (() => {
-        const scriptCharacters = [
-            ...scriptData.numbers.keys(),
-            ...scriptData.misc.keys(),
-            ...scriptData.modifiers.keys(),
-            ...scriptData.vowelMarks.keys(),
-            ...scriptData.vowels.keys(),
-            ...scriptData.consonants.keys(),
-            separator,
-            ...whitespace,
-        ].concat(
-            ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
-        );
+        const scriptCharacters = (() => {
+            const scriptChars = [
+                ...scriptData.numbers.keys(),
+                ...scriptData.misc.keys(),
+                ...scriptData.modifiers.keys(),
+                ...scriptData.vowelMarks.keys(),
+                ...scriptData.vowels.keys(),
+                ...scriptData.consonants.keys(),
+                separator,
+                whitespace,
+            ].concat(
+                ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
+            );
 
-        // Should not use ‘g’ for this regex alone.
-        // Seems to result in some sort of combinatorial explosion.
-        const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
-        const result = sourceText.match(invalidRegex,);
-        if (result) {
-            throw new Error(`Unknown Latn character: ${result[0]}.`,);
+            if (! options?.useModifiedISO15919ForTam) {
+                return scriptChars;
+            }
+
+            return scriptChars.filter(ch => ! ["ṟ", "ḻ", "l",].includes(ch,),).concat("ṯ", "ṛ", "ḻ",);
+        })();
+
+        const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
+
+        if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
+            const match = sourceText.match(validRegex,);
+            const validLength = match ? match[0].length : 0;
+
+            throw new Error(`Unknown Latn character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
         }
     })();
 
@@ -693,39 +678,44 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`,);
     }
 
+    const validateBrahmicCharsOnly = () => {
+        const scriptData = scriptsData[srcScript];
+
+        const scriptCharacters = [
+            ...scriptData.misc.values(),
+            ...scriptData.numbers.values(),
+            ...scriptData.modifiers.values(),
+            ...scriptData.vowelMarks.values(),
+            ...scriptData.vowels.values(),
+            ...scriptData.consonants.values(),
+            whitespace,
+        ].concat(
+            ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
+        );
+
+        const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
+
+        if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
+            const match = sourceText.match(validRegex,);
+            const validLength = match ? match[0].length : 0;
+
+            throw new Error(`Unknown ${srcScript} character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
+        }
+    };
+
     if (srcScript === tgtScript) {
         if (tgtScript === "Latn") {
+            // Cannot validate that only Latin characters exist, because we don't know which Latin characters are valid without a language.
             return sourceText.normalize("NFD",);
         }
 
-        // Validate no foreign characters
-        const scriptData = scriptsData[tgtScript];
-        (() => {
-            const scriptCharacters = [
-                ...scriptData.misc.values(),
-                ...scriptData.numbers.values(),
-                ...scriptData.modifiers.values(),
-                ...scriptData.vowelMarks.values(),
-                ...scriptData.vowels.values(),
-                ...scriptData.consonants.values(),
-                ...whitespace,
-            ].concat(
-                ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
-            );
-
-            // Should not use ‘g’ for this regex alone.
-            // Seems to result in some sort of combinatorial explosion.
-            const invalidRegex = new RegExp(`[^${scriptCharacters.join("",)}]`, "v",);
-            const result = sourceText.match(invalidRegex,);
-            if (result) {
-                throw new Error(`Unknown ${tgtScript} character: ${result[0]}.`,);
-            }
-        })();
-
-        return sourceText.normalize("NFC",);
+        sourceText = sourceText.normalize("NFC",);
+        validateBrahmicCharsOnly();
+        return sourceText;
     }
 
     if (tgtScript === "Latn") {
+        validateBrahmicCharsOnly();
         return brahmicToLatin(
             srcScript,
             sourceText.normalize("NFC",),
