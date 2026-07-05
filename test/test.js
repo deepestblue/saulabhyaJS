@@ -535,13 +535,65 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
 
     QUnit.module("errors", () => {
         QUnit.test("Gran → Latn", t => {
-            const invalidClsGranText = "ᳲ𑌤";
+            const invalidClsGranText = "𑌊𑌷𑍍𑌮𑌾𑌣𑌃; 𑌶 𑌷 𑌸 𑌹 𑌃";
             t.throws(
                 () => transliterate("Gran", "Latn", invalidClsGranText,),
+                err => err instanceof Error &&
+                    /^Unknown Gran character ; at 14\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Gran → Gran", t => {
+            const invalidClsGranText = "𑌊𑌷𑍍𑌮𑌾𑌣𑌃; 𑌶 𑌷 𑌸 𑌹 𑌃";
+            t.throws(
+                () => transliterate("Gran", "Latn", invalidClsGranText,),
+                err => err instanceof Error &&
+                    /^Unknown Gran character ; at 14\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Gran", t => {
+            const invalidClsLatnText = "ūṣmāṇaḥ; śa ṣa sa ha ḥ";
+            t.throws(
+                () => transliterate("Latn", "Gran", invalidClsLatnText,),
+                err => err instanceof Error &&
+                    /^Unknown Latn character ; at 12\.$/v.test(err.message,),
+            );
+        },);
+        // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
+
+        QUnit.test("Gran → Latn char combos", t => {
+            const invalidClsGranCombo = "ᳲ𑌤";
+            t.throws(
+                () => transliterate("Gran", "Latn", invalidClsGranCombo,),
                 err => err instanceof Error &&
                     /^Unknown Gran character combination: .+\.$/v.test(err.message,),
             );
         },);
+
+        QUnit.test("Gran → Latn Vsn", t => {
+            const invalidVsnGranText = "𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃 𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ॥";
+            t.throws(
+                () => transliterate("Gran", "Latn", invalidVsnGranText,),
+                err => err instanceof Error &&
+                    /^Unknown Gran character ॒ at 15\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Gran → Gran Vsn", t => {
+            const invalidVsnGranText = "𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃 𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ॥";
+            t.throws(
+                () => transliterate("Gran", "Latn", invalidVsnGranText,),
+                err => err instanceof Error &&
+                    /^Unknown Gran character ॒ at 15\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Gran Vsn", t => {
+            const invalidVsnLatnText = "Ώ śā́ntiḥ śā́ntiḥ śā́ntìḥ ॥";
+            t.throws(
+                () => transliterate("Latn", "Gran", invalidVsnLatnText,),
+                err => err instanceof Error &&
+                    /^Unknown Latn character ́ at 1\.$/v.test(err.message,),
+            );
+        },);
+        // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
     },);
 },);
 

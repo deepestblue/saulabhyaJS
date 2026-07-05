@@ -524,9 +524,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
         const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
 
         if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
-            const match = sourceText.match(validRegex,);
-            const validLength = match ? match[0].length : 0;
-
+            const validLength = sourceText.match(validRegex,)[0].length;
             throw new Error(`Unknown Latn character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
         }
     })();
@@ -696,9 +694,7 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
         const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
 
         if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
-            const match = sourceText.match(validRegex,);
-            const validLength = match ? match[0].length : 0;
-
+            const validLength = sourceText.match(validRegex,)[0].length;
             throw new Error(`Unknown ${srcScript} character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
         }
     };
