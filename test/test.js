@@ -205,7 +205,7 @@ QUnit.module("Tam", () => {
                 [...Array(data[script].length,).keys(),].forEach(i => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
-                            transliterate(script, "Latn", data[script][i], { useModifiedISO15919ForTam: true, },),
+                            transliterate(script, "Latn", data[script][i], { modifiedISO15919ForTam: true, },),
                             data.LatnISO15919Modified[i],);
                     },);
                 },);
@@ -214,7 +214,7 @@ QUnit.module("Tam", () => {
                 [...Array(data.LatnISO15919Modified.length,).keys(),].forEach(i => {
                     QUnit.test(data.LatnISO15919Modified[i], t => {
                         t.deepEqual(
-                            transliterate("Latn", script, data.LatnISO15919Modified[i], { useModifiedISO15919ForTam: true, },),
+                            transliterate("Latn", script, data.LatnISO15919Modified[i], { modifiedISO15919ForTam: true, },),
                             data[script][i],);
                     },);
                 },);
@@ -223,12 +223,12 @@ QUnit.module("Tam", () => {
         QUnit.module("ௐ", () => {
             QUnit.test("Taml → Latn", t => {
                 t.deepEqual(
-                    transliterate("Taml", "Latn", "ௐ", { useForOmInISO15919: "🕉", },),
+                    transliterate("Taml", "Latn", "ௐ", { omInISO15919: "🕉", },),
                     "🕉",);
             },);
             QUnit.test("Latn → Taml", t => {
                 t.deepEqual(
-                    transliterate("Latn", "Taml", "🕉", { useForOmInISO15919: "🕉", },),
+                    transliterate("Latn", "Taml", "🕉", { omInISO15919: "🕉", },),
                     "ௐ",);
             },);
         },);
@@ -332,7 +332,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
         QUnit.test("Latn → Taml 3", t => {
             const invalidTamLatnText = "tamiḻ eḻuttu muṟaymay olippiyal aṭippaṭayilāṉatu";
             t.throws(
-                () => transliterate("Latn", "Taml", invalidTamLatnText, { useModifiedISO15919ForTam: true, },),
+                () => transliterate("Latn", "Taml", invalidTamLatnText, { modifiedISO15919ForTam: true, },),
                 err => err instanceof Error &&
                     /^Unknown Latn character ̱ at 18\.$/v.test(err.message,),
             );
@@ -509,12 +509,12 @@ QUnit.module("Cls", () => {
             scripts.forEach(script => {
                 QUnit.test(`${script} → Latn`, t => {
                     t.deepEqual(
-                        transliterate(script, "Latn", omData[script], { useForOmInISO15919: "🕉", },),
+                        transliterate(script, "Latn", omData[script], { omInISO15919: "🕉", },),
                         "🕉",);
                 },);
                 QUnit.test(`Latn → ${script}`, t => {
                     t.deepEqual(
-                        transliterate("Latn", script, "🕉", { useForOmInISO15919: "🕉", },),
+                        transliterate("Latn", script, "🕉", { omInISO15919: "🕉", },),
                         omData[script],);
                 },);
             },);
@@ -706,7 +706,7 @@ QUnit.module("Vsn", () => {
                     [...Array(omLatn.length,).keys(),].forEach(i => {
                         QUnit.test(data[script][i], t => {
                             t.deepEqual(
-                                transliterate(script, "Latn", data[script][i], { useForOmInISO15919: "🕉", vedicAccents: true, },),
+                                transliterate(script, "Latn", data[script][i], { omInISO15919: "🕉", vedicAccents: true, },),
                                 omLatn[i],);
                         },);
                     },);
@@ -715,7 +715,7 @@ QUnit.module("Vsn", () => {
                     [...Array(omLatn.length,).keys(),].forEach(i => {
                         QUnit.test(omLatn[i], t => {
                             t.deepEqual(
-                                transliterate("Latn", script, omLatn[i], { useForOmInISO15919: "🕉", vedicAccents: true, },),
+                                transliterate("Latn", script, omLatn[i], { omInISO15919: "🕉", vedicAccents: true, },),
                                 data[script][i],);
                         },);
                     },);

@@ -490,12 +490,12 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     );
 
     // At the end, if we're generating modified ISO‐15919 for Tamil, we need to apply the extra mappings.
-    if (options?.useModifiedISO15919ForTam) {
+    if (options?.modifiedISO15919ForTam) {
         sourceText = standardToModifiedISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
     }
 
-    if (options?.useForOmInISO15919) {
-        sourceText = sourceText.replaceAll("Ω", options.useForOmInISO15919,);
+    if (options?.omInISO15919) {
+        sourceText = sourceText.replaceAll("Ω", options.omInISO15919,);
     }
 
     return sourceText;
@@ -504,8 +504,8 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
 const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
-    if (options?.useForOmInISO15919) {
-        sourceText = sourceText.replaceAll(options.useForOmInISO15919.normalize("NFD",), "Ω",);
+    if (options?.omInISO15919) {
+        sourceText = sourceText.replaceAll(options.omInISO15919.normalize("NFD",), "Ω",);
     }
 
     (() => {
@@ -523,7 +523,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
                 ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
             );
 
-            if (! options?.useModifiedISO15919ForTam) {
+            if (! options?.modifiedISO15919ForTam) {
                 return scriptChars;
             }
 
@@ -609,7 +609,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     }
 
     // At the start, if we're consuming modified ISO‐15919 for Tamil, we need to reverse the extra mappings.
-    if (options?.useModifiedISO15919ForTam) {
+    if (options?.modifiedISO15919ForTam) {
         sourceText = modifiedToStandardISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
     }
 

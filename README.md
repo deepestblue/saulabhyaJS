@@ -46,15 +46,15 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
     const transliteratedLatinText = transliterate("Gran", "Latn", sourceText, { vedicAccents: true, },),; // The above source text in Latin script (ISO‐15919 transliteration format).
     const transliteratedDevanagariText = transliterate("Gran", "Deva", sourceText,); // The above source text in Devanagari script.
 
-* a boolean `useModifiedISO15919ForTam`, which determines whether Tamil text in ISO‐15919 should be the format as defined by ISO, or a modified format the author prefers. In the modified format,
+* a boolean `modifiedISO15919ForTam`, which determines whether Tamil text in ISO‐15919 should be the format as defined by ISO, or a modified format the author prefers. In the modified format,
     * `ṯ` is used for the alveolar stop instead of `ṟ`, in parallel to `ṭ` for the retroflex stop and `t` for the dental (and in parallel to `ṉ` for the alveolar nasal).
     * `ṛ` is used for the retroflex approximant instead of `ḻ`, in parallel to `r` (often pronounced as an alveolar approximant), and eschewing any `l` variant, which are used for liquids.
     * `ḻ` is used for the alveolar liquid, to distinguish it from the Indo‐Aryan dental liquid `l` (and in correspondence with the underscore diacritic in other alveolars).
 
-* a string `useForOmInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because it's the symbol for “ohm”). Use the option as follows:
+* a string `omInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because it's the symbol for “ohm”). Use the option as follows:
 
-    const transliteratedLatinText = transliterate("Gran", "Latn", "𑍐 …", { useForOmInISO15919: "🕉", },);
-    const transliteratedGranthaText = transliterate("Latn", "Gran", "🕉 …", { useForOmInISO15919: "🕉", },);
+    const transliteratedLatinText = transliterate("Gran", "Latn", "𑍐 …", { omInISO15919: "🕉", },);
+    const transliteratedGranthaText = transliterate("Latn", "Gran", "🕉 …", { omInISO15919: "🕉", },);
 
 ## Contributing
 
