@@ -283,7 +283,8 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
-const transformWithMappings = (text, mappings,) => mappings.reduce((acc, val,) => val(acc,), text,);
+const standardToModifiedISO15919 = Object.freeze([["ṟ", "ṯ",], ["ḻ", "ṛ",], [regex("l(?!\\p{Mn})",), "ḻ",],],);
+const modifiedToStandardISO15919 = Object.freeze([["ḻ", "l",], ["ṛ", "ḻ",], ["ṯ", "ṟ",],],);
 
 const brahmicToLatin = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
@@ -490,7 +491,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
 
     // At the end, if we're generating modified ISO‐15919 for Tamil, we need to apply the extra mappings.
     if (options?.useModifiedISO15919ForTam) {
-        sourceText = transformWithMappings(sourceText, [s => s.replace("ṟ", "ṯ",), s => s.replace("ḻ", "ṛ",), s => s.replace(regex("l(?!\\p{Mn})",), "ḻ",),],);
+        sourceText = standardToModifiedISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
     }
 
     return sourceText;
@@ -601,7 +602,7 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
 
     // At the start, if we're consuming modified ISO‐15919 for Tamil, we need to reverse the extra mappings.
     if (options?.useModifiedISO15919ForTam) {
-        sourceText = transformWithMappings(sourceText, [s => s.replace("ḻ", "l",), s => s.replace("ṛ", "ḻ",), s => s.replace("ṯ", "ṟ",),],);
+        sourceText = modifiedToStandardISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
     }
 
     sourceText = sourceText.replace(
