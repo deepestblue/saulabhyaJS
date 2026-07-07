@@ -337,6 +337,13 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
                     /^Unknown Latn character ̱ at 18\.$/v.test(err.message,),
             );
         },);
+        QUnit.test("Latn → Taml 4", t => {
+            t.throws(
+                () => transliterate("Latn", "Taml", "Ω", { omInISO15919: "🕉", },),
+                err => err instanceof Error &&
+                    /^Unknown Latn character Ω at 0\.$/v.test(err.message,),
+            );
+        },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
 
         QUnit.test.each("invalid numbers", [

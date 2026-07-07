@@ -274,6 +274,7 @@ const udattaMark = "́";
 const separator = ":";
 const disjunctor = "|";
 const whitespace = "\\s";
+const defaultOmInISO15919 = Object.freeze("Ω",);
 
 const regex = s => new RegExp(s, "gv",);
 
@@ -495,7 +496,7 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
     }
 
     if (options?.omInISO15919) {
-        sourceText = sourceText.replaceAll("Ω", options.omInISO15919,);
+        sourceText = sourceText.replaceAll(defaultOmInISO15919, options.omInISO15919,);
     }
 
     return sourceText;
@@ -504,31 +505,27 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
 const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
 
-    if (options?.omInISO15919) {
-        sourceText = sourceText.replaceAll(options.omInISO15919.normalize("NFD",), "Ω",);
-    }
-
     (() => {
-        const scriptCharacters = (() => {
-            const scriptChars = [
-                ...scriptData.numbers.keys(),
-                ...scriptData.misc.keys(),
-                ...scriptData.modifiers.keys(),
-                ...scriptData.vowelMarks.keys(),
-                ...scriptData.vowels.keys(),
-                ...scriptData.consonants.keys(),
-                separator,
-                whitespace,
-            ].concat(
-                ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
-            );
+        let scriptCharacters = [
+            ...scriptData.numbers.keys(),
+            ...scriptData.misc.keys(),
+            ...scriptData.modifiers.keys(),
+            ...scriptData.vowelMarks.keys(),
+            ...scriptData.vowels.keys(),
+            ...scriptData.consonants.keys(),
+            separator,
+            whitespace,
+        ].concat(
+            ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
+        );
 
-            if (! options?.modifiedISO15919ForTam) {
-                return scriptChars;
-            }
+        if (options?.modifiedISO15919ForTam) {
+            scriptCharacters = scriptCharacters.filter(ch => ! ["ṟ", "ḻ", "l",].includes(ch,),).concat("ṯ", "ṛ", "ḻ",);
+        }
 
-            return scriptChars.filter(ch => ! ["ṟ", "ḻ", "l",].includes(ch,),).concat("ṯ", "ṛ", "ḻ",);
-        })();
+        if (options?.omInISO15919) {
+            scriptCharacters = scriptCharacters.filter(ch => ch !== defaultOmInISO15919,).concat(options.omInISO15919.normalize("NFD",),);
+        }
 
         const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
 
@@ -611,6 +608,10 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
     // At the start, if we're consuming modified ISO‐15919 for Tamil, we need to reverse the extra mappings.
     if (options?.modifiedISO15919ForTam) {
         sourceText = modifiedToStandardISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
+    }
+
+    if (options?.omInISO15919) {
+        sourceText = sourceText.replaceAll(options.omInISO15919.normalize("NFD",), defaultOmInISO15919,);
     }
 
     sourceText = sourceText.replace(
