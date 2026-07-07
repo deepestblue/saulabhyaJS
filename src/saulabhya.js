@@ -494,11 +494,19 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
         sourceText = standardToModifiedISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
     }
 
+    if (options?.useForOmInISO15919) {
+        sourceText = sourceText.replaceAll("Ω", options.useForOmInISO15919,);
+    }
+
     return sourceText;
 };
 
 const latinToBrahmic = (otherScript, sourceText, options,) => {
     const scriptData = scriptsData[otherScript];
+
+    if (options?.useForOmInISO15919) {
+        sourceText = sourceText.replaceAll(options.useForOmInISO15919.normalize("NFD",), "Ω",);
+    }
 
     (() => {
         const scriptCharacters = (() => {

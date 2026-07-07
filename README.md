@@ -51,6 +51,11 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
     * `ṛ` is used for the retroflex approximant instead of `ḻ`, in parallel to `r` (often pronounced as an alveolar approximant), and eschewing any `l` variant, which are used for liquids.
     * `ḻ` is used for the alveolar liquid, to distinguish it from the Indo‐Aryan dental liquid `l` (and in correspondence with the underscore diacritic in other alveolars).
 
+* a string `useForOmInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because it's the symbol for “ohm”). Use the option as follows:
+
+    const transliteratedLatinText = transliterate("Gran", "Latn", "𑍐 …", { useForOmInISO15919: "🕉", },);
+    const transliteratedGranthaText = transliterate("Latn", "Gran", "🕉 …", { useForOmInISO15919: "🕉", },);
+
 ## Contributing
 
 * Run tests via `npm test`. Set `PUPPETEER_EXECUTABLE_PATH` to your system Chrome as needed.

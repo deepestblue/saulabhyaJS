@@ -220,6 +220,18 @@ QUnit.module("Tam", () => {
                 },);
             },);
         },);
+        QUnit.module("ௐ", () => {
+            QUnit.test("Taml → Latn", t => {
+                t.deepEqual(
+                    transliterate("Taml", "Latn", "ௐ", { useForOmInISO15919: "🕉", },),
+                    "🕉",);
+            },);
+            QUnit.test("Latn → Taml", t => {
+                t.deepEqual(
+                    transliterate("Latn", "Taml", "🕉", { useForOmInISO15919: "🕉", },),
+                    "ௐ",);
+            },);
+        },);
     },);
 
     QUnit.module("documents", () => {
@@ -491,6 +503,22 @@ QUnit.module("Cls", () => {
                 },);
             },);
         },);
+
+        QUnit.module("🕉", () => {
+            const omData = { Gran: "𑍐", Deva: "ॐ", };
+            scripts.forEach(script => {
+                QUnit.test(`${script} → Latn`, t => {
+                    t.deepEqual(
+                        transliterate(script, "Latn", omData[script], { useForOmInISO15919: "🕉", },),
+                        "🕉",);
+                },);
+                QUnit.test(`Latn → ${script}`, t => {
+                    t.deepEqual(
+                        transliterate("Latn", script, "🕉", { useForOmInISO15919: "🕉", },),
+                        omData[script],);
+                },);
+            },);
+        },);
     },);
 
     QUnit.module("documents", () => {
@@ -666,6 +694,30 @@ QUnit.module("Vsn", () => {
                         t.deepEqual(
                             transliterate("Latn", script, data.Latn[i], { vedicAccents: true, },),
                             data[script][i],);
+                    },);
+                },);
+            },);
+        },);
+
+        QUnit.module("🕉", () => {
+            const omLatn = ["🕉", "🕉́", "🕉̀", "🕉̏",];
+            scripts.forEach(script => {
+                QUnit.module(`${script} → Latn`, () => {
+                    [...Array(omLatn.length,).keys(),].forEach(i => {
+                        QUnit.test(data[script][i], t => {
+                            t.deepEqual(
+                                transliterate(script, "Latn", data[script][i], { useForOmInISO15919: "🕉", vedicAccents: true, },),
+                                omLatn[i],);
+                        },);
+                    },);
+                },);
+                QUnit.module(`Latn → ${script}`, () => {
+                    [...Array(omLatn.length,).keys(),].forEach(i => {
+                        QUnit.test(omLatn[i], t => {
+                            t.deepEqual(
+                                transliterate("Latn", script, omLatn[i], { useForOmInISO15919: "🕉", vedicAccents: true, },),
+                                data[script][i],);
+                        },);
                     },);
                 },);
             },);
