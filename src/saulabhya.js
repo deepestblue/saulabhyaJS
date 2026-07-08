@@ -284,11 +284,61 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
-const standardToModifiedISO15919 = Object.freeze([["ṟ", "ṯ",], ["ḻ", "ṛ",], [regex("l(?!\\p{Mn})",), "ḻ",],],);
-const modifiedToStandardISO15919 = Object.freeze([["ḻ", "l",], ["ṛ", "ḻ",], ["ṯ", "ṟ",],],);
+const resolveScriptData = (script, options,) => {
+    const cloneMap = map => new Map(map,);
+    const renameMapKey = (map, oldKey, newKey,) => {
+        if (! map.has(oldKey,)) {
+            return;
+        }
+        map.set(newKey, map.get(oldKey,),);
+        map.delete(oldKey,);
+    };
 
-const brahmicToLatin = (otherScript, sourceText, options,) => {
-    const scriptData = scriptsData[otherScript];
+    const base = scriptsData[script];
+    const scriptData = {
+        vowels: cloneMap(base.vowels,),
+        vowelMarks: cloneMap(base.vowelMarks,),
+        misc: cloneMap(base.misc,),
+        modifiers: cloneMap(base.modifiers,),
+        accentMarks: options?.vedicAccents ? cloneMap(base.accentMarks,) : new Map(),
+        consonants: cloneMap(base.consonants,),
+        numbers: cloneMap(base.numbers,),
+    };
+
+    if (options?.omInISO15919) {
+        const om = options.omInISO15919.normalize("NFD",);
+        renameMapKey(scriptData.vowels, defaultOmInISO15919, om,);
+        renameMapKey(scriptData.misc, defaultOmInISO15919, om,);
+    }
+
+    if (options?.modifiedISO15919ForTam) {
+        renameMapKey(scriptData.consonants, "ḻ", "ṛ",);
+        renameMapKey(scriptData.consonants, "l", "ḻ",);
+        renameMapKey(scriptData.consonants, "ṟ", "ṯ",);
+    }
+
+    scriptData.brahmicToLatin = Object.fromEntries(
+        Array.from(
+            [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.accentMarks,],
+            e => e.slice().reverse(),
+        ),
+    );
+    return scriptData;
+};
+
+const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
+    const validRegex = new RegExp(`^(?:(?:${validCharacters.filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
+
+    if (new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
+        return;
+    }
+
+    const validLength = sourceText.match(validRegex,)[0].length;
+    throw new Error(`Unknown ${sourceScript} character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
+};
+
+const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
+    validateCharsOnly(sourceText, otherScript, [...scriptData.misc.values(), ...scriptData.numbers.values(), ...scriptData.modifiers.values(), ...scriptData.vowelMarks.values(), ...scriptData.vowels.values(), ...scriptData.consonants.values(), ...scriptData.accentMarks.values(), whitespace,],);
 
     const brahmicToLatinData = scriptData.brahmicToLatin;
 
@@ -490,50 +540,11 @@ const brahmicToLatin = (otherScript, sourceText, options,) => {
         match => brahmicToLatinData[match],
     );
 
-    // At the end, if we're generating modified ISO‐15919 for Tamil, we need to apply the extra mappings.
-    if (options?.modifiedISO15919ForTam) {
-        sourceText = standardToModifiedISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
-    }
-
-    if (options?.omInISO15919) {
-        sourceText = sourceText.replaceAll(defaultOmInISO15919, options.omInISO15919,);
-    }
-
     return sourceText;
 };
 
-const latinToBrahmic = (otherScript, sourceText, options,) => {
-    const scriptData = scriptsData[otherScript];
-
-    (() => {
-        let scriptCharacters = [
-            ...scriptData.numbers.keys(),
-            ...scriptData.misc.keys(),
-            ...scriptData.modifiers.keys(),
-            ...scriptData.vowelMarks.keys(),
-            ...scriptData.vowels.keys(),
-            ...scriptData.consonants.keys(),
-            separator,
-            whitespace,
-        ].concat(
-            ...options?.vedicAccents ? scriptData.accentMarks.keys() : [],
-        );
-
-        if (options?.modifiedISO15919ForTam) {
-            scriptCharacters = scriptCharacters.filter(ch => ! ["ṟ", "ḻ", "l",].includes(ch,),).concat("ṯ", "ṛ", "ḻ",);
-        }
-
-        if (options?.omInISO15919) {
-            scriptCharacters = scriptCharacters.filter(ch => ch !== defaultOmInISO15919,).concat(options.omInISO15919.normalize("NFD",),);
-        }
-
-        const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
-
-        if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
-            const validLength = sourceText.match(validRegex,)[0].length;
-            throw new Error(`Unknown Latn character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
-        }
-    })();
+const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
+    validateCharsOnly(sourceText, "Latn", [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(), separator, whitespace,],);
 
     if (thousandBasedNumberScripts.includes(otherScript,)) {
         const southDravidianNumbers = sourceNumber => {
@@ -603,15 +614,6 @@ const latinToBrahmic = (otherScript, sourceText, options,) => {
         sourceText = sourceText.replace(
             regex(anyOfIterable(Array(10,).keys(),),),
             match => scriptData.numbers.get(parseInt(match, 10,),),);
-    }
-
-    // At the start, if we're consuming modified ISO‐15919 for Tamil, we need to reverse the extra mappings.
-    if (options?.modifiedISO15919ForTam) {
-        sourceText = modifiedToStandardISO15919.map(([key, value,],) => s => s.replace(key, value,),).reduce((acc, val,) => val(acc,), sourceText,);
-    }
-
-    if (options?.omInISO15919) {
-        sourceText = sourceText.replaceAll(options.omInISO15919.normalize("NFD",), defaultOmInISO15919,);
     }
 
     sourceText = sourceText.replace(
@@ -686,29 +688,6 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`,);
     }
 
-    const validateBrahmicCharsOnly = () => {
-        const scriptData = scriptsData[srcScript];
-
-        const scriptCharacters = [
-            ...scriptData.misc.values(),
-            ...scriptData.numbers.values(),
-            ...scriptData.modifiers.values(),
-            ...scriptData.vowelMarks.values(),
-            ...scriptData.vowels.values(),
-            ...scriptData.consonants.values(),
-            whitespace,
-        ].concat(
-            ...options?.vedicAccents ? scriptData.accentMarks.values() : [],
-        );
-
-        const validRegex = new RegExp(`^(?:(?:${[...new Set(scriptCharacters,),].filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
-
-        if (! new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
-            const validLength = sourceText.match(validRegex,)[0].length;
-            throw new Error(`Unknown ${srcScript} character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
-        }
-    };
-
     if (srcScript === tgtScript) {
         if (tgtScript === "Latn") {
             // Cannot validate that only Latin characters exist, because we don't know which Latin characters are valid without a language.
@@ -716,14 +695,15 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
         }
 
         sourceText = sourceText.normalize("NFC",);
-        validateBrahmicCharsOnly();
+        const srcScriptData = resolveScriptData(srcScript, options,);
+        validateCharsOnly(sourceText, srcScript, [...srcScriptData.misc.values(), ...srcScriptData.numbers.values(), ...srcScriptData.modifiers.values(), ...srcScriptData.vowelMarks.values(), ...srcScriptData.vowels.values(), ...srcScriptData.consonants.values(), ...srcScriptData.accentMarks.values(), whitespace,],);
         return sourceText;
     }
 
     if (tgtScript === "Latn") {
-        validateBrahmicCharsOnly();
         return brahmicToLatin(
             srcScript,
+            resolveScriptData(srcScript, options,),
             sourceText.normalize("NFC",),
             options,
         ).normalize("NFD",);
@@ -732,6 +712,7 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
     if (srcScript === "Latn") {
         return latinToBrahmic(
             tgtScript,
+            resolveScriptData(tgtScript, options,),
             sourceText.normalize("NFD",),
             options,
         ).normalize("NFC",);
@@ -740,8 +721,10 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
     // Transliterate from one Brahmic script to another through Latin.
     return latinToBrahmic(
         tgtScript,
+        resolveScriptData(tgtScript, options,),
         brahmicToLatin(
             srcScript,
+            resolveScriptData(srcScript, options,),
             sourceText.normalize("NFC",),
             options,
         ).normalize("NFD",),
