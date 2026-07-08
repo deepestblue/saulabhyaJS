@@ -181,6 +181,35 @@ QUnit.module("Tam", () => {
                 "23650566",
                 "123456789234",
             ],
+            LatnISO15919NoDiphthongs: [
+                "a ā i ī u ū e ē ai o ō au ḵ",
+                "ka kā ki kī ku kū ke kē kai ko kō kau",
+                "k ṅ c ñ ṭ ṇ ṟ ṉ t n p m y r l v ḻ ḷ",
+                "ka ṅa ca ña ṭa ṇa ṟa ṉa ta na pa ma ya ra la va ḻa ḷa",
+                "aakk",
+                "kka",
+                "laa",
+                "ṅañṭō",
+                "aū",
+                "iōaiaōṉiṟīṉauḷaīa",
+                "ka1",
+                "2ṅa",
+                "0",
+                "1 2 3 4 5 6 7 8 9",
+                "10 100",
+                "111 141 213 971 985",
+                "1000",
+                "2013",
+                "10000",
+                "11000",
+                "20003",
+                "1000000",
+                "10000000",
+                "11111111",
+                "20000013",
+                "23650566",
+                "123456789234",
+            ],
         };
         scripts.forEach(script => {
             QUnit.module(`${script} → LatnISO15919`, () => {
@@ -219,6 +248,72 @@ QUnit.module("Tam", () => {
                     },);
                 },);
             },);
+            const noDiphthongIndices = data.LatnISO15919NoDiphthongs
+                .map((latnText, i,) => ({ latnText, i, }),)
+                .filter(({ latnText, },) => ! latnText.includes("ai",) && ! latnText.includes("au",),)
+                .map(({ i, },) => i,);
+            QUnit.module(`${script} → LatnISO15919NoDiphthongs`, () => {
+                noDiphthongIndices.forEach(i => {
+                    QUnit.test(data[script][i], t => {
+                        t.deepEqual(
+                            transliterate(script, "Latn", data[script][i], { enableDiphthongsinTamil: false, },),
+                            data.LatnISO15919NoDiphthongs[i],);
+                    },);
+                },);
+            },);
+            QUnit.module(`LatnISO15919NoDiphthongs → ${script}`, () => {
+                noDiphthongIndices.forEach(i => {
+                    QUnit.test(data.LatnISO15919NoDiphthongs[i], t => {
+                        t.deepEqual(
+                            transliterate("Latn", script, data.LatnISO15919NoDiphthongs[i], { enableDiphthongsinTamil: false, },),
+                            data[script][i],);
+                    },);
+                },);
+            },);
+            const hiatusWithoutDiphthongs = {
+                Taml: [
+                    ["அஇ", "ai",],
+                    ["கஇ", "kai",],
+                    ["அஉ", "au",],
+                    ["கஉ", "kau",],
+                ],
+                Telu: [
+                    ["అఇ", "ai",],
+                    ["కఇ", "kai",],
+                    ["అఉ", "au",],
+                    ["కఉ", "kau",],
+                ],
+                Knda: [
+                    ["ಅಇ", "ai",],
+                    ["ಕಇ", "kai",],
+                    ["ಅಉ", "au",],
+                    ["ಕಉ", "kau",],
+                ],
+                Mlym: [
+                    ["അഇ", "ai",],
+                    ["കഇ", "kai",],
+                    ["അഉ", "au",],
+                    ["കഉ", "kau",],
+                ],
+            };
+            QUnit.module(`${script} → LatnISO15919NoDiphthongs hiatus`, () => {
+                hiatusWithoutDiphthongs[script].forEach(([brahmic, latn,],) => {
+                    QUnit.test(brahmic, t => {
+                        t.deepEqual(
+                            transliterate(script, "Latn", brahmic, { enableDiphthongsinTamil: false, },),
+                            latn,);
+                    },);
+                },);
+            },);
+            QUnit.module(`LatnISO15919NoDiphthongs hiatus → ${script}`, () => {
+                hiatusWithoutDiphthongs[script].forEach(([brahmic, latn,],) => {
+                    QUnit.test(latn, t => {
+                        t.deepEqual(
+                            transliterate("Latn", script, latn, { enableDiphthongsinTamil: false, },),
+                            brahmic,);
+                    },);
+                },);
+            },);
         },);
         QUnit.module("ௐ", () => {
             QUnit.test("Taml → Latn", t => {
@@ -254,6 +349,10 @@ maṉitap piṟaviyiṉar cakalarum cutantiramākavē piṟakkiṉṟaṉar. a
             LatnISO15919Modified: `
 maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
         `, };
+        const textWithoutDiphthongs = {
+            Taml: "அஅக்க் ஙஞ்டோ அஊ",
+            LatnISO15919NoDiphthongs: "aakk ṅañṭō aū",
+        };
         QUnit.test("Taml → LatnISO15919", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
@@ -293,6 +392,16 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.deepEqual(
                 transliterate("Mlym", "Taml", textWithPunctuationAndSpacing.Mlym,),
                 textWithPunctuationAndSpacing.Taml,);
+        },);
+        QUnit.test("Taml → LatnISO15919NoDiphthongs", t => {
+            t.deepEqual(
+                transliterate("Taml", "Latn", textWithoutDiphthongs.Taml, { enableDiphthongsinTamil: false, },),
+                textWithoutDiphthongs.LatnISO15919NoDiphthongs,);
+        },);
+        QUnit.test("LatnISO15919NoDiphthongs → Taml", t => {
+            t.deepEqual(
+                transliterate("Latn", "Taml", textWithoutDiphthongs.LatnISO15919NoDiphthongs, { enableDiphthongsinTamil: false, },),
+                textWithoutDiphthongs.Taml,);
         },);
     },);
 
@@ -342,6 +451,34 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
                 () => transliterate("Latn", "Taml", "Ω", { omInISO15919: "🕉", },),
                 err => err instanceof Error &&
                     /^Unknown Latn character Ω at 0\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Taml → Latn 5", t => {
+            t.throws(
+                () => transliterate("Taml", "Latn", "ஐ", { enableDiphthongsinTamil: false, },),
+                err => err instanceof Error &&
+                    /^Unknown Taml character ஐ at 0\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Taml → Latn 6", t => {
+            t.throws(
+                () => transliterate("Taml", "Latn", "கை", { enableDiphthongsinTamil: false, },),
+                err => err instanceof Error &&
+                    /^Unknown Taml character ை at 1\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Taml 5", t => {
+            t.throws(
+                () => transliterate("Latn", "Taml", "a:i", { enableDiphthongsinTamil: false, },),
+                err => err instanceof Error &&
+                    /^Unknown Latn character : at 1\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Taml 6", t => {
+            t.throws(
+                () => transliterate("Latn", "Taml", "ka:i", { enableDiphthongsinTamil: false, },),
+                err => err instanceof Error &&
+                    /^Unknown Latn character : at 2\.$/v.test(err.message,),
             );
         },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.

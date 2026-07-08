@@ -252,7 +252,7 @@ const scriptsData = {
 };
 
 const scriptNames = Object.keys(scriptsData,);
-const thousandBasedNumberScripts = ["Taml", "Gran", "Mlym",]; // Mlym, Taml and Gran don’t use a strict place‐value system.
+const thousandBasedNumberScripts = Object.freeze(["Taml", "Gran", "Mlym",],); // Mlym, Taml and Gran don’t use a strict place‐value system.
 
 // Create a brahmicToLatin reverse‐map Javascript object from the other maps.
 scriptNames.forEach(script => {
@@ -264,17 +264,34 @@ scriptNames.forEach(script => {
 },);
 
 scriptNames.push("Latn",);
+Object.freeze(scriptNames,);
 
-const inherentVowel = "a";
-const diphthongConsequents = ["i", "u",];
-const plosiveConsonants = ["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",];
+const deepFreeze = value => {
+    if (value === null || typeof value !== "object" || Object.isFrozen(value,)) {
+        return;
+    }
+
+    Object.freeze(value,);
+
+    if (value instanceof Map) {
+        value.forEach(deepFreeze,);
+        return;
+    }
+
+    Object.values(value,).forEach(deepFreeze,);
+};
+deepFreeze(scriptsData,);
+
+const diphthongAntecedent = "a";
+const diphthongConsequents = Object.freeze(["i", "u",],);
+const plosiveConsonants = Object.freeze(["k", "g", "c", "j", "ṭ", "ḍ", "ṯ", "ḏ", "t", "d", "p", "b",],);
 const aspirateConsonant = "h";
 const plutaMark = "…";
 const udattaMark = "́";
 const separator = ":";
 const disjunctor = "|";
 const whitespace = "\\s";
-const defaultOmInISO15919 = Object.freeze("Ω",);
+const defaultOmInISO15919 = "Ω";
 
 const regex = s => new RegExp(s, "gv",);
 
@@ -315,6 +332,10 @@ const resolveScriptData = (script, options,) => {
         renameMapKey(scriptData.consonants, "ḻ", "ṛ",);
         renameMapKey(scriptData.consonants, "l", "ḻ",);
         renameMapKey(scriptData.consonants, "ṟ", "ṯ",);
+    }
+
+    if (options?.enableDiphthongsinTamil === false) {
+        diphthongConsequents.map(c => diphthongAntecedent + c,).forEach(d => { scriptData.vowels.delete(d,); scriptData.vowelMarks.delete(d,); },);
     }
 
     scriptData.brahmicToLatin = Object.fromEntries(
@@ -446,7 +467,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
     if (otherScript === "Deva") {
         sourceText = sourceText.replace(
             regex(`(${lettersAndModifiers.join(disjunctor,)})3`,),
-            (_unused, p1,) => p1 + plutaMark,
+            (_unused, p1,) => `${p1}${plutaMark}`,
         );
     }
 
@@ -457,28 +478,32 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
             if (! plosiveConsonants.includes(scriptData.brahmicToLatin[p1],)) {
                 return match;
             }
-            return p1 + p2 + separator + p3;
+            return `${p1}${p2}${separator}${p3}`;
         },
     );
 
-    if (! options?.vedicAccents) {
-        // Vowel separator insertion
-        sourceText = sourceText.replace(
-            regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
-            (_unused, p1, p2,) => p1 + separator + p2,
-        );
-    } else {
-        // Vowel separator insertion
-        sourceText = sourceText.replace(
-            regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(inherentVowel,)})(\\p{Mn}?)(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
-            (_unused, p1, p2, p3,) => p1 + p2 + separator + p3,
-        );
+    if (options?.enableDiphthongsinTamil !== false) {
+        if (! options?.vedicAccents) {
+            // Vowel separator insertion
+            sourceText = sourceText.replace(
+                regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(diphthongAntecedent,)})(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
+                (_unused, p1, p2,) => `${p1}${separator}${p2}`,
+            );
+        } else {
+            // Vowel separator insertion
+            sourceText = sourceText.replace(
+                regex(`(${anyOfIterable(scriptData.consonants.values(),)}${disjunctor}${scriptData.vowels.get(diphthongAntecedent,)})(\\p{Mn}?)(${anyOfArray(diphthongConsequents.map(i => scriptData.vowels.get(i,),),)})`,),
+                (_unused, p1, p2, p3,) => `${p1}${p2}${separator}${p3}`,
+            );
+        }
+    }
 
+    if (options?.vedicAccents) {
         // For the udatta accent, unmarked in Brahmic, we need a two‐pass approach. First, we need to add udatta accent‐marks after each consonant with the inherent‐vowel, unless succeeded by a different accent‐mark.
         const marks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).concat(Array.from(scriptData.vowelMarks.values().filter(x => x !== "",),),).join("",);
         sourceText = sourceText.replace(
             regex(`(${anyOfIterable(scriptData.consonants.values(),)})($${disjunctor}[^${marks}])`,),
-            (_unused, p1, p2,) => p1 + udattaMark + p2,
+            (_unused, p1, p2,) => `${p1}${udattaMark}${p2}`,
         );
 
         // We then need to add udatta accent‐marks after each letter, be it a vowel, a vowel‐marker (other than the vowel‐suppressor) or even a consonant with the inherent‐vowel, again unless succeeded by a different accent‐mark. Why we need to repeat this replacement for consonants with the inherent‐vowel is that some of those consonants could have been captured as the post‐context in the previous replacement, and thus escaped being processed as the pre-context.
@@ -489,27 +514,27 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         ];
         sourceText = sourceText.replace(
             regex(`(${anyOfArray(letters,)})($${disjunctor}[^${udattaMark}${marks}])`,),
-            (_unused, p1, p2,) => p1 + udattaMark + p2,
+            (_unused, p1, p2,) => `${p1}${udattaMark}${p2}`,
         );
 
         // Other accents
         const accentMarks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).join(disjunctor,);
         sourceText = sourceText.replace(
             regex(`(${anyOfArray(lettersAndModifiers,)})(${accentMarks})`,),
-            (_unused, p1, p2,) => p1 + scriptData.brahmicToLatin[p2],
+            (_unused, p1, p2,) => `${p1}${scriptData.brahmicToLatin[p2]}`,
         );
     }
 
     // Consonant–vowel‐marker pairs
     sourceText = sourceText.replace(
         regex(`(${anyOfIterable(scriptData.consonants.values(),)})(${anyOfIterable(scriptData.vowelMarks.values(),)})`,),
-        (_unused, p1, p2,) => brahmicToLatinData[p1] + brahmicToLatinData[p2],
+        (_unused, p1, p2,) => `${brahmicToLatinData[p1]}${brahmicToLatinData[p2]}`,
     );
 
     // Consonants without vowel‐markers
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.consonants.values(),),),
-        match => brahmicToLatinData[match] + inherentVowel,
+        match => `${brahmicToLatinData[match]}a`, // "a" being the inherent vowel in all Brahmic abugidas
     );
 
     // Modifiers
@@ -544,7 +569,11 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
 };
 
 const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
-    validateCharsOnly(sourceText, "Latn", [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(), separator, whitespace,],);
+    const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(), whitespace,];
+    if (options?.enableDiphthongsinTamil !== false) {
+        validLatnChars.push(separator,);
+    }
+    validateCharsOnly(sourceText, "Latn", validLatnChars,);
 
     if (thousandBasedNumberScripts.includes(otherScript,)) {
         const southDravidianNumbers = sourceNumber => {
@@ -626,13 +655,11 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
         regex(modifiers,),
         match => scriptData.modifiers.get(match,),);
 
-    const diphthongsAndConstituents = diphthongConsequents.flatMap(s => inherentVowel + s,).concat(diphthongConsequents,).concat(new Array(inherentVowel,),);
-
     if (! options?.vedicAccents) {
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
-            regex(`${inherentVowel}${separator}(${anyOfArray(diphthongConsequents,)})`,),
-            (_unused, p1,) => inherentVowel + scriptData.vowels.get(p1,),);
+            regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            (_unused, p1,) => `${diphthongAntecedent}${scriptData.vowels.get(p1,)}`,);
     } else {
         const vowels = Array.from(scriptData.vowels.keys(),).sort().reverse().join(disjunctor,);
         const accentMarks = Array.from(scriptData.accentMarks.keys(),).sort().reverse().join(disjunctor,);
@@ -640,18 +667,26 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
         // Handle Vedic accent marks
         sourceText = sourceText.replace(
             regex(`(${vowels})(${accentMarks})`,),
-            (_unused, p1, p2,) => p1 + scriptData.accentMarks.get(p2,),);
+            (_unused, p1, p2,) => `${p1}${scriptData.accentMarks.get(p2,)}`,);
 
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
-            regex(`${inherentVowel}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
-            (_unused, p1, p2,) => inherentVowel + p1 + scriptData.vowels.get(p2,),);
+            regex(`${diphthongAntecedent}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
+            (_unused, p1, p2,) => `${diphthongAntecedent}${p1}${scriptData.vowels.get(p2,)}`,);
     }
 
     // Handle separated consonants like ‘b:h’
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants,)})${separator}`,),
-        (_unused, p1,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get("",),);
+        (_unused, p1,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get("",)}`,);
+
+    const diphthongsAndConstituents = (() => {
+        const dAndC = diphthongConsequents.map(c => diphthongAntecedent + c,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
+        if (! (options?.enableDiphthongsinTamil === false)) {
+            return dAndC;
+        }
+        return dAndC.filter(x => x !== "ai" && x !== "au",);
+    })();
 
     // We need to first sweep through and xlit all diphthong non‐consequents.
     // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
@@ -662,20 +697,20 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     const consonants = Array.from(scriptData.consonants.keys(),).sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels1})`,),
-        (_unused, p1, p2,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(p2,),);
+        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,);
     sourceText = sourceText.replace(regex(vowels1,), match => scriptData.vowels.get(match,),);
 
     // Diphthongs and their constituents are in phase 2.
     const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels2})`,),
-        (_unused, p1, p2,) => scriptData.consonants.get(p1,) + scriptData.vowelMarks.get(p2,),);
+        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,);
     sourceText = sourceText.replace(regex(vowels2,), match => scriptData.vowels.get(match,),);
 
     // Remaining bare consonants.
     sourceText = sourceText.replace(
         regex(consonants,),
-        match => scriptData.consonants.get(match,) + scriptData.vowelMarks.get("",),);
+        match => `${scriptData.consonants.get(match,)}${scriptData.vowelMarks.get("",)}`,);
 
     return sourceText;
 };
