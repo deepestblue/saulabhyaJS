@@ -334,7 +334,7 @@ const resolveScriptData = (script, options,) => {
         renameMapKey(scriptData.consonants, "ṟ", "ṯ",);
     }
 
-    if (options?.enableDiphthongsinTamil === false) {
+    if (options?.enableDiphthongsInTamil === false) {
         diphthongConsequents.map(c => diphthongAntecedent + c,).forEach(d => { scriptData.vowels.delete(d,); scriptData.vowelMarks.delete(d,); },);
     }
 
@@ -482,7 +482,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         },
     );
 
-    if (options?.enableDiphthongsinTamil !== false) {
+    if (options?.enableDiphthongsInTamil !== false) {
         if (! options?.vedicAccents) {
             // Vowel separator insertion
             sourceText = sourceText.replace(
@@ -570,7 +570,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
 
 const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(), whitespace,];
-    if (options?.enableDiphthongsinTamil !== false) {
+    if (options?.enableDiphthongsInTamil !== false) {
         validLatnChars.push(separator,);
     }
     validateCharsOnly(sourceText, "Latn", validLatnChars,);
@@ -682,7 +682,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
 
     const diphthongsAndConstituents = (() => {
         const dAndC = diphthongConsequents.map(c => diphthongAntecedent + c,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
-        if (! (options?.enableDiphthongsinTamil === false)) {
+        if (! (options?.enableDiphthongsInTamil === false)) {
             return dAndC;
         }
         return dAndC.filter(x => x !== "ai" && x !== "au",);

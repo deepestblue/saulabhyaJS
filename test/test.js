@@ -256,7 +256,7 @@ QUnit.module("Tam", () => {
                 noDiphthongIndices.forEach(i => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
-                            transliterate(script, "Latn", data[script][i], { enableDiphthongsinTamil: false, },),
+                            transliterate(script, "Latn", data[script][i], { enableDiphthongsInTamil: false, },),
                             data.LatnISO15919NoDiphthongs[i],);
                     },);
                 },);
@@ -265,7 +265,7 @@ QUnit.module("Tam", () => {
                 noDiphthongIndices.forEach(i => {
                     QUnit.test(data.LatnISO15919NoDiphthongs[i], t => {
                         t.deepEqual(
-                            transliterate("Latn", script, data.LatnISO15919NoDiphthongs[i], { enableDiphthongsinTamil: false, },),
+                            transliterate("Latn", script, data.LatnISO15919NoDiphthongs[i], { enableDiphthongsInTamil: false, },),
                             data[script][i],);
                     },);
                 },);
@@ -300,7 +300,7 @@ QUnit.module("Tam", () => {
                 hiatusWithoutDiphthongs[script].forEach(([brahmic, latn,],) => {
                     QUnit.test(brahmic, t => {
                         t.deepEqual(
-                            transliterate(script, "Latn", brahmic, { enableDiphthongsinTamil: false, },),
+                            transliterate(script, "Latn", brahmic, { enableDiphthongsInTamil: false, },),
                             latn,);
                     },);
                 },);
@@ -309,7 +309,7 @@ QUnit.module("Tam", () => {
                 hiatusWithoutDiphthongs[script].forEach(([brahmic, latn,],) => {
                     QUnit.test(latn, t => {
                         t.deepEqual(
-                            transliterate("Latn", script, latn, { enableDiphthongsinTamil: false, },),
+                            transliterate("Latn", script, latn, { enableDiphthongsInTamil: false, },),
                             brahmic,);
                     },);
                 },);
@@ -395,12 +395,12 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
         },);
         QUnit.test("Taml → LatnISO15919NoDiphthongs", t => {
             t.deepEqual(
-                transliterate("Taml", "Latn", textWithoutDiphthongs.Taml, { enableDiphthongsinTamil: false, },),
+                transliterate("Taml", "Latn", textWithoutDiphthongs.Taml, { enableDiphthongsInTamil: false, },),
                 textWithoutDiphthongs.LatnISO15919NoDiphthongs,);
         },);
         QUnit.test("LatnISO15919NoDiphthongs → Taml", t => {
             t.deepEqual(
-                transliterate("Latn", "Taml", textWithoutDiphthongs.LatnISO15919NoDiphthongs, { enableDiphthongsinTamil: false, },),
+                transliterate("Latn", "Taml", textWithoutDiphthongs.LatnISO15919NoDiphthongs, { enableDiphthongsInTamil: false, },),
                 textWithoutDiphthongs.Taml,);
         },);
     },);
@@ -455,28 +455,28 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
         },);
         QUnit.test("Taml → Latn 5", t => {
             t.throws(
-                () => transliterate("Taml", "Latn", "ஐ", { enableDiphthongsinTamil: false, },),
+                () => transliterate("Taml", "Latn", "ஐ", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
                     /^Unknown Taml character ஐ at 0\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Taml → Latn 6", t => {
             t.throws(
-                () => transliterate("Taml", "Latn", "கை", { enableDiphthongsinTamil: false, },),
+                () => transliterate("Taml", "Latn", "கை", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
                     /^Unknown Taml character ை at 1\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 5", t => {
             t.throws(
-                () => transliterate("Latn", "Taml", "a:i", { enableDiphthongsinTamil: false, },),
+                () => transliterate("Latn", "Taml", "a:i", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
                     /^Unknown Latn character : at 1\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 6", t => {
             t.throws(
-                () => transliterate("Latn", "Taml", "ka:i", { enableDiphthongsinTamil: false, },),
+                () => transliterate("Latn", "Taml", "ka:i", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
                     /^Unknown Latn character : at 2\.$/v.test(err.message,),
             );

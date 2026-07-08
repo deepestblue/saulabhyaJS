@@ -51,9 +51,9 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
     * `ṛ` is used for the retroflex approximant instead of `ḻ`, in parallel to `r` (often pronounced as an alveolar approximant), and eschewing any `l` variant, which are used for liquids.
     * `ḻ` is used for the alveolar liquid, to distinguish it from the Indo‐Aryan dental liquid `l` (and in correspondence with the underscore diacritic in other alveolars).
 
-* a boolean `enableDiphthongsinTamil`, which determines whether Tamil text includes the diphthong letters ஐ and ஔ (and dependent marks ை and ௌ). The default is `true`. When `false`, those Brahmic characters are rejected; Latin `ai` and `au` are read as two vowels; and the hiatus separator `:` is not valid in Latin. Use it as follows:
+* a boolean `enableDiphthongsInTamil`, which determines whether Tamil text includes the diphthong letters ஐ and ஔ (and dependent marks ை and ௌ). The default is `true`. When `false`, those Brahmic characters are rejected; Latin `ai` and `au` are read as two vowels; and the hiatus separator `:` is not valid in Latin. Use it as follows:
 
-    const transliteratedTamlText = transliterate("Latn", "Taml", "kai", { enableDiphthongsinTamil: false, },); // கஇ, not கை
+    const transliteratedTamlText = transliterate("Latn", "Taml", "kai", { enableDiphthongsInTamil: false, },); // கஇ, not கை
 
 * a string `omInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because it's the symbol for “ohm”). Use the option as follows:
 
