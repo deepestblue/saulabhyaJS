@@ -18,7 +18,7 @@ const servedFiles = new Map([
     ["/test/index.html", "test/index.html",],
     ["/test/test.js", "test/test.js",],
     ["/src/saulabhya.js", "src/saulabhya.js",],
-    ["/dist/saulabhya.min.js", "dist/saulabhya.min.js",],
+    ["/dist/saulabhya.js", "dist/saulabhya.js",],
 ],);
 
 const server = http.createServer(async (req, res,) => {
@@ -33,7 +33,7 @@ const server = http.createServer(async (req, res,) => {
         let urlPath = requestUrl.pathname === "/" ? "/test/index.html" : requestUrl.pathname;
         // During coverage runs, map source module to the instrumented bundle
         if (process.env.COVERAGE === "1" && urlPath === "/src/saulabhya.js") {
-            urlPath = "/dist/saulabhya.min.js";
+            urlPath = "/dist/saulabhya.js";
         }
         const allowedFile = servedFiles.get(urlPath,);
         if (! allowedFile) {

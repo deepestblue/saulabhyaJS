@@ -3,16 +3,15 @@
     "version": "0.1.0",
     "type": "module",
     "description": "SaulabhyaJS",
-    "main": "dist/saulabhya.min.js",
-    "module": "dist/saulabhya.min.js",
+    "main": "src/saulabhya.js",
+    "module": "src/saulabhya.js",
     "exports": {
         ".": {
-            "import": "./dist/saulabhya.min.js",
-            "default": "./dist/saulabhya.min.js"
+            "import": "./src/saulabhya.js",
+            "default": "./src/saulabhya.js"
         }
     },
     "files": [
-        "dist/",
         "src/",
         "README.md",
         "LICENCE"
@@ -21,11 +20,10 @@
         "test": "test"
     },
     "scripts": {
-        "build": "node scripts/build.mjs",
         "lint": "npx eslint",
-        "dev": "npm run build && npx serve",
-        "test": "npm run build && node scripts/run-tests.mjs",
-        "coverage": "COVERAGE=1 npm run build && COVERAGE=1 node scripts/run-tests.mjs && npx nyc report"
+        "dev": "npx serve",
+        "test": "node scripts/run-tests.mjs",
+        "coverage": "node scripts/build.mjs && COVERAGE=1 node scripts/run-tests.mjs && npx nyc report"
     },
     "repository": {
         "type": "git",
