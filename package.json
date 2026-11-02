@@ -20,7 +20,7 @@
         "test": "test"
     },
     "scripts": {
-        "lint": "npx eslint",
+        "lint": "npx eslint && markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
         "dev": "npx serve",
         "test": "node scripts/run-tests.mjs",
         "coverage": "node scripts/build.mjs && COVERAGE=1 node scripts/run-tests.mjs && npx nyc report"
@@ -42,8 +42,9 @@
         "eslint": "^10.2.1",
         "@eslint/js": "^10.0.1",
         "@stylistic/eslint-plugin": "^5.7.0",
-        "eslint-plugin-qunit": "^8.2.5",
+        "eslint-plugin-qunit": "^8.2.6",
         "globals": "^17.0.0",
+        "markdownlint-cli2": "^0.24.0",
         "node-qunit-puppeteer": "^2.2.1",
         "nyc": "^18.0.0"
     }

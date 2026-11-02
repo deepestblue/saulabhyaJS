@@ -546,12 +546,12 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
     // Visarga alternate for Grantha
     if (otherScript === "Gran") {
         sourceText = sourceText.replace(
-            regex(`h([̱̮])(.)`,),
-            (match, p1, p2,) => {
-                if (p2 === "k") {
+            regex(`h[̱̮](.)`,),
+            (match, p1,) => {
+                if (p1 === "k") {
                     return "ẖk";
                 }
-                if (p2 === "p") {
+                if (p1 === "p") {
                     return "ḫp";
                 }
                 throw new Error(`Unknown ${otherScript} character combination: ${match}.`,);
