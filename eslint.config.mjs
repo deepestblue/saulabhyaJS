@@ -3,6 +3,48 @@ import js from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import qunit from "eslint-plugin-qunit";
 
+// Devanagari through Sinhala, Vedic Extensions, Devanagari Extended, Grantha, Tamil Supplement.
+const brahmicBlocks = String.raw`[\u{0900}-\u{0DFF}][\u{1CD0}-\u{1CFF}][\u{A8E0}-\u{A8FF}][\u{11300}-\u{1137F}][\u{11FC0}-\u{11FFF}]`;
+const brahmicChar = new RegExp(`[${brahmicBlocks}]`, "v",);
+const otherNonAsciiChar = new RegExp(String.raw`[\P{ASCII}--[${brahmicBlocks}]]`, "v",);
+
+const normalizationRule = {
+    meta: {
+        type: "problem",
+        messages: {
+            NFC: "A literal with Brahmic characters must be in NFC.",
+            NFD: "A literal without Brahmic characters must be in NFD.",
+            mixed: "A literal must not mix Brahmic characters with other non‐ASCII ones.",
+        },
+    },
+    create: context => {
+        const check = (node, text,) => {
+            const brahmic = brahmicChar.test(text,);
+            if (brahmic && otherNonAsciiChar.test(text,)) {
+                context.report({ node, messageId: "mixed", },);
+                return;
+            }
+            const form = brahmic ? "NFC" : "NFD";
+            if (text === text.normalize(form,)) {
+                return;
+            }
+            context.report({ node, messageId: form, },);
+        };
+        return {
+            Literal: node => {
+                if (typeof node.value === "string") {
+                    check(node, node.value,);
+                    return;
+                }
+                if (node.regex) {
+                    check(node, node.regex.pattern,);
+                }
+            },
+            TemplateElement: node => check(node, node.value.cooked ?? node.value.raw,),
+        };
+    },
+};
+
 export default [
     {
         ignores: ["dist/**", "node_modules/**",],
@@ -74,6 +116,15 @@ export default [
             "@stylistic/max-statements-per-line": "off",
             "@stylistic/operator-linebreak": ["error", "after", { overrides: { "?": "after", ":": "before", }, },],
             "@stylistic/space-unary-ops": ["error", { overrides: { "!": true, }, },],
+        },
+    },
+    {
+        files: ["src/**/*.js",],
+        plugins: {
+            local: { rules: { normalization: normalizationRule, }, },
+        },
+        rules: {
+            "local/normalization": "error",
         },
     },
 ];
