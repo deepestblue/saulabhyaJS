@@ -66,6 +66,7 @@ const scriptsData = {
         modifiers: new Map([
             ["m̐", "𑌁",], ["ṁ", "𑌂",], ["ḥ", "𑌃",],
             ["ẖ", "ᳲ",], ["ḫ", "ᳲ",],
+            ["gͫ", "𑍞",], ["gͫ̄", "𑍟",],
         ],),
         accentMarks: new Map([
             ["", "॒",], ["́", "",], ["̀", "᳴",], ["̏", "॑",],
@@ -231,6 +232,7 @@ const scriptsData = {
         modifiers: new Map([
             ["m̐", "ँ",], ["ṁ", "ं",], ["ḥ", "ः",],
             ["ẖ", "ᳵ",], ["ḫ", "ᳶ",],
+            ["gͫ", "ꣳ",], ["gͫ̄", "ꣴ",],
         ],),
         accentMarks: new Map([
             ["", "॒",], ["́", "",], ["̀", "॑",], ["̏", "᳚",],
@@ -650,7 +652,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
         match => scriptData.misc.get(match,),);
 
     // Handle modifiers separately first to get them out of the way.
-    const modifiers = Array.from(scriptData.modifiers.keys(),).join(disjunctor,);
+    const modifiers = Array.from(scriptData.modifiers.keys(),).sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(modifiers,),
         match => scriptData.modifiers.get(match,),);
@@ -711,6 +713,13 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     sourceText = sourceText.replace(
         regex(consonants,),
         match => `${scriptData.consonants.get(match,)}${scriptData.vowelMarks.get("",)}`,);
+
+    // Vedic accent marks on modifiers and on bare consonants
+    const modifiersAndVirama = [...scriptData.modifiers.values(), scriptData.vowelMarks.get("",),];
+    const accentMarks = Array.from(scriptData.accentMarks.keys(),).filter(x => x !== "",);
+    sourceText = sourceText.replace(
+        regex(`(${anyOfArray(modifiersAndVirama,)})(${anyOfArray(accentMarks,)})`,),
+        (_unused, p1, p2,) => `${p1}${scriptData.accentMarks.get(p2,)}`,);
 
     return sourceText;
 };
