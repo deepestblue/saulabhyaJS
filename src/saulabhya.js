@@ -296,7 +296,6 @@ const plutaMark = "…";
 const udattaMark = "́";
 const separator = ":";
 const disjunctor = "|";
-const whitespace = "\\s";
 const defaultOmInISO15919 = "Ω";
 
 const regex = s => new RegExp(s, "gv",);
@@ -353,19 +352,42 @@ const resolveScriptData = (script, options,) => {
     return scriptData;
 };
 
+// Throws unless the text splits into whitespace and valid characters, i.e. is a sequence of them. A valid character is any non‐empty entry of validCharacters, read as a string. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
 const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
-    const validRegex = new RegExp(`^(?:(?:${validCharacters.filter(ch => ch !== "",).map(ch => ch.toString().replace(/[.?]/gv, "\\$&",),).sort().reverse().join(")|(?:",)}))*`, "v",);
+    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharacters` (modulo whitespace). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
+    // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So we group the valid characters by their first code point, so that each position tries only those that can start there.
+    const validCharactersByFirstCodePoint = Map.groupBy(validCharacters.map(ch => ch.toString(),).filter(ch => ch !== "",), ch => String.fromCodePoint(ch.codePointAt(0,),),);
 
-    if (new RegExp(`${validRegex.source}$`, "v",).test(sourceText,)) {
+    // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesn’t split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
+    const reachable = [true,];
+    for (let i = 0; i < sourceText.length; ++i) {
+        if (! reachable[i]) {
+            continue;
+        }
+        const codePoint = String.fromCodePoint(sourceText.codePointAt(i,),);
+        reachable[i + codePoint.length] ||= /\s/v.test(codePoint,);
+        validCharactersByFirstCodePoint.get(codePoint,)?.forEach(ch => {
+            reachable[i + ch.length] ||= sourceText.startsWith(ch, i,);
+        },);
+    }
+    if (reachable[sourceText.length]) {
         return;
     }
 
-    const validLength = sourceText.match(validRegex,)[0].length;
-    throw new Error(`Unknown ${sourceScript} character ${[...sourceText.slice(validLength,),][0]} at ${validLength}.`,);
+    // Now that we know the text doesn’t split, let’s report on the error.
+
+    const validLength = reachable.findLastIndex(Boolean,);
+    // The invalid character is the one at validLength, i.e. right after the longest prefix that does split: nothing valid starts there, or a longer prefix would split. The error message tries to contextualise the invalid character by quoting its word. The quote runs to the end of the grapheme cluster containing the invalid character; it starts from just after the last whitespace before that cluster or from the start of the text.
+    const invalidGrapheme = new Intl.Segmenter().segment(sourceText,).containing(validLength,);
+
+    // Anchored, the regex is tried only once: .* runs to the end, then gives characters back until \s matches, so the match ends just after the last whitespace, in linear time. An unanchored /\S*$/ would be retried from every position, taking quadratic time on a long word followed by more text.
+    const quoteStart = sourceText.slice(0, invalidGrapheme.index,).match(/^.*\s/sv,)?.[0].length ?? 0;
+
+    throw new Error(`Unknown ${sourceScript} character ${String.fromCodePoint(sourceText.codePointAt(validLength,),)} in “${sourceText.slice(quoteStart, invalidGrapheme.index + invalidGrapheme.segment.length,)}”.`,);
 };
 
 const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
-    validateCharsOnly(sourceText, otherScript, [...scriptData.misc.values(), ...scriptData.numbers.values(), ...scriptData.modifiers.values(), ...scriptData.vowelMarks.values(), ...scriptData.vowels.values(), ...scriptData.consonants.values(), ...scriptData.accentMarks.values(), whitespace,],);
+    validateCharsOnly(sourceText, otherScript, [...scriptData.misc.values(), ...scriptData.numbers.values(), ...scriptData.modifiers.values(), ...scriptData.vowelMarks.values(), ...scriptData.vowels.values(), ...scriptData.consonants.values(), ...scriptData.accentMarks.values(),],);
 
     const brahmicToLatinData = scriptData.brahmicToLatin;
 
@@ -397,7 +419,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
                 // Process each group.
                 const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
 
-                // Invalid input if the thousands groups aren't strictly decreasing in thousands‐power.
+                // Invalid input if the thousands groups aren’t strictly decreasing in thousands‐power.
                 if (thousands >= ator.minThousands) {
                     throw new Error(`Invalid number: ${sourceNumber}.`,);
                 }
@@ -575,7 +597,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
 };
 
 const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
-    const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(), whitespace,];
+    const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(),];
     if (options?.enableDiphthongsInTamil !== false) {
         validLatnChars.push(separator,);
     }
@@ -738,13 +760,13 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
 
     if (srcScript === tgtScript) {
         if (tgtScript === "Latn") {
-            // Cannot validate that only Latin characters exist, because we don't know which Latin characters are valid without a language.
+            // Cannot validate that only Latin characters exist, because we don’t know which Latin characters are valid without a language.
             return sourceText.normalize("NFD",);
         }
 
         sourceText = sourceText.normalize("NFC",);
         const srcScriptData = resolveScriptData(srcScript, options,);
-        validateCharsOnly(sourceText, srcScript, [...srcScriptData.misc.values(), ...srcScriptData.numbers.values(), ...srcScriptData.modifiers.values(), ...srcScriptData.vowelMarks.values(), ...srcScriptData.vowels.values(), ...srcScriptData.consonants.values(), ...srcScriptData.accentMarks.values(), whitespace,],);
+        validateCharsOnly(sourceText, srcScript, [...srcScriptData.misc.values(), ...srcScriptData.numbers.values(), ...srcScriptData.modifiers.values(), ...srcScriptData.vowelMarks.values(), ...srcScriptData.vowels.values(), ...srcScriptData.consonants.values(), ...srcScriptData.accentMarks.values(),],);
         return sourceText;
     }
 

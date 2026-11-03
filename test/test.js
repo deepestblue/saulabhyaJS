@@ -411,7 +411,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Taml", "Latn", invalidTamTamlText,),
                 err => err instanceof Error &&
-                    /^Unknown Taml character : at 7\.$/v.test(err.message,),
+                    /^Unknown Taml character : in “இடயினம்:”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Taml → Taml", t => {
@@ -419,7 +419,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Taml", "Taml", invalidTamTamlText,),
                 err => err instanceof Error &&
-                    /^Unknown Taml character : at 7\.$/v.test(err.message,),
+                    /^Unknown Taml character : in “இடயினம்:”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 1", t => {
@@ -427,7 +427,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Latn", "Taml", invalidTamLatnText,),
                 err => err instanceof Error &&
-                    /^Unknown Latn character ; at 55\.$/v.test(err.message,),
+                    /^Unknown Latn character ; in “aṭippaṭayilāṉatu;”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 2", t => {
@@ -435,7 +435,7 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Latn", "Taml", invalidTamLatnText,),
                 err => err instanceof Error &&
-                    /^Unknown Latn character ̣ at 5\.$/v.test(err.message,),
+                    /^Unknown Latn character ̣ in “tamiṛ”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 3", t => {
@@ -443,42 +443,42 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
             t.throws(
                 () => transliterate("Latn", "Taml", invalidTamLatnText, { modifiedISO15919ForTam: true, },),
                 err => err instanceof Error &&
-                    /^Unknown Latn character ̱ at 18\.$/v.test(err.message,),
+                    /^Unknown Latn character ̱ in “muṟ”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 4", t => {
             t.throws(
                 () => transliterate("Latn", "Taml", "Ω", { omInISO15919: "🕉", },),
                 err => err instanceof Error &&
-                    /^Unknown Latn character Ω at 0\.$/v.test(err.message,),
+                    /^Unknown Latn character Ω in “Ω”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Taml → Latn 5", t => {
             t.throws(
                 () => transliterate("Taml", "Latn", "ஐ", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
-                    /^Unknown Taml character ஐ at 0\.$/v.test(err.message,),
+                    /^Unknown Taml character ஐ in “ஐ”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Taml → Latn 6", t => {
             t.throws(
                 () => transliterate("Taml", "Latn", "கை", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
-                    /^Unknown Taml character ை at 1\.$/v.test(err.message,),
+                    /^Unknown Taml character ை in “கை”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 5", t => {
             t.throws(
                 () => transliterate("Latn", "Taml", "a:i", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
-                    /^Unknown Latn character : at 1\.$/v.test(err.message,),
+                    /^Unknown Latn character : in “a:”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Taml 6", t => {
             t.throws(
                 () => transliterate("Latn", "Taml", "ka:i", { enableDiphthongsInTamil: false, },),
                 err => err instanceof Error &&
-                    /^Unknown Latn character : at 2\.$/v.test(err.message,),
+                    /^Unknown Latn character : in “ka:”\.$/v.test(err.message,),
             );
         },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
@@ -711,7 +711,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Gran", "Latn", invalidClsGranText,),
                 err => err instanceof Error &&
-                    /^Unknown Gran character ; at 14\.$/v.test(err.message,),
+                    /^Unknown Gran character ; in “𑌊𑌷𑍍𑌮𑌾𑌣𑌃;”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Gran → Gran", t => {
@@ -719,7 +719,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Gran", "Latn", invalidClsGranText,),
                 err => err instanceof Error &&
-                    /^Unknown Gran character ; at 14\.$/v.test(err.message,),
+                    /^Unknown Gran character ; in “𑌊𑌷𑍍𑌮𑌾𑌣𑌃;”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Gran", t => {
@@ -727,7 +727,21 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Latn", "Gran", invalidClsLatnText,),
                 err => err instanceof Error &&
-                    /^Unknown Latn character ; at 12\.$/v.test(err.message,),
+                    /^Unknown Latn character ; in “ūṣmāṇaḥ;”\.$/v.test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Gran after long text", t => {
+            t.throws(
+                () => transliterate("Latn", "Gran", `${"bha".repeat(100,)}X`,),
+                err => err instanceof Error &&
+                    new RegExp(`^Unknown Latn character X in “${"bha".repeat(100,)}X”\\.$`, "v",).test(err.message,),
+            );
+        },);
+        QUnit.test("Latn → Gran after ambiguous split", t => {
+            t.throws(
+                () => transliterate("Latn", "Gran", "aūX",),
+                err => err instanceof Error &&
+                    /^Unknown Latn character X in “aūX”\.$/v.test(err.message,),
             );
         },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
@@ -746,7 +760,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Gran", "Latn", invalidVsnGranText,),
                 err => err instanceof Error &&
-                    /^Unknown Gran character ॒ at 15\.$/v.test(err.message,),
+                    /^Unknown Gran character ॒ in “𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Gran → Gran Vsn", t => {
@@ -754,7 +768,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Gran", "Latn", invalidVsnGranText,),
                 err => err instanceof Error &&
-                    /^Unknown Gran character ॒ at 15\.$/v.test(err.message,),
+                    /^Unknown Gran character ॒ in “𑌶𑌾𑌨𑍍𑌤𑌿॒𑌃”\.$/v.test(err.message,),
             );
         },);
         QUnit.test("Latn → Gran Vsn", t => {
@@ -762,7 +776,7 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
             t.throws(
                 () => transliterate("Latn", "Gran", invalidVsnLatnText,),
                 err => err instanceof Error &&
-                    /^Unknown Latn character ́ at 1\.$/v.test(err.message,),
+                    /^Unknown Latn character ́ in “Ώ”\.$/v.test(err.message,),
             );
         },);
         // We cannot create a similar Latn → Latn test because without a Brahmic script we do not know what characters are valid.
