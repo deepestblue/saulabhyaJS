@@ -70,6 +70,8 @@ const scriptsData = {
         ],),
         accentMarks: new Map([
             ["", "॒",], ["́", "",], ["̀", "᳴",], ["̏", "॑",],
+            ["⁰", "𑍦",], ["¹", "𑍧",], ["²", "𑍨",], ["³", "𑍩",], ["⁴", "𑍪",], ["⁵", "𑍫",], ["⁶", "𑍬",],
+            ["ͣ", "𑍰",], ["ᷜ", "𑍱",], ["ᷠ", "𑍲",], ["ͮ", "𑍳",], ["ᷮ", "𑍴",],
         ],),
         consonants: new Map([
             ["k", "𑌕",], ["kh", "𑌖",], ["g", "𑌗",], ["gh", "𑌘",], ["ṅ", "𑌙",],
@@ -236,6 +238,8 @@ const scriptsData = {
         ],),
         accentMarks: new Map([
             ["", "॒",], ["́", "",], ["̀", "॑",], ["̏", "᳚",],
+            ["⁰", "꣠",], ["¹", "꣡",], ["²", "꣢",], ["³", "꣣",], ["⁴", "꣤",], ["⁵", "꣥",], ["⁶", "꣦",],
+            ["ͣ", "꣪",], ["ᷜ", "꣬",], ["ᷠ", "꣭",], ["ͮ", "꣰",], ["ᷮ", "꣮",],
         ],),
         consonants: new Map([
             ["k", "क",], ["kh", "ख",], ["g", "ग",], ["gh", "घ",], ["ṅ", "ङ",],
@@ -522,8 +526,8 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         // Other accents
         const accentMarks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).join(disjunctor,);
         sourceText = sourceText.replace(
-            regex(`(${anyOfArray(lettersAndModifiers,)})(${accentMarks})`,),
-            (_unused, p1, p2,) => `${p1}${scriptData.brahmicToLatin[p2]}`,
+            regex(`(${anyOfArray(lettersAndModifiers,)})((?:${accentMarks})+)`,),
+            (_unused, p1, p2,) => `${p1}${p2.replace(regex(accentMarks,), mark => scriptData.brahmicToLatin[mark],)}`,
         );
     }
 
@@ -664,12 +668,12 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
             (_unused, p1,) => `${diphthongAntecedent}${scriptData.vowels.get(p1,)}`,);
     } else {
         const vowels = Array.from(scriptData.vowels.keys(),).sort().reverse().join(disjunctor,);
-        const accentMarks = Array.from(scriptData.accentMarks.keys(),).sort().reverse().join(disjunctor,);
+        const accentMarks = Array.from(scriptData.accentMarks.keys(),).filter(x => x !== "",).sort().reverse().join(disjunctor,);
 
         // Handle Vedic accent marks
         sourceText = sourceText.replace(
-            regex(`(${vowels})(${accentMarks})`,),
-            (_unused, p1, p2,) => `${p1}${scriptData.accentMarks.get(p2,)}`,);
+            regex(`(${vowels})((?:${accentMarks})*)`,),
+            (_unused, p1, p2,) => `${p1}${p2 === "" ? scriptData.accentMarks.get("",) : p2.replace(regex(accentMarks,), mark => scriptData.accentMarks.get(mark,),)}`,);
 
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
@@ -718,8 +722,8 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     const modifiersAndVirama = [...scriptData.modifiers.values(), scriptData.vowelMarks.get("",),];
     const accentMarks = Array.from(scriptData.accentMarks.keys(),).filter(x => x !== "",);
     sourceText = sourceText.replace(
-        regex(`(${anyOfArray(modifiersAndVirama,)})(${anyOfArray(accentMarks,)})`,),
-        (_unused, p1, p2,) => `${p1}${scriptData.accentMarks.get(p2,)}`,);
+        regex(`(${anyOfArray(modifiersAndVirama,)})(${anyOfArray(accentMarks,)}+)`,),
+        (_unused, p1, p2,) => `${p1}${p2.replace(regex(anyOfArray(accentMarks,),), mark => scriptData.accentMarks.get(mark,),)}`,);
 
     return sourceText;
 };
