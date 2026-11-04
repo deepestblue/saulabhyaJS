@@ -571,21 +571,19 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         match => brahmicToLatinData[match],
     );
 
-    // Visarga alternate for Grantha
-    if (otherScript === "Gran") {
-        sourceText = sourceText.replace(
-            regex(`h[̱̮](.)`,),
-            (match, p1,) => {
-                if (p1 === "k") {
-                    return "ẖk";
-                }
-                if (p1 === "p") {
-                    return "ḫp";
-                }
-                throw new Error(`Unknown ${otherScript} character combination: ${match}.`,);
-            },
-        );
-    }
+    // We need special handling for Grantha, and this section also checks that a jihvāmūlīya or upadhmānīya is followed (modulo whitespace) by a velar or labial voiceless plosive.
+    sourceText = sourceText.replace(
+        regex(`h[̱̮](\\s?)(.)?`,),
+        (match, p1, p2,) => {
+            if (p2 === "k") {
+                return `ẖ${p1}k`;
+            }
+            if (p2 === "p") {
+                return `ḫ${p1}p`;
+            }
+            throw new Error(`Unknown ${otherScript} character combination: ${match}.`,);
+        },
+    );
 
     // Vowels
     sourceText = sourceText.replace(
