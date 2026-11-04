@@ -20,7 +20,6 @@ const scriptsData = {
             [",", ",",], ["“", "“",], ["”", "”",], ["!", "!",], ["?", "?",], [".", ".",], ["↩", "↩",],
         ],),
         modifiers: new Map([["ḵ", "ஃ",],],),
-        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "க",], ["ṅ", "ங",],
             ["c", "ச",], ["ñ", "ஞ",],
@@ -68,11 +67,16 @@ const scriptsData = {
             ["ẖ", "ᳲ",], ["ḫ", "ᳲ",],
             ["gͫ", "𑍞",], ["gͫ̄", "𑍟",],
         ],),
-        accentMarks: new Map([
-            ["", "॒",], ["́", "",], ["̀", "᳴",], ["̏", "॑",],
-            ["⁰", "𑍦",], ["¹", "𑍧",], ["²", "𑍨",], ["³", "𑍩",], ["⁴", "𑍪",], ["⁵", "𑍫",], ["⁶", "𑍬",],
-            ["ͣ", "𑍰",], ["ᷜ", "𑍱",], ["ᷠ", "𑍲",], ["ͮ", "𑍳",], ["ᷮ", "𑍴",],
-        ],),
+        vedicAccentMarks: {
+            yajurveda: new Map([
+                ["", "॒",], ["́", "",], ["̀", "᳴",], ["̏", "॑",],
+            ],),
+            samaveda: new Map([
+                ["", "",], // This entry and the corresponding entries for other vsn scripts let latinToBrahmic handle yajurveda and samaveda uniformly.
+                ["⁰", "𑍦",], ["¹", "𑍧",], ["²", "𑍨",], ["³", "𑍩",], ["⁴", "𑍪",], ["⁵", "𑍫",], ["⁶", "𑍬",],
+                ["ͣ", "𑍰",], ["ᷜ", "𑍱",], ["ᷠ", "𑍲",], ["ͮ", "𑍳",], ["ᷮ", "𑍴",],
+            ],),
+        },
         consonants: new Map([
             ["k", "𑌕",], ["kh", "𑌖",], ["g", "𑌗",], ["gh", "𑌘",], ["ṅ", "𑌙",],
             ["c", "𑌚",], ["ch", "𑌛",], ["j", "𑌜",], ["jh", "𑌝",], ["ñ", "𑌞",],
@@ -110,7 +114,6 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ಃ",],
         ],),
-        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "ಕ",], ["ṅ", "ಙ",],
             ["c", "ಚ",], ["ñ", "ಞ",],
@@ -149,7 +152,6 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ഃ",],
         ],),
-        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "ക",], ["ṅ", "ങ",],
             ["c", "ച",], ["ñ", "ഞ",],
@@ -189,7 +191,6 @@ const scriptsData = {
         modifiers: new Map([
             ["ḵ", "ః",],
         ],),
-        accentMarks: new Map([],),
         consonants: new Map([
             ["k", "క",], ["ṅ", "ఙ",],
             ["c", "చ",], ["ñ", "ఞ",],
@@ -236,11 +237,16 @@ const scriptsData = {
             ["ẖ", "ᳵ",], ["ḫ", "ᳶ",],
             ["gͫ", "ꣳ",], ["gͫ̄", "ꣴ",],
         ],),
-        accentMarks: new Map([
-            ["", "॒",], ["́", "",], ["̀", "॑",], ["̏", "᳚",],
-            ["⁰", "꣠",], ["¹", "꣡",], ["²", "꣢",], ["³", "꣣",], ["⁴", "꣤",], ["⁵", "꣥",], ["⁶", "꣦",],
-            ["ͣ", "꣪",], ["ᷜ", "꣬",], ["ᷠ", "꣭",], ["ͮ", "꣰",], ["ᷮ", "꣮",],
-        ],),
+        vedicAccentMarks: {
+            yajurveda: new Map([
+                ["", "॒",], ["́", "",], ["̀", "॑",], ["̏", "᳚",],
+            ],),
+            samaveda: new Map([
+                ["", "",], // This entry and the corresponding entries for other vsn scripts let latinToBrahmic handle yajurveda and samaveda uniformly.
+                ["⁰", "꣠",], ["¹", "꣡",], ["²", "꣢",], ["³", "꣣",], ["⁴", "꣤",], ["⁵", "꣥",], ["⁶", "꣦",],
+                ["ͣ", "꣪",], ["ᷜ", "꣬",], ["ᷠ", "꣭",], ["ͮ", "꣰",], ["ᷮ", "꣮",],
+            ],),
+        },
         consonants: new Map([
             ["k", "क",], ["kh", "ख",], ["g", "ग",], ["gh", "घ",], ["ṅ", "ङ",],
             ["c", "च",], ["ch", "छ",], ["j", "ज",], ["jh", "झ",], ["ñ", "ञ",],
@@ -259,15 +265,6 @@ const scriptsData = {
 
 const scriptNames = Object.keys(scriptsData,);
 const thousandBasedNumberScripts = Object.freeze(["Taml", "Gran", "Mlym",],); // Mlym, Taml and Gran don’t use a strict place‐value system.
-
-// Create a brahmicToLatin reverse‐map Javascript object from the other maps.
-scriptNames.forEach(script => {
-    const scriptData = scriptsData[script];
-    const revArray = Array.from(
-        [...scriptData.vowels, ...scriptData.vowelMarks, ...scriptData.consonants, ...scriptData.misc, ...scriptData.numbers, ...scriptData.modifiers, ...scriptData.accentMarks,],
-        a => a.reverse(),);
-    scriptData.brahmicToLatin = Object.fromEntries(revArray,);
-},);
 
 scriptNames.push("Latn",);
 Object.freeze(scriptNames,);
@@ -294,6 +291,7 @@ const plosiveConsonants = Object.freeze(["k", "g", "c", "j", "ṭ", "ḍ", "ṯ"
 const aspirateConsonant = "h";
 const plutaMark = "…";
 const udattaMark = "́";
+const vedicAccentsValues = Object.freeze(["yajurveda", "samaveda",],);
 const separator = ":";
 const disjunctor = "|";
 const defaultOmInISO15919 = "Ω";
@@ -322,7 +320,7 @@ const resolveScriptData = (script, options,) => {
         vowelMarks: cloneMap(base.vowelMarks,),
         misc: cloneMap(base.misc,),
         modifiers: cloneMap(base.modifiers,),
-        accentMarks: options?.vedicAccents ? cloneMap(base.accentMarks,) : new Map(),
+        accentMarks: cloneMap(base.vedicAccentMarks?.[options?.vedicAccents],),
         consonants: cloneMap(base.consonants,),
         numbers: cloneMap(base.numbers,),
     };
@@ -526,7 +524,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         }
     }
 
-    if (options?.vedicAccents) {
+    if (options?.vedicAccents === "yajurveda") {
         // For the udatta accent, unmarked in Brahmic, we need a two‐pass approach. First, we need to add udatta accent‐marks after each consonant with the inherent‐vowel, unless succeeded by a different accent‐mark.
         const marks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).concat(Array.from(scriptData.vowelMarks.values().filter(x => x !== "",),),).join("",);
         sourceText = sourceText.replace(
@@ -544,7 +542,9 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
             regex(`(${anyOfArray(letters,)})($${disjunctor}[^${udattaMark}${marks}])`,),
             (_unused, p1, p2,) => `${p1}${udattaMark}${p2}`,
         );
+    }
 
+    if (options?.vedicAccents) {
         // Other accents
         const accentMarks = Array.from(scriptData.accentMarks.values().filter(x => x !== "",),).join(disjunctor,);
         sourceText = sourceText.replace(
@@ -756,6 +756,9 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
     }
     if (! scriptNames.includes(tgtScript,)) {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`,);
+    }
+    if (typeof options?.vedicAccents !== "undefined" && ! vedicAccentsValues.includes(options.vedicAccents,)) {
+        throw new Error(`Unsupported or invalid vedicAccents value: ${options.vedicAccents}.`,);
     }
 
     if (srcScript === tgtScript) {

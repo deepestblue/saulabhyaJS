@@ -20,7 +20,7 @@ SaulabhyaJS Supports the following language/script combinations:
 | Sanskrit | ISO‐15919 Latin |      Latn      |
 
 * Supports traditional Tamil/Malayalam numbers (not based on the place value system).
-* Supports Yajurvedic accent marks for Sanskrit.
+* Supports Yajurvedic and Samavedic accent marks for Sanskrit.
 * Supports some commonly used Western punctuation marks (comma, question mark, exclamation mark, double quotes and full stop) for Tamil text.
 * Supports some traditional symbols and signs for both Sanskrit and Tamil text. [If you find anything missing, please create an issue.]
 
@@ -40,11 +40,18 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 
 Optionally, `transliterate` also takes an `options` parameter. The supported options are below:
 
-* a boolean `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`. Use it as follows:
+* a string `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`, and which Veda’s accent marks it uses. Leave it out for `cls` text, in which accent marks are invalid. The supported values are:
+    * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in Latin, and `hi` in Latin is `𑌹𑌿॒` in Grantha.
+    * `"samaveda"`, for Samavedic accent marks, which are numerals and letters. A letter without a mark has no accent to spell out, so it stays unmarked in every script: `𑌹𑌿` in Grantha is `hi` in Latin, and vice versa.
 
-      const sourceText = "𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ।"; // Valid vsn text in Grantha script.
-      const transliteratedLatinText = transliterate("Gran", "Latn", sourceText, { vedicAccents: true, },); // The above source text in Latin script (ISO‐15919 transliteration format).
-      const transliteratedDevanagariText = transliterate("Gran", "Deva", sourceText,); // The above source text in Devanagari script.
+  Each value accepts only its own Veda’s accent marks, so split text that mixes the two into separate calls. Use it as follows:
+
+      const sourceText = "𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ।"; // Valid Yajurvedic text in Grantha script.
+      const transliteratedLatinText = transliterate("Gran", "Latn", sourceText, { vedicAccents: "yajurveda", },); // The above source text in Latin script (ISO‐15919 transliteration format).
+      const transliteratedDevanagariText = transliterate("Gran", "Deva", sourceText, { vedicAccents: "yajurveda", },); // The above source text in Devanagari script.
+
+      const samavedicSourceText = "𑌨𑌿𑍧 𑌹𑍋𑌤𑌾𑍨𑍦 𑌸𑌤𑍍𑌸𑌿 𑌬𑍩𑌰𑍍𑌹𑌿𑍧𑌷𑌿𑍨 ॥"; // Valid Samavedic text in Grantha script.
+      const samavedicLatinText = transliterate("Gran", "Latn", samavedicSourceText, { vedicAccents: "samaveda", },); // ni¹ hōtā²⁰ satsi ba³rhi¹ṣi² ॥
 
 * a boolean `modifiedISO15919ForTam`, which determines whether Tamil text in ISO‐15919 should be the format as defined by ISO, or a modified format the author prefers. In the modified format,
     * `ṯ` is used for the alveolar stop instead of `ṟ`, in parallel to `ṭ` for the retroflex stop and `t` for the dental (and in parallel to `ṉ` for the alveolar nasal).
