@@ -30,7 +30,15 @@ SaulabhyaJS is available as an ES module. The easiest way to get SaulabhyaJS in 
 
     import { transliterate } from "https://cdn.jsdelivr.net/gh/deepestblue/SaulabhyaJS@latest/src/saulabhya.min.js";
 
-and use it like:
+In Node or in an app with a build tool such as Vite, install it from GitHub instead, naming a [release tag](https://github.com/deepestblue/SaulabhyaJS/releases):
+
+    npm install github:deepestblue/SaulabhyaJS#<tag>
+
+and import it by name:
+
+    import { transliterate } from "saulabhyajs";
+
+Either way, use it like:
 
     const sourceText = "சௌலப்பியம் எனும் இது ஓர் எழுத்து பெயர்ப்புக் கருவி."; // Valid tam text in Tamil script.
     const transliteratedLatinText = transliterate("Taml", "Latn", sourceText,); // The above source text in Latin script (ISO‐15919 transliteration format).
