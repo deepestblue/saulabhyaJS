@@ -8,7 +8,7 @@ SaulabhyaJS is a Javascript transliteration library for Sanskrit and Tamil text 
 
 SaulabhyaJS Supports the following language/script combinations:
 
-| Language |      Script     | ISO‐15924 name |
+| Language |      Script     | ISO‐15924 code |
 |:--------:|:---------------:|:--------------:|
 |   Tamil  |      Tamil      |      Taml      |
 |   Tamil  |    Malayalam    |      Mlym      |
@@ -47,7 +47,7 @@ Either way, use it like:
     const transliteratedLatinText = transliterate("Taml", "Latn", sourceText,); // The above source text in Latin script (ISO‐15919 transliteration format).
     const transliteratedTeluguText = transliterate("Taml", "Telu", sourceText,); // The above source text in Telugu script.
 
-As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 names](https://en.wikipedia.org/wiki/ISO_15924).
+As above, `transliterate` takes as its 3rd parameter the source text and returns the transliterated text. The first two parameters represent the source and target scripts as [ISO‐15924 codes](https://en.wikipedia.org/wiki/ISO_15924).
 
 Optionally, `transliterate` also takes an `options` parameter. The supported options are below:
 
@@ -83,6 +83,7 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
 * Run tests via `npm test`. Set `PUPPETEER_EXECUTABLE_PATH` to your system Chrome as needed.
 * Lint with `npm run lint`.
 * Coverage: `npm run coverage` generates text summary. Coverage data is stored in `.nyc_output/`.
+* When changing the public API, update the TypeScript declarations in `src/saulabhya.d.ts` to match.
 
 ## History
 

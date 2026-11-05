@@ -263,11 +263,11 @@ const scriptsData = {
     },
 };
 
-const scriptNames = Object.keys(scriptsData,);
+const scriptCodes = Object.keys(scriptsData,);
 const thousandBasedNumberScripts = Object.freeze(["Taml", "Gran", "Mlym",],); // Mlym, Taml and Gran don’t use a strict place‐value system.
 
-scriptNames.push("Latn",);
-Object.freeze(scriptNames,);
+scriptCodes.push("Latn",);
+Object.freeze(scriptCodes,);
 
 const deepFreeze = value => {
     if (value === null || typeof value !== "object" || Object.isFrozen(value,)) {
@@ -777,10 +777,10 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
 };
 
 const transliterate = (srcScript, tgtScript, sourceText, options,) => {
-    if (! scriptNames.includes(srcScript,)) {
+    if (! scriptCodes.includes(srcScript,)) {
         throw new Error(`Unsupported or invalid source script: ${srcScript}.`,);
     }
-    if (! scriptNames.includes(tgtScript,)) {
+    if (! scriptCodes.includes(tgtScript,)) {
         throw new Error(`Unsupported or invalid target script: ${tgtScript}.`,);
     }
     if (typeof options?.vedicAccents !== "undefined" && ! vedicAccentsValues.includes(options.vedicAccents,)) {
