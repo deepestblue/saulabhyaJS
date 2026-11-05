@@ -23,6 +23,9 @@ SaulabhyaJS Supports the following language/script combinations:
 * Supports Yajurvedic and Samavedic accent marks for Sanskrit.
 * Supports some commonly used Western punctuation marks (comma, question mark, exclamation mark, double quotes and full stop) for Tamil text.
 * Supports some traditional symbols and signs for both Sanskrit and Tamil text. [If you find anything missing, please create an issue.]
+* Outputs NFC text for Brahmic and NFD text for ISO‐15919.
+    * NFD for Brahmic can result in stray characters like U+0BD7, the so‐called Tamil AU Length Mark, which is unattested in practice and is confusingly spurious. So we always output NFC for Brahmic.
+    * NFC for ISO‐15919 can result in select diacritic marks being composed with the base character whereas others may not (because of the lack of such pre‐composed characters). This could result in rendering differences across different diacritic mark × base character combinations. So we always output NFD for ISO‐15919.
 
 ## Usage
 
@@ -49,8 +52,8 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 Optionally, `transliterate` also takes an `options` parameter. The supported options are below:
 
 * a string `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`, and which Veda’s accent marks it uses. Leave it out for `cls` text, in which accent marks are invalid. The supported values are:
-    * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in Latin, and `hi` in Latin is `𑌹𑌿॒` in Grantha.
-    * `"samaveda"`, for Samavedic accent marks, which are numerals and letters. A letter without a mark has no accent to spell out, so it stays unmarked in every script: `𑌹𑌿` in Grantha is `hi` in Latin, and vice versa.
+    * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked ISO‐15919 Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in ISO‐15919 Latin, and `hi` in ISO‐15919 Latin is `𑌹𑌿॒` in Grantha.
+    * `"samaveda"`, for Samavedic accent marks, which are numerals and letters. A letter without a mark has no accent to spell out, so it stays unmarked in every script: `𑌹𑌿` in Grantha is `hi` in ISO‐15919 Latin, and vice versa.
 
   Each value accepts only its own Veda’s accent marks, so split text that mixes the two into separate calls. Use it as follows:
 
