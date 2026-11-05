@@ -350,10 +350,10 @@ const resolveScriptData = (script, options,) => {
     return scriptData;
 };
 
-// Throws unless the text splits into whitespace and valid characters, i.e. is a sequence of them. A valid character is any non‐empty entry of validCharacters, read as a string. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
+// Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. A valid character is any non‐empty entry of validCharacters, read as a string. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
 const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
-    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharacters` (modulo whitespace). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
-    // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So we group the valid characters by their first code point, so that each position tries only those that can start there.
+    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharacters` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
+    // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace and join controls). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So we group the valid characters by their first code point, so that each position tries only those that can start there.
     const validCharactersByFirstCodePoint = Map.groupBy(validCharacters.map(ch => ch.toString(),).filter(ch => ch !== "",), ch => String.fromCodePoint(ch.codePointAt(0,),),);
 
     // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesn’t split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
@@ -363,7 +363,7 @@ const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
             continue;
         }
         const codePoint = String.fromCodePoint(sourceText.codePointAt(i,),);
-        reachable[i + codePoint.length] ||= /\s/v.test(codePoint,);
+        reachable[i + codePoint.length] ||= /[\s\p{Join_Control}]/v.test(codePoint,);
         validCharactersByFirstCodePoint.get(codePoint,)?.forEach(ch => {
             reachable[i + ch.length] ||= sourceText.startsWith(ch, i,);
         },);
@@ -571,9 +571,9 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         match => brahmicToLatinData[match],
     );
 
-    // We need special handling for Grantha, and this section also checks that a jihvāmūlīya or upadhmānīya is followed (modulo whitespace) by a velar or labial voiceless plosive.
+    // We need special handling for Grantha, and this section also checks that a jihvāmūlīya or upadhmānīya is followed (modulo a whitespace character or join control) by a velar or labial voiceless plosive.
     sourceText = sourceText.replace(
-        regex(`h[̱̮](\\s?)(.)?`,),
+        regex(`h[̱̮]([\\s\\p{Join_Control}]?)(.)?`,),
         (match, p1, p2,) => {
             if (p2 === "k") {
                 return `ẖ${p1}k`;
@@ -590,6 +590,13 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
         regex(anyOfIterable(scriptData.vowels.values(),),),
         match => brahmicToLatinData[match],
     );
+
+    // Any vowel mark, virama or accent mark left now was stray.
+    const strandedMarks = [...scriptData.vowelMarks.values(), ...scriptData.accentMarks.values(),].filter(x => x !== "",);
+    const strandedMark = sourceText.match(regex(anyOfArray(strandedMarks,),),)?.[0];
+    if (strandedMark) {
+        throw new Error(`Unknown ${otherScript} character combination: ${strandedMark}.`,);
+    }
 
     return sourceText;
 };
