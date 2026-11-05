@@ -1049,4 +1049,51 @@ QUnit.module("API", () => {
             );
         },);
     },);
+
+    QUnit.module("alternating an option’s values", () => {
+        // Each entry is a set of options and a pair of texts they map to each other.
+        const data = {
+            vedicAccents: {
+                script: "Gran",
+                calls: [
+                    [{}, "hi", "𑌹𑌿",],
+                    [{ vedicAccents: "yajurveda", }, "hi", "𑌹𑌿॒",],
+                    [{ vedicAccents: "samaveda", }, "hi¹", "𑌹𑌿𑍧",],
+                ],
+            },
+            omInISO15919: {
+                script: "Gran",
+                calls: [
+                    [{}, "Ω", "𑍐",],
+                    [{ omInISO15919: "🕉", }, "🕉", "𑍐",],
+                    [{ omInISO15919: "☉", }, "☉", "𑍐",],
+                ],
+            },
+            modifiedISO15919ForTam: {
+                script: "Taml",
+                calls: [
+                    [{}, "ḻa", "ழ",],
+                    [{ modifiedISO15919ForTam: false, }, "ḻa", "ழ",],
+                    [{ modifiedISO15919ForTam: true, }, "ṛa", "ழ",],
+                ],
+            },
+            enableDiphthongsInTamil: {
+                script: "Taml",
+                calls: [
+                    [{}, "kai", "கை",],
+                    [{ enableDiphthongsInTamil: true, }, "kai", "கை",],
+                    [{ enableDiphthongsInTamil: false, }, "kai", "கஇ",],
+                ],
+            },
+        };
+
+        Object.entries(data,).forEach(([option, { script, calls, },],) => {
+            QUnit.test(option, t => {
+                [...calls, ...calls,].forEach(([options, latin, brahmic,],) => {
+                    t.deepEqual(transliterate("Latn", script, latin, options,), brahmic,);
+                    t.deepEqual(transliterate(script, "Latn", brahmic, options,), latin,);
+                },);
+            },);
+        },);
+    },);
 },);

@@ -304,7 +304,18 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
+// Calls share these objects, so nothing may mutate one once it’s resolved. The cache grows with the distinct options values passed in.
+const resolvedScriptsData = new Map();
+
 const resolveScriptData = (script, options,) => {
+    // Coalesce options from what's passed in into the actual distinct values that matter, which distinct values are used in the cache key.
+    const cacheKey = JSON.stringify([script, options?.vedicAccents, options?.omInISO15919 || "", Boolean(options?.modifiedISO15919ForTam,), options?.enableDiphthongsInTamil === false,],);
+
+    const cachedScriptData = resolvedScriptsData.get(cacheKey,);
+    if (cachedScriptData) {
+        return cachedScriptData;
+    }
+
     const cloneMap = map => new Map(map,);
     const renameMapKey = (map, oldKey, newKey,) => {
         if (! map.has(oldKey,)) {
@@ -347,14 +358,28 @@ const resolveScriptData = (script, options,) => {
             e => e.slice().reverse(),
         ),
     );
+
+    // Groups the non‐empty entries of the passed‐in array, read as strings, by their first code point.
+    const groupByFirstCodePoint = characters => Map.groupBy(characters.map(ch => ch.toString(),).filter(ch => ch !== "",), ch => String.fromCodePoint(ch.codePointAt(0,),),);
+
+    scriptData.brahmicCharactersByFirstCodePoint = groupByFirstCodePoint([...scriptData.misc.values(), ...scriptData.numbers.values(), ...scriptData.modifiers.values(), ...scriptData.vowelMarks.values(), ...scriptData.vowels.values(), ...scriptData.consonants.values(), ...scriptData.accentMarks.values(),],);
+
+    const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(),];
+
+    // We need to have ensured above that options?.enableDiphthongsInTamil is part of the cache‐key.
+    if (options?.enableDiphthongsInTamil !== false) {
+        validLatnChars.push(separator,);
+    }
+    scriptData.latinCharactersByFirstCodePoint = groupByFirstCodePoint(validLatnChars,);
+
+    resolvedScriptsData.set(cacheKey, scriptData,);
     return scriptData;
 };
 
-// Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. A valid character is any non‐empty entry of validCharacters, read as a string. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
-const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
-    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharacters` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
-    // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace and join controls). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So we group the valid characters by their first code point, so that each position tries only those that can start there.
-    const validCharactersByFirstCodePoint = Map.groupBy(validCharacters.map(ch => ch.toString(),).filter(ch => ch !== "",), ch => String.fromCodePoint(ch.codePointAt(0,),),);
+// Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. validCharactersByFirstCodePoint maps each code point to the valid characters that start with it. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
+const validateCharsOnly = (sourceText, sourceScript, validCharactersByFirstCodePoint,) => {
+    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharactersByFirstCodePoint` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
+    // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace and join controls). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So the valid characters come grouped by their first code point, so that each position tries only those that can start there.
 
     // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesn’t split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
     const reachable = [true,];
@@ -385,7 +410,7 @@ const validateCharsOnly = (sourceText, sourceScript, validCharacters,) => {
 };
 
 const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
-    validateCharsOnly(sourceText, otherScript, [...scriptData.misc.values(), ...scriptData.numbers.values(), ...scriptData.modifiers.values(), ...scriptData.vowelMarks.values(), ...scriptData.vowels.values(), ...scriptData.consonants.values(), ...scriptData.accentMarks.values(),],);
+    validateCharsOnly(sourceText, otherScript, scriptData.brahmicCharactersByFirstCodePoint,);
 
     const brahmicToLatinData = scriptData.brahmicToLatin;
 
@@ -602,11 +627,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
 };
 
 const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
-    const validLatnChars = [...scriptData.numbers.keys(), ...scriptData.misc.keys(), ...scriptData.modifiers.keys(), ...scriptData.vowelMarks.keys(), ...scriptData.vowels.keys(), ...scriptData.consonants.keys(), ...scriptData.accentMarks.keys(),];
-    if (options?.enableDiphthongsInTamil !== false) {
-        validLatnChars.push(separator,);
-    }
-    validateCharsOnly(sourceText, "Latn", validLatnChars,);
+    validateCharsOnly(sourceText, "Latn", scriptData.latinCharactersByFirstCodePoint,);
 
     if (thousandBasedNumberScripts.includes(otherScript,)) {
         const southDravidianNumbers = sourceNumber => {
@@ -773,8 +794,7 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
         }
 
         sourceText = sourceText.normalize("NFC",);
-        const srcScriptData = resolveScriptData(srcScript, options,);
-        validateCharsOnly(sourceText, srcScript, [...srcScriptData.misc.values(), ...srcScriptData.numbers.values(), ...srcScriptData.modifiers.values(), ...srcScriptData.vowelMarks.values(), ...srcScriptData.vowels.values(), ...srcScriptData.consonants.values(), ...srcScriptData.accentMarks.values(),],);
+        validateCharsOnly(sourceText, srcScript, resolveScriptData(srcScript, options,).brahmicCharactersByFirstCodePoint,);
         return sourceText;
     }
 
