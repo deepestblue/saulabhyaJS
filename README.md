@@ -51,11 +51,11 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 
 Optionally, `transliterate` also takes an `options` parameter. The supported options are below:
 
-* a string `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`, and which Veda’s accent marks it uses. Leave it out for `cls` text, in which accent marks are invalid. The supported values are:
+* a string `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`, and which Vedaʼs accent marks it uses. Leave it out for `cls` text, in which accent marks are invalid. The supported values are:
     * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked ISO‐15919 Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in ISO‐15919 Latin, and `hi` in ISO‐15919 Latin is `𑌹𑌿॒` in Grantha.
     * `"samaveda"`, for Samavedic accent marks, which are numerals and letters. A letter without a mark has no accent to spell out, so it stays unmarked in every script: `𑌹𑌿` in Grantha is `hi` in ISO‐15919 Latin, and vice versa.
 
-  Each value accepts only its own Veda’s accent marks, so split text that mixes the two into separate calls. Use it as follows:
+  Each value accepts only its own Vedaʼs accent marks, so split text that mixes the two into separate calls. Use it as follows:
 
       const sourceText = "𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ।"; // Valid Yajurvedic text in Grantha script.
       const transliteratedLatinText = transliterate("Gran", "Latn", sourceText, { vedicAccents: "yajurveda", },); // The above source text in Latin script (ISO‐15919 transliteration format).

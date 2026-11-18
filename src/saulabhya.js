@@ -264,7 +264,7 @@ const scriptsData = {
 };
 
 const scriptCodes = Object.keys(scriptsData,);
-const thousandBasedNumberScripts = Object.freeze(["Taml", "Gran", "Mlym",],); // Mlym, Taml and Gran don’t use a strict place‐value system.
+const thousandBasedNumberScripts = Object.freeze(["Taml", "Gran", "Mlym",],); // Mlym, Taml and Gran donʼt use a strict place‐value system.
 
 scriptCodes.push("Latn",);
 Object.freeze(scriptCodes,);
@@ -304,7 +304,7 @@ const anyOfArray = arr => `[${arr.join("",)}]`;
 // Regex pattern that matches any of the elements obtainable from the passed‐in iterable.
 const anyOfIterable = it => anyOfArray(Array.from(it,),);
 
-// Calls share these objects, so nothing may mutate one once it’s resolved. The cache grows with the distinct options values passed in.
+// Calls share these objects, so nothing may mutate one once itʼs resolved. The cache grows with the distinct options values passed in.
 const resolvedScriptsData = new Map();
 
 const resolveScriptData = (script, options,) => {
@@ -376,12 +376,12 @@ const resolveScriptData = (script, options,) => {
     return scriptData;
 };
 
-// Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. validCharactersByFirstCodePoint maps each code point to the valid characters that start with it. Positions are UTF‐16 indices into the text, the unit JavaScript’s string methods count; position j stands for the prefix sourceText.slice(0, j).
+// Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. validCharactersByFirstCodePoint maps each code point to the valid characters that start with it. Positions are UTF‐16 indices into the text, the unit JavaScriptʼs string methods count; position j stands for the prefix sourceText.slice(0, j).
 const validateCharsOnly = (sourceText, sourceScript, validCharactersByFirstCodePoint,) => {
-    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharactersByFirstCodePoint` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isn’t valid; otherwise, otherwise.
+    // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharactersByFirstCodePoint` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isnʼt valid; otherwise, otherwise.
     // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace and join controls). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So the valid characters come grouped by their first code point, so that each position tries only those that can start there.
 
-    // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesn’t split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
+    // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesnʼt split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
     const reachable = [true,];
     for (let i = 0; i < sourceText.length; ++i) {
         if (! reachable[i]) {
@@ -397,7 +397,7 @@ const validateCharsOnly = (sourceText, sourceScript, validCharactersByFirstCodeP
         return;
     }
 
-    // Now that we know the text doesn’t split, let’s report on the error.
+    // Now that we know the text doesnʼt split, letʼs report on the error.
 
     const validLength = reachable.findLastIndex(Boolean,);
     // The invalid character is the one at validLength, i.e. right after the longest prefix that does split: nothing valid starts there, or a longer prefix would split. The error message tries to contextualise the invalid character by quoting its word. The quote runs to the end of the grapheme cluster containing the invalid character; it starts from just after the last whitespace before that cluster or from the start of the text.
@@ -431,7 +431,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
             // A digit has Unicode category “Nd”, while the symbols for ten, hundred and thousand have Unicode category “No”.
             const digits = Array.from(scriptData.numbers.values(),).filter(x => regex("\\p{Nd}",).test(x,),);
 
-            // Let’s divide up the number into groups of thousands.
+            // Letʼs divide up the number into groups of thousands.
             const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x !== thousand,);
 
             // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
@@ -442,7 +442,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
                 // Process each group.
                 const thousands = group.match(regex(`${thousand}*$`,),)[0].length;
 
-                // Invalid input if the thousands groups aren’t strictly decreasing in thousands‐power.
+                // Invalid input if the thousands groups arenʼt strictly decreasing in thousands‐power.
                 if (thousands >= ator.minThousands) {
                     throw new Error(`Invalid number: ${sourceNumber}.`,);
                 }
@@ -639,7 +639,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
 
             let xlittedText = "";
 
-            // Let’s process each group of 3 digits at a time.
+            // Letʼs process each group of 3 digits at a time.
             for (let mille = 0; sourceNumber > 0; ++mille) {
                 const rem = sourceNumber % 1000;
                 sourceNumber = Math.floor(sourceNumber / 1000,);
@@ -747,7 +747,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     const vowels1 = Array.from(scriptData.vowels.keys(),).filter(x => ! diphthongsAndConstituents.includes(x,),)
         .sort().reverse().join(disjunctor,);
 
-    // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isn’t xlitted separately.
+    // Sort + reverse ensures greediness, i.e. ṅ is thought of as one unit and the n isnʼt xlitted separately.
     const consonants = Array.from(scriptData.consonants.keys(),).sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels1})`,),
@@ -789,7 +789,7 @@ const transliterate = (srcScript, tgtScript, sourceText, options,) => {
 
     if (srcScript === tgtScript) {
         if (tgtScript === "Latn") {
-            // Cannot validate that only Latin characters exist, because we don’t know which Latin characters are valid without a language.
+            // Cannot validate that only Latin characters exist, because we donʼt know which Latin characters are valid without a language.
             return sourceText.normalize("NFD",);
         }
 

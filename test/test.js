@@ -1050,7 +1050,7 @@ QUnit.module("API", () => {
         },);
     },);
 
-    QUnit.module("alternating an option’s values", () => {
+    QUnit.module("alternating an optionʼs values", () => {
         // Each entry is a set of options and a pair of texts they map to each other.
         const data = {
             vedicAccents: {
