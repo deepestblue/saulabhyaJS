@@ -6,7 +6,7 @@ import json from "@eslint/json";
 import markdown from "@eslint/markdown";
 import html from "@html-eslint/eslint-plugin";
 import yml from "eslint-plugin-yml";
-import { defineConfig, globalIgnores, } from "eslint/config";
+import { defineConfig, includeIgnoreFile, } from "eslint/config";
 
 // Devanagari through Sinhala, Vedic Extensions, Devanagari Extended, Grantha, Tamil Supplement.
 const brahmicBlocks = String.raw`[\u{0900}-\u{0DFF}][\u{1CD0}-\u{1CFF}][\u{A8E0}-\u{A8FF}][\u{11300}-\u{1137F}][\u{11FC0}-\u{11FFF}]`;
@@ -103,7 +103,7 @@ const local = {
 };
 
 export default defineConfig([
-    globalIgnores(["dist/**", "node_modules/**", ".nyc_output/**", "coverage/**", ".puppeteer-cache/**",],),
+    includeIgnoreFile(`${import.meta.dirname}/.gitignore`,),
     {
         files: ["**/*.js", "**/*.mjs",],
         extends: [
