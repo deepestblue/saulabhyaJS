@@ -308,7 +308,7 @@ const anyOfIterable = it => anyOfArray(Array.from(it,),);
 const resolvedScriptsData = new Map();
 
 const resolveScriptData = (script, options,) => {
-    // Coalesce options from what's passed in into the actual distinct values that matter, which distinct values are used in the cache key.
+    // Coalesce options from whatʼs passed in into the actual distinct values that matter, which distinct values are used in the cache key.
     const cacheKey = JSON.stringify([script, options?.vedicAccents, options?.omInISO15919 || "", Boolean(options?.modifiedISO15919ForTam,), options?.enableDiphthongsInTamil === false,],);
 
     const cachedScriptData = resolvedScriptsData.get(cacheKey,);

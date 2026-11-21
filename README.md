@@ -52,7 +52,7 @@ As above, `transliterate` takes as its 3rd parameter the source text and returns
 Optionally, `transliterate` also takes an `options` parameter. The supported options are below:
 
 * a string `vedicAccents`, which determines whether Sanskrit text should be interpreted as including Vedic accents, i.e. does the text represent `cls` or `vsn`, and which Vedaʼs accent marks it uses. Leave it out for `cls` text, in which accent marks are invalid. The supported values are:
-    * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked ISO‐15919 Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in ISO‐15919 Latin, and `hi` in ISO‐15919 Latin is `𑌹𑌿॒` in Grantha.
+    * `"yajurveda"`, for Yajurvedic accent marks. An unmarked Brahmic letter is udatta, and an unmarked ISO‐15919 Latin letter is anudatta: `𑌹𑌿` in Grantha is `hí` in ISO‐15919 Latin, and `hi` in ISO‐15919 Latin is `𑌹𑌿॒` in Grantha.
     * `"samaveda"`, for Samavedic accent marks, which are numerals and letters. A letter without a mark has no accent to spell out, so it stays unmarked in every script: `𑌹𑌿` in Grantha is `hi` in ISO‐15919 Latin, and vice versa.
 
   Each value accepts only its own Vedaʼs accent marks, so split text that mixes the two into separate calls. Use it as follows:
@@ -62,7 +62,7 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
       const transliteratedDevanagariText = transliterate("Gran", "Deva", sourceText, { vedicAccents: "yajurveda", },); // The above source text in Devanagari script.
 
       const samavedicSourceText = "𑌨𑌿𑍧 𑌹𑍋𑌤𑌾𑍨𑍦 𑌸𑌤𑍍𑌸𑌿 𑌬𑍩𑌰𑍍𑌹𑌿𑍧𑌷𑌿𑍨 ॥"; // Valid Samavedic text in Grantha script.
-      const samavedicLatinText = transliterate("Gran", "Latn", samavedicSourceText, { vedicAccents: "samaveda", },); // ni¹ hōtā²⁰ satsi ba³rhi¹ṣi² ॥
+      const samavedicLatinText = transliterate("Gran", "Latn", samavedicSourceText, { vedicAccents: "samaveda", },); // ni¹ hōtā²⁰ satsi ba³rhi¹ṣi² ॥
 
 * a boolean `modifiedISO15919ForTam`, which determines whether Tamil text in ISO‐15919 should be the format as defined by ISO, or a modified format the author prefers. In the modified format,
     * `ṯ` is used for the alveolar stop instead of `ṟ`, in parallel to `ṭ` for the retroflex stop and `t` for the dental (and in parallel to `ṉ` for the alveolar nasal).
@@ -73,7 +73,7 @@ Optionally, `transliterate` also takes an `options` parameter. The supported opt
 
       const transliteratedTamlText = transliterate("Latn", "Taml", "kai", { enableDiphthongsInTamil: false, },); // கஇ, not கை
 
-* a string `omInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because it's the symbol for “ohm”). Use the option as follows:
+* a string `omInISO15919`, which determines which Latin character is used for Om in ISO‐15919 to map against 𑍐 in Grantha, ௐ in Tamil and ॐ in Devanagari. The default is `Ω` (chosen because itʼs the symbol for “ohm”). Use the option as follows:
 
       const transliteratedLatinText = transliterate("Gran", "Latn", "𑍐 …", { omInISO15919: "🕉", },);
       const transliteratedGranthaText = transliterate("Latn", "Gran", "🕉 …", { omInISO15919: "🕉", },);

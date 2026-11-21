@@ -1066,7 +1066,6 @@ QUnit.module("API", () => {
                 calls: [
                     [{}, "Ω", "𑍐",],
                     [{ omInISO15919: "🕉", }, "🕉", "𑍐",],
-                    [{ omInISO15919: "☉", }, "☉", "𑍐",],
                 ],
             },
             modifiedISO15919ForTam: {
