@@ -224,7 +224,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
                             transliterate(script, "Latn", data[script][i],),
-                            data.LatnISO15919[i],);
+                            data.LatnISO15919[i],
+                        );
                     },);
                 },);
             },);
@@ -233,7 +234,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data.LatnISO15919[i], t => {
                         t.deepEqual(
                             transliterate("Latn", script, data.LatnISO15919[i],),
-                            data[script][i],);
+                            data[script][i],
+                        );
                     },);
                 },);
             },);
@@ -242,7 +244,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
                             transliterate(script, "Latn", data[script][i], { modifiedISO15919ForTam: true, },),
-                            data.LatnISO15919Modified[i],);
+                            data.LatnISO15919Modified[i],
+                        );
                     },);
                 },);
             },);
@@ -251,7 +254,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data.LatnISO15919Modified[i], t => {
                         t.deepEqual(
                             transliterate("Latn", script, data.LatnISO15919Modified[i], { modifiedISO15919ForTam: true, },),
-                            data[script][i],);
+                            data[script][i],
+                        );
                     },);
                 },);
             },);
@@ -264,7 +268,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
                             transliterate(script, "Latn", data[script][i], { enableDiphthongsInTamil: false, },),
-                            data.LatnISO15919NoDiphthongs[i],);
+                            data.LatnISO15919NoDiphthongs[i],
+                        );
                     },);
                 },);
             },);
@@ -273,7 +278,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(data.LatnISO15919NoDiphthongs[i], t => {
                         t.deepEqual(
                             transliterate("Latn", script, data.LatnISO15919NoDiphthongs[i], { enableDiphthongsInTamil: false, },),
-                            data[script][i],);
+                            data[script][i],
+                        );
                     },);
                 },);
             },);
@@ -308,7 +314,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(brahmic, t => {
                         t.deepEqual(
                             transliterate(script, "Latn", brahmic, { enableDiphthongsInTamil: false, },),
-                            latn,);
+                            latn,
+                        );
                     },);
                 },);
             },);
@@ -317,7 +324,8 @@ QUnit.module("Tam", () => {
                     QUnit.test(latn, t => {
                         t.deepEqual(
                             transliterate("Latn", script, latn, { enableDiphthongsInTamil: false, },),
-                            brahmic,);
+                            brahmic,
+                        );
                     },);
                 },);
             },);
@@ -326,12 +334,14 @@ QUnit.module("Tam", () => {
             QUnit.test("Taml → Latn", t => {
                 t.deepEqual(
                     transliterate("Taml", "Latn", "ௐ", { omInISO15919: "🕉", },),
-                    "🕉",);
+                    "🕉",
+                );
             },);
             QUnit.test("Latn → Taml", t => {
                 t.deepEqual(
                     transliterate("Latn", "Taml", "🕉", { omInISO15919: "🕉", },),
-                    "ௐ",);
+                    "ௐ",
+                );
             },);
         },);
     },);
@@ -340,22 +350,23 @@ QUnit.module("Tam", () => {
         const textWithPunctuationAndSpacing = {
             Taml: `
 மனிதப் பிறவியினர் சகலரும் சுதந்திரமாகவே பிறக்கின்றனர். அவர்கள் மதிப்பிலும் உரிமைகளிலும் சமமானவர்கள். அவர்கள் நியாயத்தையும் மனசாட்சியையும் இயற்பண்பாகப் பெற்றவர்கள். அவர்கள் ஒருவருடனொருவர் சகோதர உணர்வுப் பாங்கில் நடந்துகொள்ளல் வேண்டும்.
-        `,
+`,
             Knda: `
 ಮ಩ಿತಪ್ ಪಿಱವಿಯಿ಩ರ್ ಚಕಲರುಮ್ ಚುತನ್ತಿರಮಾಕವೇ ಪಿಱಕ್ಕಿ಩್ಱ಩ರ್. ಅವರ್ಕಳ್ ಮತಿಪ್ಪಿಲುಮ್ ಉರಿಮೈಕಳಿಲುಮ್ ಚಮಮಾ಩ವರ್ಕಳ್. ಅವರ್ಕಳ್ ನಿಯಾಯತ್ತೈಯುಮ್ ಮ಩ಚಾಟ್ಚಿಯೈಯುಮ್ ಇಯಱ್ಪಣ್ಪಾಕಪ್ ಪೆಱ್ಱವರ್ಕಳ್. ಅವರ್ಕಳ್ ಒರುವರುಟ಩ೊರುವರ್ ಚಕೋತರ ಉಣರ್ವುಪ್ ಪಾಙ್ಕಿಲ್ ನಟನ್ತುಕೊಳ್ಳಲ್ ವೇಣ್ಟುಮ್.
-        `,
+`,
             Telu: `
 మ఩ితప్ పిఱవియి఩ర్ చకలరుమ్ చుతన్తిరమాకవే పిఱక్కి఩్ఱ఩ర్. అవర్కళ్ మతిప్పిలుమ్ ఉరిమైకళిలుమ్ చమమా఩వర్కళ్. అవర్కళ్ నియాయత్తైయుమ్ మ఩చాట్చియైయుమ్ ఇయఱ్పణ్పాకప్ పెఱ్ఱవర్కళ్. అవర్కళ్ ఒరువరుట఩ొరువర్ చకోతర ఉణర్వుప్ పాఙ్కిల్ నటన్తుకొళ్ళల్ వేణ్టుమ్.
-        `,
+`,
             Mlym: `
 മഩിതപ് പിറവിയിഩര് ചകലരുമ് ചുതന്തിരമാകവേ പിറക്കിഩ്റഩര്. അവര്കള് മതിപ്പിലുമ് ഉരിമൈകളിലുമ് ചമമാഩവര്കള്. അവര്കള് നിയായത്തൈയുമ് മഩചാട്ചിയൈയുമ് ഇയറ്പണ്പാകപ് പെറ്റവര്കള്. അവര്കള് ഒരുവരുടഩൊരുവര് ചകോതര ഉണര്വുപ് പാങ്കില് നടന്തുകൊള്ളല് വേണ്ടുമ്.
-        `,
+`,
             LatnISO15919: `
 maṉitap piṟaviyiṉar cakalarum cutantiramākavē piṟakkiṉṟaṉar. avarkaḷ matippilum urimaikaḷilum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṟpaṇpākap peṟṟavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkil naṭantukoḷḷal vēṇṭum.
-        `,
+`,
             LatnISO15919Modified: `
 maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar. avarkaḷ matippiḻum urimaikaḷiḻum camamāṉavarkaḷ. avarkaḷ niyāyattaiyum maṉacāṭciyaiyum iyaṯpaṇpākap peṯṯavarkaḷ. avarkaḷ oruvaruṭaṉoruvar cakōtara uṇarvup pāṅkiḻ naṭantukoḷḷaḻ vēṇṭum.
-        `, };
+`,
+        };
         const textWithoutDiphthongs = {
             Taml: "அஅக்க் ஙஞ்டோ அஊ",
             LatnISO15919NoDiphthongs: "aakk ṅañṭō aū",
@@ -363,52 +374,62 @@ maṉitap piṯaviyiṉar cakaḻarum cutantiramākavē piṯakkiṉṯaṉar.
         QUnit.test("Taml → LatnISO15919", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithPunctuationAndSpacing.Taml,),
-                textWithPunctuationAndSpacing.LatnISO15919,);
+                textWithPunctuationAndSpacing.LatnISO15919,
+            );
         },);
         QUnit.test("LatnISO15919 → Taml", t => {
             t.deepEqual(
                 transliterate("Latn", "Taml", textWithPunctuationAndSpacing.LatnISO15919,),
-                textWithPunctuationAndSpacing.Taml,);
+                textWithPunctuationAndSpacing.Taml,
+            );
         },);
         QUnit.test("Taml → Knda", t => {
             t.deepEqual(
                 transliterate("Taml", "Knda", textWithPunctuationAndSpacing.Taml,),
-                textWithPunctuationAndSpacing.Knda,);
+                textWithPunctuationAndSpacing.Knda,
+            );
         },);
         QUnit.test("Knda → Taml", t => {
             t.deepEqual(
                 transliterate("Knda", "Taml", textWithPunctuationAndSpacing.Knda,),
-                textWithPunctuationAndSpacing.Taml,);
+                textWithPunctuationAndSpacing.Taml,
+            );
         },);
         QUnit.test("Taml → Telu", t => {
             t.deepEqual(
                 transliterate("Taml", "Telu", textWithPunctuationAndSpacing.Taml,),
-                textWithPunctuationAndSpacing.Telu,);
+                textWithPunctuationAndSpacing.Telu,
+            );
         },);
         QUnit.test("Telu → Taml", t => {
             t.deepEqual(
                 transliterate("Telu", "Taml", textWithPunctuationAndSpacing.Telu,),
-                textWithPunctuationAndSpacing.Taml,);
+                textWithPunctuationAndSpacing.Taml,
+            );
         },);
         QUnit.test("Taml → Mlym", t => {
             t.deepEqual(
                 transliterate("Taml", "Mlym", textWithPunctuationAndSpacing.Taml,),
-                textWithPunctuationAndSpacing.Mlym,);
+                textWithPunctuationAndSpacing.Mlym,
+            );
         },);
         QUnit.test("Mlym → Taml", t => {
             t.deepEqual(
                 transliterate("Mlym", "Taml", textWithPunctuationAndSpacing.Mlym,),
-                textWithPunctuationAndSpacing.Taml,);
+                textWithPunctuationAndSpacing.Taml,
+            );
         },);
         QUnit.test("Taml → LatnISO15919NoDiphthongs", t => {
             t.deepEqual(
                 transliterate("Taml", "Latn", textWithoutDiphthongs.Taml, { enableDiphthongsInTamil: false, },),
-                textWithoutDiphthongs.LatnISO15919NoDiphthongs,);
+                textWithoutDiphthongs.LatnISO15919NoDiphthongs,
+            );
         },);
         QUnit.test("LatnISO15919NoDiphthongs → Taml", t => {
             t.deepEqual(
                 transliterate("Latn", "Taml", textWithoutDiphthongs.LatnISO15919NoDiphthongs, { enableDiphthongsInTamil: false, },),
-                textWithoutDiphthongs.Taml,);
+                textWithoutDiphthongs.Taml,
+            );
         },);
     },);
 
@@ -655,7 +676,8 @@ QUnit.module("Cls", () => {
                     QUnit.test(data[script][i], t => {
                         t.deepEqual(
                             transliterate(script, "Latn", data[script][i],),
-                            data.Latn[i],);
+                            data.Latn[i],
+                        );
                     },);
                 },);
             },);
@@ -664,7 +686,8 @@ QUnit.module("Cls", () => {
                     QUnit.test(data.Latn[i], t => {
                         t.deepEqual(
                             transliterate("Latn", script, data.Latn[i],),
-                            data[script][i],);
+                            data[script][i],
+                        );
                     },);
                 },);
             },);
@@ -676,12 +699,14 @@ QUnit.module("Cls", () => {
                 QUnit.test(`${script} → Latn`, t => {
                     t.deepEqual(
                         transliterate(script, "Latn", omData[script], { omInISO15919: "🕉", },),
-                        "🕉",);
+                        "🕉",
+                    );
                 },);
                 QUnit.test(`Latn → ${script}`, t => {
                     t.deepEqual(
                         transliterate("Latn", script, "🕉", { omInISO15919: "🕉", },),
-                        omData[script],);
+                        omData[script],
+                    );
                 },);
             },);
         },);
@@ -693,37 +718,42 @@ QUnit.module("Cls", () => {
 𑌸𑌰𑍍𑌵𑍇 𑌮𑌾𑌨𑌵𑌾𑌃 𑌜𑌨𑍍𑌮𑌨𑌾 𑌸𑍍𑌵𑌤𑌨𑍍𑌤𑍍𑌰𑌾𑌃 𑌵𑍈𑌯𑌕𑍍𑌤𑌿𑌕𑌗𑍌𑌰𑌵𑍇𑌣 𑌅𑌧𑌿𑌕𑌾𑌰𑍇𑌣 𑌚 𑌤𑍁𑌲𑍍𑌯𑌾𑌃 𑌏𑌵 । 𑌸𑌰𑍍𑌵𑍇𑌷𑌾𑌂 𑌵𑌿𑌵𑍇𑌕𑌃 𑌆𑌤𑍍𑌮𑌸𑌾𑌕𑍍𑌷𑍀 𑌚 𑌵𑌰𑍍𑌤𑌤𑍇 । 𑌸𑌰𑍍𑌵𑍇 𑌪𑌰𑌸𑍍𑌪𑌰𑌂 𑌭𑍍𑌰𑌾𑌤𑍃𑌭𑌾𑌵𑍇𑌨 𑌵𑍍𑌯𑌵𑌹𑌰𑍇𑌯𑍁𑌃 ।
 
 𑌸𑌰𑍍𑌵𑍇 𑌮𑌾𑌨𑌵𑌾𑌃 𑌸𑍍𑌵𑌤𑌨𑍍𑌤𑍍𑌰𑌾𑌃 𑌸𑌮𑍁𑌤𑍍𑌪𑌨𑍍𑌨𑌾𑌃 𑌵𑌰𑍍𑌤𑌨𑍍𑌤𑍇 𑌅𑌪𑌿 𑌚 𑌗𑍌𑌰𑌵𑌦𑍃𑌶𑌾 𑌅𑌧𑌿𑌕𑌾𑌰𑌦𑍃𑌶𑌾 𑌚 𑌸𑌮𑌾𑌨𑌾𑌃 𑌏𑌵 𑌵𑌰𑍍𑌤𑌨𑍍𑌤𑍇 । 𑌏𑌤𑍇 𑌸𑌰𑍍𑌵𑍇 𑌚𑍇𑌤𑌨𑌾𑌤𑌰𑍍𑌕𑌶𑌕𑍍𑌤𑌿𑌭𑍍𑌯𑌾𑌂 𑌸𑍁𑌸𑌮𑍍𑌪𑌨𑍍𑌨𑌾𑌃 𑌸𑌨𑍍𑌤𑌿 । 𑌅𑌪𑌿 𑌚 𑌸𑌰𑍍𑌵𑍇𑌪𑌿 𑌬𑌨𑍍𑌧𑍁𑌤𑍍𑌵𑌭𑌾𑌵𑌨𑌯𑌾 𑌪𑌰𑌸𑍍𑌪𑌰𑌂 𑌵𑍍𑌯𑌵𑌹𑌰𑌨𑍍𑌤𑍁 ।
-        `,
+`,
             Deva: `
 सर्वे मानवाः जन्मना स्वतन्त्राः वैयक्तिकगौरवेण अधिकारेण च तुल्याः एव । सर्वेषां विवेकः आत्मसाक्षी च वर्तते । सर्वे परस्परं भ्रातृभावेन व्यवहरेयुः ।
 
 सर्वे मानवाः स्वतन्त्राः समुत्पन्नाः वर्तन्ते अपि च गौरवदृशा अधिकारदृशा च समानाः एव वर्तन्ते । एते सर्वे चेतनातर्कशक्तिभ्यां सुसम्पन्नाः सन्ति । अपि च सर्वेपि बन्धुत्वभावनया परस्परं व्यवहरन्तु ।
-        `,
+`,
             Latn: `
 sarvē mānavāḥ janmanā svatantrāḥ vaiyaktikagauravēṇa adhikārēṇa ca tulyāḥ ēva । sarvēṣāṁ vivēkaḥ ātmasākṣī ca vartatē । sarvē parasparaṁ bhrātr̥bhāvēna vyavaharēyuḥ ।
 
 sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr̥śā adhikāradr̥śā ca samānāḥ ēva vartantē । ētē sarvē cētanātarkaśaktibhyāṁ susampannāḥ santi । api ca sarvēpi bandhutvabhāvanayā parasparaṁ vyavaharantu ।
-        `, };
+`,
+        };
 
         QUnit.test("Gran → Latn", t => {
             t.deepEqual(
                 transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran,),
-                textWithPunctuationAndSpacing.Latn,);
+                textWithPunctuationAndSpacing.Latn,
+            );
         },);
         QUnit.test("Latn → Gran", t => {
             t.deepEqual(
                 transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn,),
-                textWithPunctuationAndSpacing.Gran,);
+                textWithPunctuationAndSpacing.Gran,
+            );
         },);
         QUnit.test("Gran → Deva", t => {
             t.deepEqual(
                 transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran,),
-                textWithPunctuationAndSpacing.Deva,);
+                textWithPunctuationAndSpacing.Deva,
+            );
         },);
         QUnit.test("Deva → Gran", t => {
             t.deepEqual(
                 transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva,),
-                textWithPunctuationAndSpacing.Gran,);
+                textWithPunctuationAndSpacing.Gran,
+            );
         },);
     },);
 
@@ -879,7 +909,8 @@ QUnit.module("Vsn", () => {
                         QUnit.test(data[script][i], t => {
                             t.deepEqual(
                                 transliterate(script, "Latn", data[script][i], { vedicAccents: "yajurveda", },),
-                                data.Latn[i],);
+                                data.Latn[i],
+                            );
                         },);
                     },);
                 },);
@@ -888,7 +919,8 @@ QUnit.module("Vsn", () => {
                         QUnit.test(data.Latn[i], t => {
                             t.deepEqual(
                                 transliterate("Latn", script, data.Latn[i], { vedicAccents: "yajurveda", },),
-                                data[script][i],);
+                                data[script][i],
+                            );
                         },);
                     },);
                 },);
@@ -902,7 +934,8 @@ QUnit.module("Vsn", () => {
                             QUnit.test(data[script][i], t => {
                                 t.deepEqual(
                                     transliterate(script, "Latn", data[script][i], { omInISO15919: "🕉", vedicAccents: "yajurveda", },),
-                                    omLatn[i],);
+                                    omLatn[i],
+                                );
                             },);
                         },);
                     },);
@@ -911,7 +944,8 @@ QUnit.module("Vsn", () => {
                             QUnit.test(omLatn[i], t => {
                                 t.deepEqual(
                                     transliterate("Latn", script, omLatn[i], { omInISO15919: "🕉", vedicAccents: "yajurveda", },),
-                                    data[script][i],);
+                                    data[script][i],
+                                );
                             },);
                         },);
                     },);
@@ -924,35 +958,40 @@ QUnit.module("Vsn", () => {
                 Gran: `
 𑍐 𑌤𑌚𑍍𑌛॒𑌯𑍍𑌁𑌯𑍋𑌰𑌾𑌵𑍃᳴𑌣𑍀𑌮𑌹𑍇 । 𑌗𑌾॒𑌤𑍁𑌯𑍍𑌁𑌯॒𑌜𑍍𑌞𑌾𑌯᳴ । 𑌗𑌾॒𑌤𑍁𑌯𑍍𑌁𑌯॒𑌜𑍍𑌞𑌪᳴𑌤𑌯𑍇 । 𑌦𑍈𑌵𑍀॑ 𑌸𑍍𑌵॒𑌸𑍍𑌤𑌿𑌰᳴𑌸𑍍𑌤𑍁 𑌨𑌃 । 𑌸𑍍𑌵॒𑌸𑍍𑌤𑌿𑌰𑍍𑌮𑌾𑌨𑍁᳴𑌷𑍇𑌭𑍍𑌯𑌃 । 𑌊॒𑌰𑍍𑌧𑍍𑌵𑌞𑍍𑌜𑌿᳴𑌗𑌾𑌤𑍁 𑌭𑍇𑌷॒𑌜𑌮𑍍 । 𑌶𑌨𑍍𑌨𑍋᳴ 𑌅𑌸𑍍𑌤𑍁 𑌦𑍍𑌵𑌿॒𑌪𑌦𑍇॑ । 𑌶𑌞𑍍𑌚𑌤𑍁᳴𑌷𑍍𑌪𑌦𑍇 ॥ 𑍐 𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿॒𑌶𑍍𑌶𑌾𑌨𑍍𑌤𑌿᳴𑌃 ॥
 𑌪𑍁𑌰𑍁᳴𑌷 𑌏॒𑌵𑍇𑌦𑍞 𑌸𑌰𑍍𑌵𑌮𑍍॑ । 𑌅𑌤𑍋॒ 𑌜𑍍𑌯𑌾𑌯𑌾𑍟᳴𑌶𑍍𑌚॒ 𑌪𑍂𑌰𑍁᳴𑌷𑌃 ।
-        `,
+`,
                 Deva: `
 ॐ तच्छ॒य्ँयोरावृ॑णीमहे । गा॒तुय्ँय॒ज्ञाय॑ । गा॒तुय्ँय॒ज्ञप॑तये । दैवी᳚ स्व॒स्तिर॑स्तु नः । स्व॒स्तिर्मानु॑षेभ्यः । ऊ॒र्ध्वञ्जि॑गातु भेष॒जम् । शन्नो॑ अस्तु द्वि॒पदे᳚ । शञ्चतु॑ष्पदे ॥ ॐ शान्ति॒श्शान्ति॒श्शान्ति॑ः ॥
 पुरु॑ष ए॒वेदꣳ सर्वम्᳚ । अतो॒ ज्यायाꣴ॑श्च॒ पूरु॑षः ।
-        `,
+`,
                 Latn: `
 Ώ tácchaym̐yṓrā́vr̥̀ṇī́máhḗ । gātúym̐yajñā́yà । gātúym̐yajñápàtáyḗ । daívī̏ svastíràstú náḥ । svastírmā́nùṣḗbhyáḥ । ūrdhváñjìgā́tú bhḗṣajám । śánnṑ ástú dvipádē̏ । śáñcátùṣpádḗ ॥ Ώ śā́ntiśśā́ntiśśā́ntìḥ ॥
 púrùṣá ēvḗdágͫ sárvám̏ । átō jyā́yā́gͫ̄̀śca pū́rùṣáḥ ।
-        `, };
+`,
+            };
 
             QUnit.test("Gran → Latn", t => {
                 t.deepEqual(
                     transliterate("Gran", "Latn", textWithPunctuationAndSpacing.Gran, { vedicAccents: "yajurveda", },),
-                    textWithPunctuationAndSpacing.Latn,);
+                    textWithPunctuationAndSpacing.Latn,
+                );
             },);
             QUnit.test("Latn → Gran", t => {
                 t.deepEqual(
                     transliterate("Latn", "Gran", textWithPunctuationAndSpacing.Latn, { vedicAccents: "yajurveda", },),
-                    textWithPunctuationAndSpacing.Gran,);
+                    textWithPunctuationAndSpacing.Gran,
+                );
             },);
             QUnit.test("Gran → Deva", t => {
                 t.deepEqual(
                     transliterate("Gran", "Deva", textWithPunctuationAndSpacing.Gran, { vedicAccents: "yajurveda", },),
-                    textWithPunctuationAndSpacing.Deva,);
+                    textWithPunctuationAndSpacing.Deva,
+                );
             },);
             QUnit.test("Deva → Gran", t => {
                 t.deepEqual(
                     transliterate("Deva", "Gran", textWithPunctuationAndSpacing.Deva, { vedicAccents: "yajurveda", },),
-                    textWithPunctuationAndSpacing.Gran,);
+                    textWithPunctuationAndSpacing.Gran,
+                );
             },);
         },);
 
@@ -1013,13 +1052,15 @@ QUnit.module("API", () => {
             const trivialTestText = "தமிழிலிருந்து தமிழ் எளிது.";
             t.deepEqual(
                 transliterate("Taml", "Taml", trivialTestText,),
-                trivialTestText,);
+                trivialTestText,
+            );
         },);
         QUnit.test("Latn → Latn", t => {
             const trivialTestText = "tamiṛiliruntu tamiṛ eḷitu.";
             t.deepEqual(
                 transliterate("Latn", "Latn", trivialTestText,),
-                trivialTestText,);
+                trivialTestText,
+            );
         },);
     },);
 
