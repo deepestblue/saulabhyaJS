@@ -8,7 +8,7 @@ import html from "@html-eslint/eslint-plugin";
 import yml from "eslint-plugin-yml";
 import { defineConfig, includeIgnoreFile, } from "eslint/config";
 
-const brahmicBlocks = String.raw`[\u{0900}-\u{0DFF}][\u{1CD0}-\u{1CFF}][\u{A8E0}-\u{A8FF}][\u{11300}-\u{1137F}][\u{11FC0}-\u{11FFF}]`;
+const brahmicBlocks = String.raw`\u{0900}-\u{0DFF}\u{1CD0}-\u{1CFF}\u{A8E0}-\u{A8FF}\u{11300}-\u{1137F}\u{11FC0}-\u{11FFF}`;
 const brahmicChar = new RegExp(`[${brahmicBlocks}]`, "v",);
 const scriptRuns = new RegExp(`[${brahmicBlocks}]+|[^${brahmicBlocks}]+`, "gv",);
 const formOf = run => (brahmicChar.test(run,) ? "NFC" : "NFD");
@@ -62,7 +62,7 @@ const allowedCodePoints = {
     boxDrawing: String.raw`\u{2550}\u{2551}\u{2554}\u{2557}\u{255A}\u{255D}\u{2560}\u{2563}\u{2566}\u{2569}\u{256C}`,
 };
 
-const disallowedCodepoint = new RegExp(`[^${Object.values(allowedCodePoints,).join("",)}]`, "gv",);
+const disallowedCodePoint = new RegExp(`[^${Object.values(allowedCodePoints,).join("",)}]`, "gv",);
 
 const allowListRule = {
     meta: {
@@ -78,7 +78,7 @@ const allowListRule = {
         if (sourceCode.hasBOM) {
             context.report({ loc: sourceCode.getLocFromIndex(0,), messageId: "BOM", },);
         }
-        sourceCode.text.matchAll(disallowedCodepoint,)
+        sourceCode.text.matchAll(disallowedCodePoint,)
             .map(({ 0: char, index, },) => ({
                 loc: {
                     start: sourceCode.getLocFromIndex(index,),
@@ -143,7 +143,7 @@ export default defineConfig([
             "no-continue": "off",
             "no-duplicate-imports": "off",
             "no-inline-comments": "off",
-            "no-magic-numbers": ["error", { ignore: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 100, 1000,], },],
+            "no-magic-numbers": "off",
             "no-misleading-character-class": "off",
             "no-multi-assign": ["error", { ignoreNonDeclaration: true, },],
             "no-negated-condition": "off",
