@@ -379,6 +379,7 @@ const resolveScriptData = (script, options,) => {
 // Throws unless the text splits into whitespace, join controls and valid characters, i.e. is a sequence of them. validCharactersByFirstCodePoint maps each code point to the valid characters that start with it. Positions are UTF‐16 indices into the text, the unit JavaScriptʼs string methods count; position j stands for the prefix sourceText.slice(0, j).
 const validateCharsOnly = (sourceText, sourceScript, validCharactersByFirstCodePoint,) => {
     // The basic idea is to figure out if the position after the final code point of the string is “reachable” through a split of the entire string into only valid characters, where the valid characters are expressed through the parameter `validCharactersByFirstCodePoint` (modulo whitespace and join controls). If the position after the last code point were not reachable through any of the splits, that means the whole string isnʼt valid; otherwise, otherwise.
+
     // To do this, from any reachable position we have to be able to mark as reachable any other position in the string that is right after the end of a valid character that starts at the reachable position (modulo whitespace and join controls). In turn, to do this we need to figure out the set of valid characters starting with a given code point. So the valid characters come grouped by their first code point, so that each position tries only those that can start there.
 
     // Now, we mark every position that some split of the text reaches: reachable[j] becomes true once the prefix of length j is known to split, starting with the empty prefix. A backtracking regex would follow each split separately and, before failing on a text that doesnʼt split, retry every one of them; where valid characters overlap (one being the concatenation of others), there can be exponentially many. Here each position is processed once, however many splits reach it. Every mark points forward, so a position is marked, if ever, before the loop gets to it.
@@ -434,8 +435,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
             // Letʼs divide up the number into groups of thousands.
             const otherNumbers = Array.from(scriptData.numbers.values(),).filter(x => x !== thousand,);
 
-            // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands).
-            // But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
+            // Each group is an optional sub‐thousand number, following by an optional power (expressed in thousands). But while both the constituents are optional, one of them has to exist, hence a positive lookahead.
             const groupRegex = regex(`(?=.)${anyOfArray(otherNumbers,)}*${thousand}*`,);
 
             return sourceNumber.match(groupRegex,).reduce((ator, group,) => {
@@ -492,8 +492,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
                 };
                 /* eslint-enable @stylistic/indent, @stylistic/indent-binary-ops */
             },
-            { total: 0, minThousands: Infinity, },
-            ).total;
+            { total: 0, minThousands: Infinity, },).total;
         };
 
         sourceText = sourceText.replace(
@@ -631,8 +630,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
 
     if (thousandBasedNumberScripts.includes(otherScript,)) {
         const southDravidianNumbers = sourceNumber => {
-            // Zero is special, and is in fact not allowed in the traditional system.
-            // But modern usage demands it.
+            // Zero is special, and is in fact not allowed in the traditional system. But modern usage demands it.
             if (sourceNumber === 0) {
                 return scriptData.numbers.get(sourceNumber,);
             }
@@ -667,15 +665,15 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
                     }
 
                     /*
-                        Below is a table of what needs to be written out in each case.
-                        ╔════════════╦═════════════╦════════════════════════╗
-                        ║            ║ Units place ║ Tens or Hundreds place ║
-                        ╠════════════╬═════════════╬════════════════════════╣
-                        ║ Digit = 1  ║ Digit       ║ Place                  ║
-                        ╠════════════╬═════════════╬════════════════════════╣
-                        ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
-                        ╚════════════╩═════════════╩════════════════════════╝
-                    */
+                     *  Below is what needs to be written out in each case.
+                     *  ╔════════════╦═════════════╦════════════════════════╗
+                     *  ║            ║ Units place ║ Tens or Hundreds place ║
+                     *  ╠════════════╬═════════════╬════════════════════════╣
+                     *  ║ Digit = 1  ║ Digit       ║ Place                  ║
+                     *  ╠════════════╬═════════════╬════════════════════════╣
+                     *  ║ Digit ≠ 1  ║ Digit       ║ Digit + Place          ║
+                     *  ╚════════════╩═════════════╩════════════════════════╝
+                     */
                     if (place !== 1) {
                         ator = scriptData.numbers.get(place,) + ator;
                         if (digit === 1) {
@@ -692,28 +690,33 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
 
         sourceText = sourceText.replace(
             regex(`${anyOfIterable(Array(10,).keys(),)}+`,),
-            match => southDravidianNumbers(parseInt(match, 10,), scriptData,),);
+            match => southDravidianNumbers(parseInt(match, 10,), scriptData,),
+        );
     } else {
         sourceText = sourceText.replace(
             regex(anyOfIterable(Array(10,).keys(),),),
-            match => scriptData.numbers.get(parseInt(match, 10,),),);
+            match => scriptData.numbers.get(parseInt(match, 10,),),
+        );
     }
 
     sourceText = sourceText.replace(
         regex(anyOfIterable(scriptData.misc.keys(),),),
-        match => scriptData.misc.get(match,),);
+        match => scriptData.misc.get(match,),
+    );
 
     // Handle modifiers separately first to get them out of the way.
     const modifiers = Array.from(scriptData.modifiers.keys(),).sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(modifiers,),
-        match => scriptData.modifiers.get(match,),);
+        match => scriptData.modifiers.get(match,),
+    );
 
     if (! options?.vedicAccents) {
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
             regex(`${diphthongAntecedent}${separator}(${anyOfArray(diphthongConsequents,)})`,),
-            (_unused, p1,) => `${diphthongAntecedent}${scriptData.vowels.get(p1,)}`,);
+            (_unused, p1,) => `${diphthongAntecedent}${scriptData.vowels.get(p1,)}`,
+        );
     } else {
         const vowels = Array.from(scriptData.vowels.keys(),).sort().reverse().join(disjunctor,);
         const accentMarks = Array.from(scriptData.accentMarks.keys(),).filter(x => x !== "",).sort().reverse().join(disjunctor,);
@@ -721,18 +724,21 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
         // Handle Vedic accent marks
         sourceText = sourceText.replace(
             regex(`(${vowels})((?:${accentMarks})*)`,),
-            (_unused, p1, p2,) => `${p1}${p2 === "" ? scriptData.accentMarks.get("",) : p2.replace(regex(accentMarks,), mark => scriptData.accentMarks.get(mark,),)}`,);
+            (_unused, p1, p2,) => `${p1}${p2 === "" ? scriptData.accentMarks.get("",) : p2.replace(regex(accentMarks,), mark => scriptData.accentMarks.get(mark,),)}`,
+        );
 
         // Handle separated vowels like ‘a:i’
         sourceText = sourceText.replace(
             regex(`${diphthongAntecedent}(\\p{Mn}?)${separator}(${anyOfArray(diphthongConsequents,)})`,),
-            (_unused, p1, p2,) => `${diphthongAntecedent}${p1}${scriptData.vowels.get(p2,)}`,);
+            (_unused, p1, p2,) => `${diphthongAntecedent}${p1}${scriptData.vowels.get(p2,)}`,
+        );
     }
 
     // Handle separated consonants like ‘b:h’
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(plosiveConsonants,)})${separator}`,),
-        (_unused, p1,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get("",)}`,);
+        (_unused, p1,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get("",)}`,
+    );
 
     const diphthongsAndConstituents = (() => {
         const dAndC = diphthongConsequents.map(c => diphthongAntecedent + c,).concat(diphthongConsequents,).concat(new Array(diphthongAntecedent,),);
@@ -742,8 +748,7 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
         return dAndC.filter(x => x !== "ai" && x !== "au",);
     })();
 
-    // We need to first sweep through and xlit all diphthong non‐consequents.
-    // Otherwise “aū” will be xlitted as a diphthong followed by a macron.
+    // We need to first sweep through and xlit all diphthong non‐consequents. Otherwise “aū” will be transliterated as a diphthong followed by a macron.
     const vowels1 = Array.from(scriptData.vowels.keys(),).filter(x => ! diphthongsAndConstituents.includes(x,),)
         .sort().reverse().join(disjunctor,);
 
@@ -751,27 +756,31 @@ const latinToBrahmic = (otherScript, scriptData, sourceText, options,) => {
     const consonants = Array.from(scriptData.consonants.keys(),).sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels1})`,),
-        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,);
+        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,
+    );
     sourceText = sourceText.replace(regex(vowels1,), match => scriptData.vowels.get(match,),);
 
     // Diphthongs and their constituents are in phase 2.
     const vowels2 = diphthongsAndConstituents.sort().reverse().join(disjunctor,);
     sourceText = sourceText.replace(
         regex(`(${consonants})(${vowels2})`,),
-        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,);
+        (_unused, p1, p2,) => `${scriptData.consonants.get(p1,)}${scriptData.vowelMarks.get(p2,)}`,
+    );
     sourceText = sourceText.replace(regex(vowels2,), match => scriptData.vowels.get(match,),);
 
     // Remaining bare consonants.
     sourceText = sourceText.replace(
         regex(consonants,),
-        match => `${scriptData.consonants.get(match,)}${scriptData.vowelMarks.get("",)}`,);
+        match => `${scriptData.consonants.get(match,)}${scriptData.vowelMarks.get("",)}`,
+    );
 
     // Vedic accent marks on modifiers and on bare consonants
     const modifiersAndVirama = [...scriptData.modifiers.values(), scriptData.vowelMarks.get("",),];
     const accentMarks = Array.from(scriptData.accentMarks.keys(),).filter(x => x !== "",);
     sourceText = sourceText.replace(
         regex(`(${anyOfArray(modifiersAndVirama,)})(${anyOfArray(accentMarks,)}+)`,),
-        (_unused, p1, p2,) => `${p1}${p2.replace(regex(anyOfArray(accentMarks,),), mark => scriptData.accentMarks.get(mark,),)}`,);
+        (_unused, p1, p2,) => `${p1}${p2.replace(regex(anyOfArray(accentMarks,),), mark => scriptData.accentMarks.get(mark,),)}`,
+    );
 
     return sourceText;
 };

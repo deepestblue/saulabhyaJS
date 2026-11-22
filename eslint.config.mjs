@@ -11,29 +11,26 @@ import { defineConfig, includeIgnoreFile, } from "eslint/config";
 // Devanagari through Sinhala, Vedic Extensions, Devanagari Extended, Grantha, Tamil Supplement.
 const brahmicBlocks = String.raw`[\u{0900}-\u{0DFF}][\u{1CD0}-\u{1CFF}][\u{A8E0}-\u{A8FF}][\u{11300}-\u{1137F}][\u{11FC0}-\u{11FFF}]`;
 const brahmicChar = new RegExp(`[${brahmicBlocks}]`, "v",);
-const otherNonAsciiChar = new RegExp(String.raw`[\P{ASCII}--[${brahmicBlocks}]]`, "v",);
+const scriptRuns = new RegExp(`[${brahmicBlocks}]+|[^${brahmicBlocks}]+`, "gv",);
+const formOf = run => (brahmicChar.test(run,) ? "NFC" : "NFD");
 
 const normalisationRule = {
     meta: {
         type: "problem",
         messages: {
-            NFC: "A literal with Brahmic characters must be in NFC.",
-            NFD: "A literal without Brahmic characters must be in NFD.",
-            mixed: "A literal must not mix Brahmic characters with other non‐ASCII ones.",
+            NFC: "Brahmic text in a literal must be in NFC.",
+            NFD: "Non‐Brahmic text in a literal must be in NFD.",
         },
     },
     create: context => {
         const check = (node, text,) => {
-            const brahmic = brahmicChar.test(text,);
-            if (brahmic && otherNonAsciiChar.test(text,)) {
-                context.report({ node, messageId: "mixed", },);
+            const wrong = text.matchAll(scriptRuns,)
+                .map(([run,],) => run,)
+                .find(run => run !== run.normalize(formOf(run,),),);
+            if (! wrong) {
                 return;
             }
-            const form = brahmic ? "NFC" : "NFD";
-            if (text === text.normalize(form,)) {
-                return;
-            }
-            context.report({ node, messageId: form, },);
+            context.report({ node, messageId: formOf(wrong,), },);
         };
         return {
             Literal: node => {
@@ -52,13 +49,14 @@ const normalisationRule = {
 
 // Keep each entry as narrow as the code points actually needed: an entry wider than that causes no lint error, so the extra characters it allows would go unnoticed.
 const allowedCodePoints = {
+    whitespace: String.raw`\u{000A}\u{0020}`,
     tamil: String.raw`\u{0B83}\u{0B85}-\u{0B8A}\u{0B8E}-\u{0B90}\u{0B92}-\u{0B95}\u{0B99}-\u{0B9A}\u{0B9E}-\u{0B9F}\u{0BA3}-\u{0BA4}\u{0BA8}-\u{0BAA}\u{0BAE}-\u{0BB5}\u{0BBE}-\u{0BC2}\u{0BC6}-\u{0BC8}\u{0BCA}-\u{0BCD}\u{0BD0}\u{0BE6}-\u{0BF2}\u{0BF8}\u{11FE9}`,
     malayalam: String.raw`\u{0D03}\u{0D05}-\u{0D0A}\u{0D0E}-\u{0D10}\u{0D12}-\u{0D15}\u{0D19}-\u{0D1A}\u{0D1E}-\u{0D1F}\u{0D23}-\u{0D24}\u{0D28}-\u{0D2A}\u{0D2E}-\u{0D35}\u{0D3E}-\u{0D42}\u{0D46}-\u{0D48}\u{0D4A}-\u{0D4D}\u{0D66}-\u{0D72}`,
     kannada: String.raw`\u{0C83}\u{0C85}-\u{0C8A}\u{0C8E}-\u{0C90}\u{0C92}-\u{0C95}\u{0C99}-\u{0C9A}\u{0C9E}-\u{0C9F}\u{0CA3}-\u{0CA4}\u{0CA8}-\u{0CAA}\u{0CAE}-\u{0CB3}\u{0CB5}\u{0CBE}-\u{0CC2}\u{0CC6}-\u{0CC8}\u{0CCA}-\u{0CCD}\u{0CDE}\u{0CE6}-\u{0CEF}`,
     telugu: String.raw`\u{0C03}\u{0C05}-\u{0C0A}\u{0C0E}-\u{0C10}\u{0C12}-\u{0C15}\u{0C19}-\u{0C1A}\u{0C1E}-\u{0C1F}\u{0C23}-\u{0C24}\u{0C28}-\u{0C2A}\u{0C2E}-\u{0C35}\u{0C3E}-\u{0C42}\u{0C46}-\u{0C48}\u{0C4A}-\u{0C4D}\u{0C66}-\u{0C6F}`,
-    grantha: String.raw`\u{1CF2}\u{1CF4}\u{11301}-\u{11303}\u{11305}-\u{1130C}\u{1130F}-\u{11310}\u{11313}-\u{11328}\u{1132A}-\u{11330}\u{11332}-\u{11333}\u{11335}-\u{11339}\u{1133E}-\u{11344}\u{11347}-\u{11348}\u{1134B}-\u{1134D}\u{11350}\u{1135D}-\u{11363}\u{11366}-\u{1136C}\u{11370}-\u{11374}`,
-    devanagari: String.raw`\u{0901}-\u{0903}\u{0905}-\u{090C}\u{090F}-\u{0910}\u{0913}-\u{0928}\u{092A}-\u{0930}\u{0932}-\u{0933}\u{0935}-\u{0939}\u{093E}-\u{0944}\u{0947}-\u{0948}\u{094B}-\u{094D}\u{0950}-\u{0952}\u{0960}-\u{096F}\u{1CDA}\u{1CF5}-\u{1CF6}\u{A8E0}-\u{A8E6}\u{A8EA}\u{A8EC}-\u{A8EE}\u{A8F0}\u{A8F3}-\u{A8F4}\u{1F549}`,
-    latin: String.raw`\n\u{0020}-\u{0026}\u{0028}-\u{007D}\u{00A9}\u{00B2}\u{00B3}\u{00B9}\u{00D7}\u{02BC}\u{0300}-\u{0301}\u{0303}-\u{0304}\u{0307}\u{030F}-\u{0310}\u{0323}\u{0325}\u{032E}\u{0331}\u{0363}\u{036B}\u{036E}\u{1DDC}\u{1DE0}\u{1DEE}\u{2010}\u{2013}\u{2018}\u{2019}\u{201C}\u{201D}\u{2026}\u{2070}\u{2074}\u{2075}\u{2076}\u{2260}\u{3003}`,
+    grantha: String.raw`\u{0951}-\u{0952}\u{0964}-\u{0965}\u{1CF2}\u{1CF4}\u{11301}-\u{11303}\u{11305}-\u{1130C}\u{1130F}-\u{11310}\u{11313}-\u{11328}\u{1132A}-\u{11330}\u{11332}-\u{11333}\u{11335}-\u{11339}\u{1133E}-\u{11344}\u{11347}-\u{11348}\u{1134B}-\u{1134D}\u{11350}\u{1135D}-\u{11363}\u{11366}-\u{1136C}\u{11370}-\u{11374}`,
+    devanagari: String.raw`\u{0901}-\u{0903}\u{0905}-\u{090C}\u{090F}-\u{0910}\u{0913}-\u{0928}\u{092A}-\u{0930}\u{0932}-\u{0933}\u{0935}-\u{0939}\u{093E}-\u{0944}\u{0947}-\u{0948}\u{094B}-\u{094D}\u{0950}\u{0960}-\u{0963}\u{0966}-\u{096F}\u{1CDA}\u{1CF5}-\u{1CF6}\u{A8E0}-\u{A8E6}\u{A8EA}\u{A8EC}-\u{A8EE}\u{A8F0}\u{A8F3}-\u{A8F4}\u{1F549}`,
+    latin: String.raw`\u{0021}-\u{0026}\u{0028}-\u{007D}\u{00A9}\u{00B2}\u{00B3}\u{00B9}\u{00D7}\u{02BC}\u{0300}-\u{0301}\u{0303}-\u{0304}\u{0307}\u{030F}-\u{0310}\u{0323}\u{0325}\u{032E}\u{0331}\u{0363}\u{036B}\u{036E}\u{1DDC}\u{1DE0}\u{1DEE}\u{2010}\u{2013}\u{2018}\u{2019}\u{201C}\u{201D}\u{2026}\u{2070}\u{2074}\u{2075}\u{2076}\u{2260}\u{3003}`,
     greek: String.raw`\u{03A9}`,
     currency: String.raw`\u{0BF9}\u{20A8}\u{20B9}`,
     arrows: String.raw`\u{2192}\u{21A9}`,
@@ -108,6 +106,7 @@ export default defineConfig([
         files: ["**/*.js", "**/*.mjs",],
         extends: [
             js.configs.all,
+            stylistic.configs.all,
             stylistic.configs.customize({
                 braceStyle: "1tbs",
                 commaDangle: "always",
@@ -160,8 +159,15 @@ export default defineConfig([
             "sort-keys": "off",
             ...qunit.configs.recommended.rules,
             "@stylistic/arrow-parens": ["error", "as-needed",],
+            "@stylistic/wrap-regex": "off",
+            "@stylistic/object-property-newline": "off",
+            "@stylistic/array-element-newline": "off",
+            "@stylistic/function-call-argument-newline": "off",
             "@stylistic/max-statements-per-line": "off",
+            "@stylistic/newline-per-chained-call": "off",
             "@stylistic/operator-linebreak": ["error", "after", { overrides: { "?": "after", ":": "before", }, },],
+            "@stylistic/array-bracket-newline": ["error", "consistent",],
+            "@stylistic/function-paren-newline": ["error", "consistent",],
             "@stylistic/space-unary-ops": ["error", { overrides: { "!": true, }, },],
         },
     },
