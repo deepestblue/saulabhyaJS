@@ -51,5 +51,9 @@
         "markdownlint-cli2": "^0.24.0",
         "node-qunit-puppeteer": "^2.2.1",
         "nyc": "^18.0.0"
+    },
+    "allowScripts": {
+        "esbuild@0.28.2": true,
+        "puppeteer@24.34.0": true
     }
 }
