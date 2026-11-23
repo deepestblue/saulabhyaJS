@@ -491,8 +491,7 @@ const brahmicToLatin = (otherScript, scriptData, sourceText, options,) => {
                     minThousands: thousands,
                 };
                 /* eslint-enable @stylistic/indent, @stylistic/indent-binary-ops */
-            },
-            { total: 0, minThousands: Infinity, },).total;
+            }, { total: 0, minThousands: Infinity, },).total;
         };
 
         sourceText = sourceText.replace(
