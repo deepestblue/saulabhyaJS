@@ -18,7 +18,7 @@ QUnit.module("Tam", () => {
                 "ஙஞ்டோ",
                 "அஊ",
                 "இஓஐஅஓனிறீனௌளஈஅ",
-                "க்\u200cக க்\u200dக க\u200cக க\u200dக க\u200cஇ க\u200dஇ",
+                "க்\u{200C}க க்\u{200D}க க\u{200C}க க\u{200D}க க\u{200C}இ க\u{200D}இ",
                 "க௧",
                 "௨ங",
                 "௦",
@@ -48,7 +48,7 @@ QUnit.module("Tam", () => {
                 "ఙఞ్టో",
                 "అఊ",
                 "ఇఓఐఅఓ఩ిఱీ఩ౌళఈఅ",
-                "క్\u200cక క్\u200dక క\u200cక క\u200dక క\u200cఇ క\u200dఇ",
+                "క్\u{200C}క క్\u{200D}క క\u{200C}క క\u{200D}క క\u{200C}ఇ క\u{200D}ఇ",
                 "క౧",
                 "౨ఙ",
                 "౦",
@@ -78,7 +78,7 @@ QUnit.module("Tam", () => {
                 "ಙಞ್ಟೋ",
                 "ಅಊ",
                 "ಇಓಐಅಓ಩ಿಱೀ಩ೌಳಈಅ",
-                "ಕ್\u200cಕ ಕ್\u200dಕ ಕ\u200cಕ ಕ\u200dಕ ಕ\u200cಇ ಕ\u200dಇ",
+                "ಕ್\u{200C}ಕ ಕ್\u{200D}ಕ ಕ\u{200C}ಕ ಕ\u{200D}ಕ ಕ\u{200C}ಇ ಕ\u{200D}ಇ",
                 "ಕ೧",
                 "೨ಙ",
                 "೦",
@@ -108,7 +108,7 @@ QUnit.module("Tam", () => {
                 "ങഞ്ടോ",
                 "അഊ",
                 "ഇഓഐഅഓഩിറീഩൌളഈഅ",
-                "ക്\u200cക ക്\u200dക ക\u200cക ക\u200dക ക\u200cഇ ക\u200dഇ",
+                "ക്\u{200C}ക ക്\u{200D}ക ക\u{200C}ക ക\u{200D}ക ക\u{200C}ഇ ക\u{200D}ഇ",
                 "ക൧",
                 "൨ങ",
                 "൦",
@@ -138,7 +138,7 @@ QUnit.module("Tam", () => {
                 "ṅañṭō",
                 "aū",
                 "iōaiaōṉiṟīṉauḷaīa",
-                "k\u200cka k\u200dka ka\u200cka ka\u200dka ka\u200ci ka\u200di",
+                "k\u{200C}ka k\u{200D}ka ka\u{200C}ka ka\u{200D}ka ka\u{200C}i ka\u{200D}i",
                 "ka1",
                 "2ṅa",
                 "0",
@@ -168,7 +168,7 @@ QUnit.module("Tam", () => {
                 "ṅañṭō",
                 "aū",
                 "iōaiaōṉiṯīṉauḷaīa",
-                "k\u200cka k\u200dka ka\u200cka ka\u200dka ka\u200ci ka\u200di",
+                "k\u{200C}ka k\u{200D}ka ka\u{200C}ka ka\u{200D}ka ka\u{200C}i ka\u{200D}i",
                 "ka1",
                 "2ṅa",
                 "0",
@@ -198,7 +198,7 @@ QUnit.module("Tam", () => {
                 "ṅañṭō",
                 "aū",
                 "iōaiaōṉiṟīṉauḷaīa",
-                "k\u200cka k\u200dka ka\u200cka ka\u200dka ka\u200ci ka\u200di",
+                "k\u{200C}ka k\u{200D}ka ka\u{200C}ka ka\u{200D}ka ka\u{200C}i ka\u{200D}i",
                 "ka1",
                 "2ṅa",
                 "0",
@@ -558,9 +558,9 @@ QUnit.module("Cls", () => {
                 "𑌸𑍁𑌨𑍍𑌦𑌰𑍀ᳲ 𑌕𑍃𑌤𑍀𑌃",
                 "𑌮𑌨ᳲ𑌪𑍍𑌰𑌯𑌤𑍍𑌨𑌃",
                 "𑌵ᳲ 𑌪𑌿𑌤𑌰𑌃",
-                "𑌕𑍍\u200c𑌕 𑌕𑍍\u200d𑌕 𑌕\u200c𑌕 𑌕\u200d𑌕 𑌕\u200c𑌇 𑌕\u200d𑌇",
-                "𑌦𑍁ᳲ\u200c𑌖𑌮𑍍 𑌦𑍁ᳲ\u200d𑌖𑌮𑍍",
-                "𑌮𑌨ᳲ\u200c𑌪𑍍𑌰𑌯𑌤𑍍𑌨𑌃 𑌮𑌨ᳲ\u200d𑌪𑍍𑌰𑌯𑌤𑍍𑌨𑌃",
+                "𑌕𑍍\u{200C}𑌕 𑌕𑍍\u{200D}𑌕 𑌕\u{200C}𑌕 𑌕\u{200D}𑌕 𑌕\u{200C}𑌇 𑌕\u{200D}𑌇",
+                "𑌦𑍁ᳲ\u{200C}𑌖𑌮𑍍 𑌦𑍁ᳲ\u{200D}𑌖𑌮𑍍",
+                "𑌮𑌨ᳲ\u{200C}𑌪𑍍𑌰𑌯𑌤𑍍𑌨𑌃 𑌮𑌨ᳲ\u{200D}𑌪𑍍𑌰𑌯𑌤𑍍𑌨𑌃",
                 "௦",
                 "௧ ௨ ௩ ௪ ௫ ௬ ௭ ௮ ௯",
                 "௰ ௱",
@@ -604,9 +604,9 @@ QUnit.module("Cls", () => {
                 "सुन्दरीᳵ कृतीः",
                 "मनᳶप्रयत्नः",
                 "वᳶ पितरः",
-                "क्\u200cक क्\u200dक क\u200cक क\u200dक क\u200cइ क\u200dइ",
-                "दुᳵ\u200cखम् दुᳵ\u200dखम्",
-                "मनᳶ\u200cप्रयत्नः मनᳶ\u200dप्रयत्नः",
+                "क्\u{200C}क क्\u{200D}क क\u{200C}क क\u{200D}क क\u{200C}इ क\u{200D}इ",
+                "दुᳵ\u{200C}खम् दुᳵ\u{200D}खम्",
+                "मनᳶ\u{200C}प्रयत्नः मनᳶ\u{200D}प्रयत्नः",
                 "०",
                 "१ २ ३ ४ ५ ६ ७ ८ ९",
                 "१० १००",
@@ -650,9 +650,9 @@ QUnit.module("Cls", () => {
                 "sundarīẖ kr̥tīḥ",
                 "manaḫprayatnaḥ",
                 "vaḫ pitaraḥ",
-                "k\u200cka k\u200dka ka\u200cka ka\u200dka ka\u200ci ka\u200di",
-                "duẖ\u200ckham duẖ\u200dkham",
-                "manaḫ\u200cprayatnaḥ manaḫ\u200dprayatnaḥ",
+                "k\u{200C}ka k\u{200D}ka ka\u{200C}ka ka\u{200D}ka ka\u{200C}i ka\u{200D}i",
+                "duẖ\u{200C}kham duẖ\u{200D}kham",
+                "manaḫ\u{200C}prayatnaḥ manaḫ\u{200D}prayatnaḥ",
                 "0",
                 "1 2 3 4 5 6 7 8 9",
                 "10 100",
@@ -808,8 +808,8 @@ sarvē mānavāḥ svatantrāḥ samutpannāḥ vartantē api ca gauravadr
         },);
 
         QUnit.test.each("join control between a consonant and its vowel mark", [
-            ["Latn", "𑌕\u200c𑌾",],
-            ["Deva", "𑌕\u200d𑌾",],
+            ["Latn", "𑌕\u{200C}𑌾",],
+            ["Deva", "𑌕\u{200D}𑌾",],
         ], (t, [targetScript, text,],) => {
             t.throws(
                 () => transliterate("Gran", targetScript, text,),
@@ -866,7 +866,7 @@ QUnit.module("Vsn", () => {
                     "𑌤𑌵", "𑌸𑍋𑌮", "𑌲𑌤𑌾", "𑌮𑌾𑌤𑌾",
                     "𑌮𑌦𑌨", "𑌪𑌾𑌵𑌨", "𑌤𑌦𑍇𑌵", "𑌰𑌚𑌨𑌾",
                     "𑌵𑌾𑌰𑌾𑌹", "𑌸𑌾𑌧𑌨𑌾", "𑌶𑌲𑌾𑌕𑌾", "𑌵𑌾𑌰𑌾𑌹𑍀",
-                    "𑌕𑍍\u200c𑌕॒", "𑌕𑍍\u200c𑌕", "𑌕𑍍\u200c𑌕᳴", "𑌕𑍍\u200c𑌕॑",
+                    "𑌕𑍍\u{200C}𑌕॒", "𑌕𑍍\u{200C}𑌕", "𑌕𑍍\u{200C}𑌕᳴", "𑌕𑍍\u{200C}𑌕॑",
                 ],
                 Deva: [
                     "ॐ॒", "ॐ", "ॐ॑", "ॐ᳚",
@@ -883,7 +883,7 @@ QUnit.module("Vsn", () => {
                     "तव", "सोम", "लता", "माता",
                     "मदन", "पावन", "तदेव", "रचना",
                     "वाराह", "साधना", "शलाका", "वाराही",
-                    "क्\u200cक॒", "क्\u200cक", "क्\u200cक॑", "क्\u200cक᳚",
+                    "क्\u{200C}क॒", "क्\u{200C}क", "क्\u{200C}क॑", "क्\u{200C}क᳚",
                 ],
                 Latn: [
                     "Ω", "Ώ", "Ὼ", "Ω̏",
@@ -900,7 +900,7 @@ QUnit.module("Vsn", () => {
                     "tává", "sṓmá", "látā́", "mā́tā́",
                     "mádáná", "pā́váná", "tádḗvá", "rácánā́",
                     "vā́rā́há", "sā́dhánā́", "śálā́kā́", "vā́rā́hī́",
-                    "k\u200cka", "k\u200cká", "k\u200ckà", "k\u200ckȁ",
+                    "k\u{200C}ka", "k\u{200C}ká", "k\u{200C}kà", "k\u{200C}kȁ",
                 ],
             };
             scripts.forEach(script => {
@@ -1004,7 +1004,7 @@ púrùṣá ēvḗdágͫ sárvám̏ । átō jyā́yā́gͫ̄̀ś
             },);
             QUnit.test("join control between a letter and its accent mark", t => {
                 t.throws(
-                    () => transliterate("Gran", "Latn", "𑌕\u200c॒", { vedicAccents: "yajurveda", },),
+                    () => transliterate("Gran", "Latn", "𑌕\u{200C}॒", { vedicAccents: "yajurveda", },),
                     err => err instanceof Error &&
                         /^Unknown Gran character combination: ॒\.$/v.test(err.message,),
                 );
